@@ -2,15 +2,45 @@
 const playSound = false;  // Set to true to enable sound
 
 // Animation and Sound Configuration
-const animations = {
-  sword: "jb2a.greatsword.melee.standard.white",
-  bow: "jb2a.arrow.physical.white",
-  miss: "jb2a.ui.miss"
-};
-
-const sounds = {
-  sword: "path/to/your/sword_sound.mp3",
-  bow: "path/to/your/bow_sound.mp3"
+const weaponEffects = {
+  "Broadsword": { 
+    melee: { animation: "jb2a.greatsword.melee.standard.white", sound: "path/to/your/sword_sound.mp3" }
+  },
+  "Fist": { 
+    melee: { animation: "jb2a.melee_generic.bludgeoning.one_handed", sound: "path/to/your/sword_sound.mp3" }
+  },
+  "Grapple": { 
+    melee: { animation: "jb2a.melee_generic.bludgeoning.two_handed", sound: "path/to/your/sword_sound.mp3" }
+  },
+  "Kick": { 
+    melee: { animation: "jb2a.melee_generic.bludgeoning.one_handed", sound: "path/to/your/sword_sound.mp3" }
+  },
+  "Claw": { 
+    melee: { animation: "jb2a.claws.200px.red", sound: "path/to/your/sword_sound.mp3" }
+  },
+  "Composite Bow": { 
+    ranged: { animation: "jb2a.arrow.cold.blue", sound: "path/to/your/bow_sound.mp3" }
+  },
+  "Dagger": { 
+    melee: { animation: "jb2a.dagger.melee.02.white", sound: "path/to/your/dagger_melee_sound.mp3" },
+    ranged: { animation: "jb2a.dagger.throw.01.white", sound: "path/to/your/dagger_throw_sound.mp3" }
+  },
+  "Short Spear": { 
+    melee: { animation: "jb2a.spear.melee.01.white", sound: "path/to/your/short_spear_melee_sound.mp3" },
+    ranged: { animation: "jb2a.spear.throw.standard.white", sound: "path/to/your/short_spear_throw_sound.mp3" }
+  },
+  "Long Spear": { 
+    melee: { animation: "jb2a.spear.melee.fire.white", sound: "path/to/your/long_spear_sound.mp3" }
+  },
+  "Sling": { 
+    ranged: { animation: "jb2a.slingshot", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "miss": { 
+    animation: "jb2a.ui.miss"
+  },
+  "override": { 
+    animation: "jb2a.hammer.throw", sound: "path/to/your/override_sound.mp3"
+  }
 };
 
 // Function to perform initial checks
@@ -47,15 +77,38 @@ async function triggerEffects(chatMessage, selectedToken, targetToken) {
 
   // Extract the flavor text directly from the chat message
   const flavorText = chatMessage.flavor || "";
+  console.log("Flavor text:", flavorText);
 
-  // Check if the message indicates a sword attack or a bow attack with a specific result
-  const isSwordAttack = flavorText.includes("Broadsword");
-  const isBowAttack = flavorText.includes("Bow");
+  // Determine the type of attack and weapon used
+  let weaponUsed = null;
+  let maxLength = 0;
+  Object.keys(weaponEffects).forEach(weapon => {
+    const regex = new RegExp(`\\b${weapon}\\b`, 'i'); // Use word boundaries to match exact weapon names
+    if (regex.test(flavorText) && weapon.length > maxLength) {
+      weaponUsed = weapon;
+      maxLength = weapon.length;
+    }
+  });
+
+  // Check if the weapon has melee or ranged attack types
+  const isMeleeAttack = weaponUsed && weaponEffects[weaponUsed].melee !== undefined;
+  const isRangedAttack = weaponUsed && weaponEffects[weaponUsed].ranged !== undefined;
+
+  console.log("Weapon used:", weaponUsed);
+  console.log("Is Melee Attack:", isMeleeAttack);
+  console.log("Is Ranged Attack:", isRangedAttack);
+
   const isSuccess = flavorText.includes("Success");
   const isSpecial = flavorText.includes("Special");
   const isCritical = flavorText.includes("Critical");
   const isFailure = flavorText.includes("Failure");
   const isFumble = flavorText.includes("Fumble");
+
+  console.log("Is Success:", isSuccess);
+  console.log("Is Special:", isSpecial);
+  console.log("Is Critical:", isCritical);
+  console.log("Is Failure:", isFailure);
+  console.log("Is Fumble:", isFumble);
 
   // Get the position of the selected token (source) and target token
   const sourcePosition = {
@@ -67,23 +120,39 @@ async function triggerEffects(chatMessage, selectedToken, targetToken) {
     y: targetToken.center.y
   };
 
-  if (isSwordAttack && (isSuccess || isSpecial || isCritical)) {
+  if (weaponUsed && (isSuccess || isSpecial || isCritical)) {
+    const attackType = isMeleeAttack ? "melee" : "ranged";
+
+    console.log("Attack type:", attackType);
+
+    if (!weaponEffects[weaponUsed]) {
+      console.error(`No weapon effects found for weapon: ${weaponUsed}`);
+      return;
+    }
+
+    if (!weaponEffects[weaponUsed][attackType]) {
+      console.error(`No ${attackType} effects found for weapon: ${weaponUsed}`);
+      return;
+    }
+
     // Check if the target is exactly one grid space away for melee attack
     const gridDistance = canvas.grid.size;
     const dx = Math.abs(targetToken.x - selectedToken.x);
     const dy = Math.abs(targetToken.y - selectedToken.y);
-    if ((dx === gridDistance && dy === 0) || (dy === gridDistance && dx === 0)) {
-      // Play sword animation from the source to the target using Sequencer module
+
+    if (attackType === "ranged" || (attackType === "melee" && ((dx === gridDistance && dy === 0) || (dy === gridDistance && dx === 0)))) {
+      console.log(`Playing animation for weapon: ${weaponUsed}, attack type: ${attackType}`);
+      // Play appropriate animation from the source to the target using Sequencer module
       const animationPromise = new Sequence()
         .effect()
-        .file(animations.sword)
+        .file(weaponEffects[weaponUsed][attackType].animation)
         .atLocation(sourcePosition)
         .stretchTo(targetPosition)
         .play();
 
       // Optionally, play a sound if enabled and wait for it to finish
       const soundPromise = playSound ? new Promise((resolve) => {
-        const audio = new Audio(sounds.sword);
+        const audio = new Audio(weaponEffects[weaponUsed][attackType].sound);
         audio.volume = 0.8;
         audio.addEventListener("ended", resolve);
         audio.play();
@@ -95,53 +164,32 @@ async function triggerEffects(chatMessage, selectedToken, targetToken) {
       ui.notifications.warn("The target must be exactly one grid space away for melee attack.");
       console.log("The target must be exactly one grid space away for melee attack.");
     }
-  } else if (isBowAttack && (isSuccess || isSpecial || isCritical) && !isFailure && !isFumble) {
-    // Play bow animation from the source to the target using Sequencer module
-    const animationPromise = new Sequence()
-      .effect()
-      .file(animations.bow)
-      .atLocation(sourcePosition)
-      .stretchTo(targetPosition)
-      .play();
-
-    // Optionally, play a sound if enabled and wait for it to finish
-    const soundPromise = playSound ? new Promise((resolve) => {
-      const audio = new Audio(sounds.bow);
-      audio.volume = 0.8;
-      audio.addEventListener("ended", resolve);
-      audio.play();
-    }) : Promise.resolve();
-
-    // Wait for both animation and sound to complete
-    await Promise.all([animationPromise, soundPromise]);
   }
 
   // Play miss animation for Failure or Fumble
   if (isFailure || isFumble) {
     const missPromise = new Sequence()
       .effect()
-      .file(animations.miss)
+      .file(weaponEffects.miss.animation)
       .atLocation(targetPosition)
       .play();
 
-    if (isBowAttack) {
-      // Adjust arrow animation for miss
+    if (isRangedAttack && weaponUsed && weaponEffects[weaponUsed].ranged) {
+      // Adjust animation for miss
       const missShift = Math.random() > 0.5 ? 50 : -50; // Randomly choose to miss above or below the target
       const missPosition = {
         x: targetPosition.x,
         y: targetPosition.y + missShift
       };
-      const arrowMissPromise = new Sequence()
+      const weaponMissPromise = new Sequence()
         .effect()
-        .file(animations.bow)
+        .file(weaponEffects[weaponUsed].ranged.animation)
         .atLocation(sourcePosition)
         .stretchTo({
           x: missPosition.x,
           y: missPosition.y // Travel further
         })
         .play();
-      //await Promise.all([missPromise, arrowMissPromise]);
-      //await arrowMissPromise;
       await missPromise;
     } else {
       await missPromise;
@@ -154,30 +202,33 @@ async function triggerEffects(chatMessage, selectedToken, targetToken) {
   console.log("Ending execution for chatMessage ID:", chatMessage.id);
 }
 
-// Perform initial checks
-const checkResults = performInitialChecks();
-if (!checkResults) {
-  // End the macro if checks fail
-  return;
-}
-const { selectedToken, targetToken } = checkResults;
 
-// Get the actor ID from the selected token
-const actorId = selectedToken.actor.id;
-
-// Event listener for chat messages
-Hooks.on("createChatMessage", (chatMessage) => {
-  console.log("createChatMessage hook triggered for chatMessage ID:", chatMessage.id);
-  triggerEffects(chatMessage, selectedToken, targetToken);
-});
 
 // Function to show weapon selection dialog
 function showWeaponSelectionDialog(actor) {
   // Filter for equipped weapons
   let equippedWeapons = actor.items.filter(i => i.type === "weapon" && i.system.equippedStatus === "equipped");
 
+  // Filter out arrows, bolts, and stones
+  equippedWeapons = equippedWeapons.filter(weapon => !["Arrow", "Bolt", "Stone", "Sling Stones"].includes(weapon.name));
+
   if (equippedWeapons.length > 0) {
-    let weaponOptions = equippedWeapons.map(weapon => `<option value="${weapon.id}">${weapon.name} (Type: ${weapon.type})</option>`).join("");
+    let weaponOptions = equippedWeapons.map(weapon => {
+      let type;
+      const effects = weaponEffects[weapon.name];
+      if (effects) {
+        const hasMelee = Boolean(effects.melee);
+        const hasRanged = Boolean(effects.ranged);
+        if (hasMelee && hasRanged) type = "Both";
+        else if (hasMelee) type = "Melee";
+        else if (hasRanged) type = "Ranged";
+        else type = "Unknown";
+      } else {
+        type = "Unknown";
+      }
+
+      return `<option value="${weapon.id}">${weapon.name} (Type: ${type})</option>`;
+    }).join("");
 
     let content = `
       <form>
@@ -202,11 +253,18 @@ function showWeaponSelectionDialog(actor) {
             if (selectedWeapon) {
               ui.notifications.info(`You selected: ${selectedWeapon.name}`);
               
+              // Determine if the attack is melee or ranged
+              const effects = weaponEffects[selectedWeapon.name];
+              const attackType = effects.melee && effects.ranged ? 
+                (html.find('[name="attack-type"]').val() || "melee") : 
+                (effects.melee ? "melee" : "ranged");
+
               // Perform grid distance check before converting the item to chat
               const gridDistance = canvas.grid.size;
               const dx = Math.abs(targetToken.x - selectedToken.x);
               const dy = Math.abs(targetToken.y - selectedToken.y);
-              if ((dx === gridDistance && dy === 0) || (dy === gridDistance && dx === 0) || selectedWeapon.name.includes("Bow")) {
+
+              if (attackType === "ranged" || (attackType === "melee" && ((dx === gridDistance && dy === 0) || (dy === gridDistance && dx === 0)))) {
                 const item = await fromUuid(`Actor.${actorId}.Item.${selectedWeaponId}`);
                 item.toChat();
               } else {
@@ -218,6 +276,42 @@ function showWeaponSelectionDialog(actor) {
         },
         cancel: {
           label: "Cancel"
+        },
+        forceRanged: {
+          label: "Force Ranged Attack",
+          callback: async (html) => {
+            let selectedWeaponId = html.find('[name="weapon-select"]').val();
+            let selectedWeapon = actor.items.get(selectedWeaponId);
+            if (selectedWeapon) {
+              ui.notifications.info(`You selected: ${selectedWeapon.name} for a forced ranged attack.`);
+              
+              // Play override animation and sound
+              const sourcePosition = {
+                x: selectedToken.center.x,
+                y: selectedToken.center.y
+              };
+              const targetPosition = {
+                x: targetToken.center.x,
+                y: targetToken.center.y
+              };
+              
+              const animationPromise = new Sequence()
+                .effect()
+                .file(weaponEffects.override.animation)
+                .atLocation(sourcePosition)
+                .stretchTo(targetPosition)
+                .play();
+
+              const soundPromise = playSound ? new Promise((resolve) => {
+                const audio = new Audio(weaponEffects.override.sound);
+                audio.volume = 0.8;
+                audio.addEventListener("ended", resolve);
+                audio.play();
+              }) : Promise.resolve();
+
+              await Promise.all([animationPromise, soundPromise]);
+            }
+          }
         }
       }
     }).render(true);
@@ -226,6 +320,25 @@ function showWeaponSelectionDialog(actor) {
   }
 }
 
+// Perform initial checks
+const checkResults = performInitialChecks();
+if (!checkResults) {
+  // End the macro if checks fail
+  return;
+}
+const { selectedToken, targetToken } = checkResults;
+
+// Get the actor ID from the selected token
+const actorId = selectedToken.actor.id;
+
+// Event listener for chat messages
+Hooks.on("createChatMessage", (chatMessage) => {
+  console.log("createChatMessage hook triggered for chatMessage ID:", chatMessage.id);
+  triggerEffects(chatMessage, selectedToken, targetToken);
+});
+
 // Show the weapon selection dialog
 const actor = game.actors.get(actorId);
 showWeaponSelectionDialog(actor);
+
+
