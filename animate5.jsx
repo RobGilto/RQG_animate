@@ -35,6 +35,115 @@ const weaponEffects = {
   "Sling": { 
     ranged: { animation: "jb2a.slingshot", sound: "path/to/your/sling_sound.mp3" }
   },
+  "Arbalest": { 
+    ranged: { animation: "jb2a.bolt.cold.purple", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Atlatl Dart": { 
+    ranged: { animation: "jb2a.dart.01.throw.physical", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Atlatl Javelin": { 
+    ranged: { animation: "jb2a.spear.throw.01", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Battle Axe": { 
+    melee: { animation: "jb2a.greataxe.melee.fire.yellow", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Battle Axe, Iron": { 
+    melee: { animation: "jb2a.greataxe.melee.fire.blue", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Bite": { 
+    melee: { animation: "jb2a.bite.200px.red", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Crossbow Bolts": { 
+    ranged: { animation: "jb2a.bolt.cold.purple", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Bite": { 
+    melee: { animation: "jb2a.bite.200px.red", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Dagger Axe": { 
+    melee: { animation: "jb2a.bite.200px.red", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Dart": { 
+    ranged: { animation: "jb2a.dart.01.throw.physical", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Elf Bow": { 
+    ranged: { animation: "jb2a.arrow.cold.green", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Gore": { 
+    melee: { animation: "jb2a.claws.200px.red", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Grapple": { 
+    melee: { animation: "jb2a.melee_generic.bludgeoning.one_handed", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Great Axe": { 
+    melee: { animation: "jb2a.greataxe.melee", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Great Hammer": { 
+    melee: { animation: "jb2a.melee_attack.02.warhammer", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Greatsword": { 
+    melee: { animation: "jb2a.greatsword.melee", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Head Butt": { 
+    melee: { animation: "jb2a.melee_generic.bludgeoning.one_handed", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Heavy Cestus": { 
+    melee: { animation: "jb2a.melee_generic.bludgeoning.one_handed", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Heavy Crossbow": { 
+    ranged: { animation: "jb2a.bolt.physical", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Heavy Mace": { 
+    melee: { animation: "jb2a.mace.melee.01", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Hug": { 
+    melee: { animation: "jb2a.melee_generic.bludgeoning.one_handed", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Javelin": { 
+    ranged: { animation: "jb2a.javelin", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Kick": { 
+    melee: { animation: "jb2a.melee_generic.bludgeoning.one_handed", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Kopis": { 
+    melee: { animation: "jb2a.melee_attack.01.sickle", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Lance": { 
+    melee: { animation: "jb2a.spear.melee", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Large Wooden Shield": { 
+    melee: { animation: "jb2a.melee_attack.06.shield", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Light Cestus": { 
+    melee: { animation: "jb2a.melee_generic.bludgeoning.one_handed", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Light Crossbow": { 
+    ranged: { animation: "jb2a.bolt.physical", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Light Mace": { 
+    melee: { animation: "jb2a.mace.melee", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Long Spear": { 
+    melee: { animation: "jb2a.spear.melee.fire.white", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Maul": { 
+    melee: { animation: "jb2a.bite.200px.red", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Medium Wooden Shield": { 
+    melee: { animation: "jb2a.melee_attack.06.shield", sound: "path/to/your/sling_sound.mp3" }
+  },
+  "Parrying Dagger": { 
+    melee: { animation: "jb2a.dagger.melee.02.white", sound: "path/to/your/dagger_melee_sound.mp3" },
+    ranged: { animation: "jb2a.dagger.throw.01.white", sound: "path/to/your/dagger_throw_sound.mp3" }
+  },
+  "Parrying Dagger": { 
+    melee: { animation: "jb2a.dagger.melee.02.white", sound: "path/to/your/dagger_melee_sound.mp3" },
+  },
+  "Pole Lasso": { 
+    melee: { animation: "jb2a.melee_generic.bludgeoning.one_handed", sound: "path/to/your/dagger_melee_sound.mp3" }
+  },
+  "Quarterstaff": { 
+    melee: { animation: "jb2a.quarterstaff", sound: "path/to/your/dagger_melee_sound.mp3" }
+  },
   "miss": { 
     animation: "jb2a.ui.miss"
   },
