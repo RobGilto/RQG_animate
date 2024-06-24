@@ -5,7 +5,14 @@ const playSound = false;  // Set to true to enable sound
 const weaponEffects = {
   "Broadsword": { 
     melee: { animation: "jb2a.greatsword.melee.standard.white", sound: "path/to/your/sword_sound.mp3" }
-  }
+  },
+  "Composite Bow": { 
+    ranged: { animation: "jb2a.arrow.cold.blue", sound: "path/to/your/bow_sound.mp3" }
+  },
+  "Dagger": { 
+    melee: { animation: "jb2a.dagger.melee.02.white", sound: "path/to/your/dagger_melee_sound.mp3" },
+    ranged: { animation: "jb2a.dagger.throw.01.white", sound: "path/to/your/dagger_throw_sound.mp3" }
+  },
 };
 
 // Function to perform initial checks
