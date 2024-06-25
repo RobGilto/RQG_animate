@@ -1,6 +1,9 @@
 // Animation and Sound Configuration
-const playSound = false;  // Set to true to enable sound
-const weaponEffects = {
+let playSound = false;  // Set to true to enable sound
+let selectedToken = null;
+let targetToken = null
+
+let weaponEffects = {
   // Define your weapon effects here
   "Broadsword": { 
     melee: { animation: "jb2a.greatsword.melee.standard.white", sound: "path/to/your/sword_sound.mp3" }
@@ -144,17 +147,17 @@ const weaponEffects = {
 
 // Function to perform initial checks
 function performInitialChecks() {
-  const selectedToken = canvas.tokens.controlled[0];
+  selectedToken = canvas.tokens.controlled[0];
   if (!selectedToken) {
     return null;
   }
 
-  const selectedTargets = Array.from(game.user.targets);
+  let selectedTargets = Array.from(game.user.targets);
   if (selectedTargets.length !== 1) {
     return null;
   }
 
-  const targetToken = selectedTargets[0];
+  targetToken = selectedTargets[0];
   if (targetToken.id === selectedToken.id) {
     return null;
   }
@@ -164,12 +167,12 @@ function performInitialChecks() {
 
 // Function to trigger animations and sounds
 async function triggerEffects(chatMessage, selectedToken, targetToken) {
-  const flavorText = chatMessage.flavor || "";
+  let flavorText = chatMessage.flavor || "";
 
   let weaponUsed = null;
   let maxLength = 0;
   Object.keys(weaponEffects).forEach(weapon => {
-    const regex = new RegExp(`\\b${weapon}\\b`, 'i');
+    let regex = new RegExp(`\\b${weapon}\\b`, 'i');
     if (regex.test(flavorText) && weapon.length > maxLength) {
       weaponUsed = weapon;
       maxLength = weapon.length;
@@ -184,22 +187,22 @@ async function triggerEffects(chatMessage, selectedToken, targetToken) {
     isMeleeAttack = false;
   }
 
-  const isSuccess = flavorText.includes("Success");
-  const isSpecial = flavorText.includes("Special");
-  const isCritical = flavorText.includes("Critical");
-  const isFailure = flavorText.includes("Failure");
-  const isFumble = flavorText.includes("Fumble");
+  let isSuccess = flavorText.includes("Success");
+  let isSpecial = flavorText.includes("Special");
+  let isCritical = flavorText.includes("Critical");
+  let isFailure = flavorText.includes("Failure");
+  let isFumble = flavorText.includes("Fumble");
 
   console.log(`Weapon Used: ${weaponUsed}`);
   console.log(`Is Melee Attack: ${isMeleeAttack}`);
   console.log(`Is Ranged Attack: ${isRangedAttack}`);
   console.log(`Flavor Text: ${flavorText}`);
 
-  const sourcePosition = {
+  let sourcePosition = {
     x: selectedToken.center.x,
     y: selectedToken.center.y
   };
-  const targetPosition = {
+  let targetPosition = {
     x: targetToken.center.x,
     y: targetToken.center.y
   };
@@ -219,37 +222,40 @@ async function triggerEffects(chatMessage, selectedToken, targetToken) {
       return;
     }
 
-    const animationPromise = new Sequence()
+    let animationPromise = new Sequence()
       .effect()
       .file(weaponEffects[weaponUsed][attackType].animation)
       .atLocation(sourcePosition)
       .stretchTo(targetPosition)
       .play();
 
-    const soundPromise = playSound ? new Promise((resolve) => {
-      const audio = new Audio(weaponEffects[weaponUsed][attackType].sound);
+
+    let soundPromise = playSound ? new Promise((resolve) => {
+      let audio = new Audio(weaponEffects[weaponUsed][attackType].sound);
       audio.volume = 0.8;
       audio.addEventListener("ended", resolve);
       audio.play();
     }) : Promise.resolve();
 
     await Promise.all([animationPromise, soundPromise]);
+    animationPromise = null;
+    soundPromise - null;
   }
 
   if (isFailure || isFumble) {
-    const missPromise = new Sequence()
+    let missPromise = new Sequence()
       .effect()
       .file(weaponEffects.miss.animation)
       .atLocation(targetPosition)
       .play();
 
     if (isRangedAttack && weaponUsed && weaponEffects[weaponUsed].ranged) {
-      const missShift = Math.random() > 0.5 ? 50 : -50;
-      const missPosition = {
+      let missShift = Math.random() > 0.5 ? 50 : -50;
+      let missPosition = {
         x: targetPosition.x,
         y: targetPosition.y + missShift
       };
-      const weaponMissPromise = new Sequence()
+      let weaponMissPromise = new Sequence()
         .effect()
         .file(weaponEffects[weaponUsed].ranged.animation)
         .atLocation(sourcePosition)
@@ -259,23 +265,29 @@ async function triggerEffects(chatMessage, selectedToken, targetToken) {
         })
         .play();
       await missPromise;
+      missPromise = null;
+
     } else {
       await missPromise;
     }
   }
-
+  selectedToken = null;
+  targetToken = null;
   game.user.updateTokenTargets([]);
 }
 
 // Function to handle changes in token selection and target
 function handleTokenChanges() {
-  const checkResults = performInitialChecks();
+  let checkResults = performInitialChecks();
   if (!checkResults) return;
 
-  const { selectedToken, targetToken } = checkResults;
+  ({selectedToken, targetToken } = checkResults);
+
   Hooks.on("createChatMessage", (chatMessage) => {
     triggerEffects(chatMessage, selectedToken, targetToken);
   });
+  //selectedToken = null;
+  //targetToken = null;
 }
 
 // Function to reset listeners every 5 seconds
