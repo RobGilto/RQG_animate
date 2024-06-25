@@ -12,7 +12,7 @@ const weaponEffects = {
   "Dagger": { 
     melee: { animation: "jb2a.dagger.melee.02.white", sound: "path/to/your/dagger_melee_sound.mp3" },
     ranged: { animation: "jb2a.dagger.throw.01.white", sound: "path/to/your/dagger_throw_sound.mp3" }
-  },
+  }
 };
 
 // Function to perform initial checks
