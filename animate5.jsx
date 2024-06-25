@@ -222,27 +222,50 @@ async function triggerEffects(chatMessage, selectedToken, targetToken) {
       return;
     }
 
-    new Sequence()
-      .effect()
-      .file(weaponEffects[weaponUsed][attackType].animation)
-      .atLocation(sourcePosition)
-      .stretchTo(targetPosition)
-      .play();
+    if (attackType === "melee") {
+      // Calculate the direction vector
+      let direction = {
+        x: targetPosition.x - sourcePosition.x,
+        y: targetPosition.y - sourcePosition.y
+      };
 
+      // Normalize the direction vector
+      let length = Math.sqrt(direction.x * direction.x + direction.y * direction.y);
+      let unitDirection = {
+        x: direction.x / length,
+        y: direction.y / length
+      };
 
-    let soundPromise = playSound ? new Promise((resolve) => {
+      // Scale the direction vector to the grid size
+      let gridSize = canvas.grid.size;
+      let stretchPosition = {
+        x: sourcePosition.x + unitDirection.x * gridSize,
+        y: sourcePosition.y + unitDirection.y * gridSize
+      };
+
+      new Sequence()
+        .effect()
+        .file(weaponEffects[weaponUsed][attackType].animation)
+        .atLocation(sourcePosition)
+        .stretchTo(stretchPosition)  // Stretch to one grid unit away
+        .play();
+    } else if (attackType === "ranged") {
+      new Sequence()
+        .effect()
+        .file(weaponEffects[weaponUsed][attackType].animation)
+        .atLocation(sourcePosition)
+        .stretchTo(targetPosition)
+        .play();
+    }
+
+    if (playSound) {
       let audio = new Audio(weaponEffects[weaponUsed][attackType].sound);
       audio.volume = 0.8;
-      audio.addEventListener("ended", resolve);
       audio.play();
-    }) : Promise.resolve();
-
-
-
+    }
   }
 
   if (isFailure || isFumble) {
-
     if (isRangedAttack) {
       let missShift = Math.random() > 0.5 ? 100 : -100;
       let missPosition = {
@@ -253,16 +276,12 @@ async function triggerEffects(chatMessage, selectedToken, targetToken) {
         .effect()
         .file(weaponEffects[weaponUsed].ranged.animation)
         .atLocation(sourcePosition)
-        .stretchTo({
-          x: missPosition.x,
-          y: missPosition.y
-        })
+        .stretchTo(missPosition)
         .effect()
         .file(weaponEffects.miss.animation)
         .atLocation(targetPosition)
         .play();
-    } 
-    if(isMeleeAttack&&!isRangedAttack) {
+    } else if (isMeleeAttack) {
       new Sequence()
         .effect()
         .file(weaponEffects.miss.animation)
@@ -270,23 +289,23 @@ async function triggerEffects(chatMessage, selectedToken, targetToken) {
         .play();
     }
   }
+
   selectedToken = null;
   targetToken = null;
   game.user.updateTokenTargets([]);
 }
+
 
 // Function to handle changes in token selection and target
 function handleTokenChanges() {
   let checkResults = performInitialChecks();
   if (!checkResults) return;
 
-  ({selectedToken, targetToken } = checkResults);
+  ({ selectedToken, targetToken } = checkResults);
 
   Hooks.on("createChatMessage", (chatMessage) => {
     triggerEffects(chatMessage, selectedToken, targetToken);
   });
-  //selectedToken = null;
-  //targetToken = null;
 }
 
 // Function to reset listeners every 5 seconds
