@@ -1,7 +1,7 @@
 // Animation and Sound Configuration
 let playSound = false;  // Set to true to enable sound
 let selectedToken = null;
-let targetToken = null
+let targetToken = null;
 
 let weaponEffects = {
   // Define your weapon effects here
@@ -290,11 +290,47 @@ async function triggerEffects(chatMessage, selectedToken, targetToken) {
     }
   }
 
+  // Additional functionality: Display hit location as a styled chat message
+  if (chatMessage.flavor && chatMessage.flavor.includes("Hit Location Roll")) {
+    // Convert chatMessage.content to an integer
+    const rollResult = parseInt(chatMessage.content, 10);
+
+    // Log the original chat message content for debugging
+    console.log("Original Chat Message Content:", chatMessage.content);
+    console.log("Roll Result Integer:", rollResult);
+
+    // Get the target's items
+    const targetItems = targetToken.actor.items;
+
+    // Look through items of type hitLocation
+    const hitLocation = targetItems.find(item => {
+      return item.type === "hitLocation" &&
+             rollResult >= item.system.dieFrom &&
+             rollResult <= item.system.dieTo;
+    });
+
+    if (hitLocation) {
+      // Create the styled message content
+      const messageContent = `
+        <div style="border: 2px solid #000; padding: 10px; margin: 5px 0; text-align: center;">
+          <div style="font-size: 1.5em; font-weight: bold;">${hitLocation.name}</div>
+        </div>`;
+
+      // Display the hit location name as a styled chat message
+      ChatMessage.create({
+        user: game.user.id,
+        speaker: ChatMessage.getSpeaker({ token: targetToken }),
+        content: messageContent
+      });
+    } else {
+      console.log("No hit location found for the roll result.");
+    }
+  }
+
   selectedToken = null;
   targetToken = null;
   game.user.updateTokenTargets([]);
 }
-
 
 // Function to handle changes in token selection and target
 function handleTokenChanges() {
