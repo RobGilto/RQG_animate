@@ -2,6 +2,8 @@
 let playSound = false;  // Set to true to enable sound
 let selectedToken = null;
 let targetToken = null;
+let targetTokenDamage = null;
+let rollResult = null;
 
 let weaponEffects = {
   // Define your weapon effects here
@@ -290,10 +292,15 @@ async function triggerEffects(chatMessage, selectedToken, targetToken) {
     }
   }
 
+  if (chatMessage.flavor && chatMessage.flavor.includes("Damage:")) {
+    targetTokenDamage = parseInt(chatMessage.content, 10);
+    console.log(targetTokenDamage); 
+  }
+
   // Additional functionality: Display hit location as a styled chat message
   if (chatMessage.flavor && chatMessage.flavor.includes("Hit Location Roll")) {
     // Convert chatMessage.content to an integer
-    const rollResult = parseInt(chatMessage.content, 10);
+    rollResult = parseInt(chatMessage.content, 10);
 
     // Log the original chat message content for debugging
     console.log("Original Chat Message Content:", chatMessage.content);
@@ -313,7 +320,7 @@ async function triggerEffects(chatMessage, selectedToken, targetToken) {
       // Create the styled message content
       const messageContent = `
         <div style="border: 2px solid #000; padding: 10px; margin: 5px 0; text-align: center;">
-          <div style="font-size: 1.5em; font-weight: bold;">${hitLocation.name}</div>
+          <div style="font-size: 1.5em; font-weight: bold;">takes ${targetTokenDamage} to: ${hitLocation.name}</div>
         </div>`;
 
       // Display the hit location name as a styled chat message
