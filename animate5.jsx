@@ -222,7 +222,7 @@ async function triggerEffects(chatMessage, selectedToken, targetToken) {
       return;
     }
 
-    let animationPromise = new Sequence()
+    new Sequence()
       .effect()
       .file(weaponEffects[weaponUsed][attackType].animation)
       .atLocation(sourcePosition)
@@ -237,25 +237,19 @@ async function triggerEffects(chatMessage, selectedToken, targetToken) {
       audio.play();
     }) : Promise.resolve();
 
-    await Promise.all([animationPromise, soundPromise]);
-    animationPromise = null;
-    soundPromise - null;
+
+
   }
 
   if (isFailure || isFumble) {
-    let missPromise = new Sequence()
-      .effect()
-      .file(weaponEffects.miss.animation)
-      .atLocation(targetPosition)
-      .play();
 
-    if (isRangedAttack && weaponUsed && weaponEffects[weaponUsed].ranged) {
-      let missShift = Math.random() > 0.5 ? 50 : -50;
+    if (isRangedAttack) {
+      let missShift = Math.random() > 0.5 ? 100 : -100;
       let missPosition = {
         x: targetPosition.x,
         y: targetPosition.y + missShift
       };
-      let weaponMissPromise = new Sequence()
+      new Sequence()
         .effect()
         .file(weaponEffects[weaponUsed].ranged.animation)
         .atLocation(sourcePosition)
@@ -263,12 +257,17 @@ async function triggerEffects(chatMessage, selectedToken, targetToken) {
           x: missPosition.x,
           y: missPosition.y
         })
+        .effect()
+        .file(weaponEffects.miss.animation)
+        .atLocation(targetPosition)
         .play();
-      await missPromise;
-      missPromise = null;
-
-    } else {
-      await missPromise;
+    } 
+    if(isMeleeAttack&&!isRangedAttack) {
+      new Sequence()
+        .effect()
+        .file(weaponEffects.miss.animation)
+        .atLocation(targetPosition)
+        .play();
     }
   }
   selectedToken = null;
