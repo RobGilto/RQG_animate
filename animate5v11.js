@@ -7,142 +7,142 @@ let rollResult = null;
 
 let weaponEffects = {
   // Define your weapon effects here
-  "Broadsword": { 
+  "Broadsword": {
     melee: { animation: "jb2a.greatsword.melee.standard.white", sound: "path/to/your/sword_sound.mp3" }
   },
-  "Fist": { 
+  "Fist": {
     melee: { animation: "jb2a.melee_generic.bludgeoning.one_handed", sound: "path/to/your/sword_sound.mp3" }
   },
-  "Grapple": { 
+  "Grapple": {
     melee: { animation: "jb2a.melee_generic.bludgeoning.two_handed", sound: "path/to/your/sword_sound.mp3" }
   },
-  "Kick": { 
+  "Kick": {
     melee: { animation: "jb2a.melee_generic.bludgeoning.one_handed", sound: "path/to/your/sword_sound.mp3" }
   },
-  "Claw": { 
+  "Claw": {
     melee: { animation: "jb2a.claws.200px.red", sound: "path/to/your/sword_sound.mp3" }
   },
-  "Composite Bow": { 
+  "Composite Bow": {
     ranged: { animation: "jb2a.arrow.cold.blue", sound: "path/to/your/bow_sound.mp3" }
   },
-  "Dagger": { 
+  "Dagger": {
     melee: { animation: "jb2a.dagger.melee.02.white", sound: "path/to/your/dagger_melee_sound.mp3" },
     ranged: { animation: "jb2a.dagger.throw.01.white", sound: "path/to/your/dagger_throw_sound.mp3" }
   },
-  "Short Spear": { 
+  "Short Spear": {
     melee: { animation: "jb2a.spear.melee.01.white", sound: "path/to/your/short_spear_melee_sound.mp3" },
     ranged: { animation: "jb2a.spear.throw.standard.white", sound: "path/to/your/short_spear_throw_sound.mp3" }
   },
-  "Long Spear": { 
+  "Long Spear": {
     melee: { animation: "jb2a.spear.melee.fire.white", sound: "path/to/your/long_spear_sound.mp3" }
   },
-  "Sling": { 
+  "Sling": {
     ranged: { animation: "jb2a.slingshot", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Arbalest": { 
+  "Arbalest": {
     ranged: { animation: "jb2a.bolt.cold.purple", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Atlatl Dart": { 
+  "Atlatl Dart": {
     ranged: { animation: "jb2a.dart.01.throw.physical", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Atlatl Javelin": { 
+  "Atlatl Javelin": {
     ranged: { animation: "jb2a.spear.throw.01", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Battle Axe": { 
+  "Battle Axe": {
     melee: { animation: "jb2a.greataxe.melee.fire.yellow", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Battle Axe, Iron": { 
+  "Battle Axe, Iron": {
     melee: { animation: "jb2a.greataxe.melee.fire.blue", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Bite": { 
+  "Bite": {
     melee: { animation: "jb2a.bite.200px.red", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Crossbow Bolts": { 
+  "Crossbow Bolts": {
     ranged: { animation: "jb2a.bolt.cold.purple", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Dagger Axe": { 
+  "Dagger Axe": {
     melee: { animation: "jb2a.bite.200px.red", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Dart": { 
+  "Dart": {
     ranged: { animation: "jb2a.dart.01.throw.physical", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Elf Bow": { 
+  "Elf Bow": {
     ranged: { animation: "jb2a.arrow.cold.green", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Gore": { 
+  "Gore": {
     melee: { animation: "jb2a.claws.200px.red", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Great Axe": { 
+  "Great Axe": {
     melee: { animation: "jb2a.greataxe.melee", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Great Hammer": { 
+  "Great Hammer": {
     melee: { animation: "jb2a.melee_attack.02.warhammer", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Greatsword": { 
+  "Greatsword": {
     melee: { animation: "jb2a.greatsword.melee", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Head Butt": { 
+  "Head Butt": {
     melee: { animation: "jb2a.melee_generic.bludgeoning.one_handed", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Heavy Cestus": { 
+  "Heavy Cestus": {
     melee: { animation: "jb2a.melee_generic.bludgeoning.one_handed", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Heavy Crossbow": { 
+  "Heavy Crossbow": {
     ranged: { animation: "jb2a.bolt.physical", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Heavy Mace": { 
+  "Heavy Mace": {
     melee: { animation: "jb2a.mace.melee.01", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Hug": { 
+  "Hug": {
     melee: { animation: "jb2a.melee_generic.bludgeoning.one_handed", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Javelin": { 
+  "Javelin": {
     ranged: { animation: "jb2a.javelin", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Kick": { 
+  "Kick": {
     melee: { animation: "jb2a.melee_generic.bludgeoning.one_handed", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Kopis": { 
+  "Kopis": {
     melee: { animation: "jb2a.melee_attack.01.sickle", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Lance": { 
+  "Lance": {
     melee: { animation: "jb2a.spear.melee", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Large Wooden Shield": { 
+  "Large Wooden Shield": {
     melee: { animation: "jb2a.melee_attack.06.shield", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Light Cestus": { 
+  "Light Cestus": {
     melee: { animation: "jb2a.melee_generic.bludgeoning.one_handed", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Light Crossbow": { 
+  "Light Crossbow": {
     ranged: { animation: "jb2a.bolt.physical", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Light Mace": { 
+  "Light Mace": {
     melee: { animation: "jb2a.mace.melee", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Long Spear": { 
+  "Long Spear": {
     melee: { animation: "jb2a.spear.melee.fire.white", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Maul": { 
+  "Maul": {
     melee: { animation: "jb2a.bite.200px.red", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Medium Wooden Shield": { 
+  "Medium Wooden Shield": {
     melee: { animation: "jb2a.melee_attack.06.shield", sound: "path/to/your/sling_sound.mp3" }
   },
-  "Parrying Dagger": { 
+  "Parrying Dagger": {
     melee: { animation: "jb2a.dagger.melee.02.white", sound: "path/to/your/dagger_melee_sound.mp3" },
     ranged: { animation: "jb2a.dagger.throw.01.white", sound: "path/to/your/dagger_throw_sound.mp3" }
   },
-  "Pole Lasso": { 
+  "Pole Lasso": {
     melee: { animation: "jb2a.melee_generic.bludgeoning.one_handed", sound: "path/to/your/dagger_melee_sound.mp3" }
   },
-  "Quarterstaff": { 
+  "Quarterstaff": {
     melee: { animation: "jb2a.quarterstaff", sound: "path/to/your/dagger_melee_sound.mp3" }
   },
-  "miss": { 
+  "miss": {
     animation: "jb2a.ui.miss"
   },
-  "override": { 
+  "override": {
     animation: "jb2a.hammer.throw", sound: "path/to/your/override_sound.mp3"
   }
 };
@@ -294,7 +294,7 @@ async function triggerEffects(chatMessage, selectedToken, targetToken) {
 
   if (chatMessage.flavor && chatMessage.flavor.includes("Damage:")) {
     targetTokenDamage = parseInt(chatMessage.content, 10);
-    console.log(targetTokenDamage); 
+    console.log(targetTokenDamage);
   }
 
   // Additional functionality: Display hit location as a styled chat message
@@ -312,8 +312,8 @@ async function triggerEffects(chatMessage, selectedToken, targetToken) {
     // Look through items of type hitLocation
     const hitLocation = targetItems.find(item => {
       return item.type === "hitLocation" &&
-             rollResult >= item.system.dieFrom &&
-             rollResult <= item.system.dieTo;
+        rollResult >= item.system.dieFrom &&
+        rollResult <= item.system.dieTo;
     });
 
     if (hitLocation) {
@@ -351,16 +351,36 @@ function handleTokenChanges() {
   });
 }
 
-// Function to reset listeners every 5 seconds
-function resetListeners() {
-  Hooks.off("controlToken", handleTokenChanges);
-  Hooks.off("targetToken", handleTokenChanges);
-
-  Hooks.on("controlToken", handleTokenChanges);
-  Hooks.on("targetToken", handleTokenChanges);
-
-  handleTokenChanges();
-}
+// Function to safely remove hooks
+function safeRemoveHook(eventName, fn) {
+    if (Hooks._hooks && Hooks._hooks[eventName]) {
+      const registeredHooks = Hooks._hooks[eventName];
+      if (registeredHooks) {
+        const index = registeredHooks.indexOf(fn);
+        if (index > -1) {
+          registeredHooks.splice(index, 1);
+        }
+      }
+    }
+  }
+  
+  // Function to reset listeners every 5 seconds
+  function resetListeners() {
+    // Check if Hooks._hooks exists and initialize if not to prevent undefined errors
+    if (!Hooks._hooks) {
+      Hooks._hooks = {};
+    }
+    
+    safeRemoveHook("controlToken", handleTokenChanges);
+    safeRemoveHook("targetToken", handleTokenChanges);
+  
+    Hooks.on("controlToken", handleTokenChanges);
+    Hooks.on("targetToken", handleTokenChanges);
+  
+    handleTokenChanges();
+  }
+  
+  
 
 // Start by setting up the token change handlers
 resetListeners();
