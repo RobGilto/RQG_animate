@@ -1,0 +1,40 @@
+{
+  "id": "animate5v11",
+  "title": "animate5v11",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "12",
+    "verified": "12",
+    "maximum": "12"
+  },
+  "authors": [
+    {
+      "name": "Robert Gilto",
+      "flags": {}
+    }
+  ],
+  "packs": [
+    {
+      "name": "animationmacros",
+      "label": "animation_macros",
+      "path": "packs/animationmacros",
+      "type": "Macro",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    }
+  ],
+  "scripts": [
+    "scripts/animate5v12.js"
+  ],
+  "esmodules": [],
+  "styles": [],
+  "flags": {},
+  "languages": [],
+  "url": "",
+  "manifest": "",
+  "download": "",
+  "license": ""
+}

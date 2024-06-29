@@ -1,0 +1,40 @@
+{
+  "id": "my-animation-module",
+  "title": "My Animation Module",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "11",
+    "verified": "11",
+    "maximum": "11"
+  },
+  "authors": [
+    {
+      "name": "Robert Gilto",
+      "flags": {}
+    }
+  ],
+  "packs": [
+    {
+      "name": "animationmacros",
+      "label": "animation_macros",
+      "path": "packs/animationmacros",
+      "type": "Macro",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    }
+  ],
+  "scripts": [
+    "scripts/animate5v11.js"
+  ],
+  "esmodules": [],
+  "styles": [],
+  "flags": {},
+  "languages": [],
+  "url": "",
+  "manifest": "",
+  "download": "",
+  "license": ""
+}
