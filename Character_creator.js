@@ -400,6 +400,113 @@ function calculateAttributes(details) {
   };
 }
 
+// Function to apply homeland skill modifiers
+function applyHomelandSkillModifiers(details) {
+  const homelandSkills = {
+    "Sartar": {
+      culturalSkills: {
+        "Ride (any)": 5,
+        "Dance": 5,
+        "Sing": 10,
+        "Speak Own Language (Heortling)": 50,
+        "Speak Other Language (Tradetalk)": 10,
+        "Customs (Heortling)": 25,
+        "Farm": 20,
+        "Herd": 10,
+        "Spirit Combat": 15
+      },
+      culturalWeapons: {
+        "Dagger": 10,
+        "Battle Axe": 10,
+        "1H Spear": 10,
+        "Broadsword": 15,
+        "Composite Bow": 10,
+        "Javelin": 10,
+        "Medium Shield": 15,
+        "Large Shield": 10
+      }
+    },
+    "Esrolia": {
+      culturalSkills: {
+        "Bargain": 5,
+        "Dance": 10,
+        "Intrigue": 5,
+        "Sing": 5,
+        "Speak Own Language (Esrolian)": 50,
+        "Speak Other Language (Tradetalk)": 20,
+        "Customs (Esrolian)": 25,
+        "Farm": 25,
+        "First Aid": 5,
+        "Spirit Combat": 15
+      },
+      culturalWeapons: {
+        "Battle Axe": 15,
+        "1H Spear": 10,
+        "Rapier": 10,
+        "Self Bow": 10,
+        "Thrown Axe": 10,
+        "Small Shield": 15,
+        "Medium Shield": 15,
+        "Large Shield": 10
+      }
+    },
+    // Add other homelands with their cultural skills and weapons here...
+  };
+
+  const praxianSkills = {
+    "Praxian Tribes: Bison Rider": {
+      culturalSkills: {
+        "Ride (Bison)": 35,
+        "Customs (Bison Tribe)": 25,
+        "Herd": 30,
+        "Peaceful Cut": 15,
+        "Spirit Combat": 20
+      },
+      culturalWeapons: {
+        "Dagger": 10,
+        "Lance": 15,
+        "Broadsword": 10,
+        "Javelin": 10,
+        "Medium Shield": 10
+      }
+    },
+    // Add other Praxian tribes here...
+  };
+
+  const homeland = details.homeland;
+  let modifiers;
+
+  if (homeland.startsWith("Praxian Tribes:")) {
+    modifiers = praxianSkills[homeland];
+  } else {
+    modifiers = homelandSkills[homeland];
+  }
+
+  if (modifiers) {
+    // Apply cultural skills
+    for (const skill in modifiers.culturalSkills) {
+      if (details.skills.Communication.skills[skill]) {
+        details.skills.Communication.skills[skill].homelandMod = modifiers.culturalSkills[skill];
+        details.skills.Communication.skills[skill].total += modifiers.culturalSkills[skill];
+      }
+    }
+
+    // Apply cultural weapons
+    for (const weapon in modifiers.culturalWeapons) {
+      if (details.skills.MeleeWeapons.skills[weapon] || details.skills.MissileWeapons.skills[weapon]) {
+        if (details.skills.MeleeWeapons.skills[weapon]) {
+          details.skills.MeleeWeapons.skills[weapon].homelandMod = modifiers.culturalWeapons[weapon];
+          details.skills.MeleeWeapons.skills[weapon].total += modifiers.culturalWeapons[weapon];
+        }
+        if (details.skills.MissileWeapons.skills[weapon]) {
+          details.skills.MissileWeapons.skills[weapon].homelandMod = modifiers.culturalWeapons[weapon];
+          details.skills.MissileWeapons.skills[weapon].total += modifiers.culturalWeapons[weapon];
+        }
+      }
+    }
+  }
+}
+
 // Create a function to render a specific page
 async function renderPage(pageIndex) {
   const page = pages[pageIndex];
@@ -722,6 +829,7 @@ const dialog = new Dialog({
         const details = actorDetails[actor.id];
         calculateCharacteristicsTotal(details); // Calculate total for characteristics
         calculateAttributes(details); // Calculate attributes based on characteristics
+        applyHomelandSkillModifiers(details); // Apply homeland skill modifiers
       });
       logSelectedActorsAndDetails();
       currentPage++;
