@@ -192,15 +192,91 @@ function rollCharacteristics(race, charAvg) {
     total = 0;
     for (let char in characteristics) {
       if (char !== 'weight' && char !== 'weightFunctions' && char !== 'charAvg') {
-        const value = rollDice(characteristics[char]);
-        values[char] = value;
-        total += value;
+        const base = rollDice(characteristics[char]);
+        values[char] = {
+          base: base,
+          primaryMod: 0,
+          secondaryMod: 0
+        };
+        total += base;
       }
     }
   } while (total / Object.keys(values).length < charAvg);
 
   return values;
 }
+
+function applyRuneModifications(actorId) {
+  const details = actorDetails[actorId];
+  const primaryRune = details.runes.primary;
+  const secondaryRune = details.runes.secondary;
+  const characteristics = details.characteristics;
+
+  function applyRuneToCharacteristic(rune, primaryMod, secondaryMod) {
+    switch (rune) {
+      case 'Darkness':
+        if (Math.random() < 0.5) {
+          characteristics.SIZ.primaryMod += primaryMod;
+          characteristics.SIZ.secondaryMod += secondaryMod;
+        } else {
+          characteristics.CHA.primaryMod += primaryMod;
+          characteristics.CHA.secondaryMod += secondaryMod;
+        }
+        break;
+      case 'Water':
+        if (Math.random() < 0.5) {
+          characteristics.DEX.primaryMod += primaryMod;
+          characteristics.DEX.secondaryMod += secondaryMod;
+        } else {
+          characteristics.CHA.primaryMod += primaryMod;
+          characteristics.CHA.secondaryMod += secondaryMod;
+        }
+        break;
+      case 'Earth':
+        if (Math.random() < 0.5) {
+          characteristics.CON.primaryMod += primaryMod;
+          characteristics.CON.secondaryMod += secondaryMod;
+        } else {
+          characteristics.CHA.primaryMod += primaryMod;
+          characteristics.CHA.secondaryMod += secondaryMod;
+        }
+        break;
+      case 'Air':
+        if (Math.random() < 0.5) {
+          characteristics.STR.primaryMod += primaryMod;
+          characteristics.STR.secondaryMod += secondaryMod;
+        } else {
+          characteristics.CHA.primaryMod += primaryMod;
+          characteristics.CHA.secondaryMod += secondaryMod;
+        }
+        break;
+      case 'Fire/Sky':
+        if (Math.random() < 0.5) {
+          characteristics.INT.primaryMod += primaryMod;
+          characteristics.INT.secondaryMod += secondaryMod;
+        } else {
+          characteristics.CHA.primaryMod += primaryMod;
+          characteristics.CHA.secondaryMod += secondaryMod;
+        }
+        break;
+      case 'Moon':
+        if (Math.random() < 0.5) {
+          characteristics.POW.primaryMod += primaryMod;
+          characteristics.POW.secondaryMod += secondaryMod;
+        } else {
+          characteristics.CHA.primaryMod += primaryMod;
+          characteristics.CHA.secondaryMod += secondaryMod;
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  applyRuneToCharacteristic(primaryRune, 2, 0);
+  applyRuneToCharacteristic(secondaryRune, 0, 1);
+}
+
 
 // Function to load the details of the selected actor
 function loadActorDetails(actorId) {
@@ -298,18 +374,21 @@ async function renderPage(pageIndex) {
         <label for="primary-rune-select">Primary Rune:</label>
         <select id="primary-rune-select">
           <option value="default">default (undefined)</option>
+          ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
         </select>
       </div>
       <div>
         <label for="secondary-rune-select">Secondary Rune:</label>
         <select id="secondary-rune-select">
           <option value="default">default (undefined)</option>
+          ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
         </select>
       </div>
       <div>
         <label for="tertiary-rune-select">Tertiary Rune:</label>
         <select id="tertiary-rune-select">
           <option value="default">default (undefined)</option>
+          ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
         </select>
       </div>
       <div>
@@ -334,14 +413,18 @@ async function renderPage(pageIndex) {
       <div>
         <label for="${char.toLowerCase()}-select">${char}:</label>
         <select id="${char.toLowerCase()}-select">
-          ${Array.from({ length: 24 }, (_, i) => i + 3).map(value => `<option value="${value}">${value}</option>`).join('')}
+          ${Array.from({ length: 24 }, (_, i) => i + 3).map(value => {
+            const totalValue = (actorDetails[actorId]?.characteristics[char].base || 0) +
+                               (actorDetails[actorId]?.characteristics[char].primaryMod || 0) +
+                               (actorDetails[actorId]?.characteristics[char].secondaryMod || 0);
+            return `<option value="${value}" ${value === totalValue ? 'selected' : ''}>${value}</option>`;
+          }).join('')}
         </select>
       </div>
       `).join('')}
     `;
   }
   return content;
-}
 
 
 // Create the side navigator content
