@@ -4,7 +4,7 @@ const pages = [
   { title: "Details", content: "Select Race, Homeland, Occupation, and Cult" },
   { title: "Runes", content: "Allocate Runes: Primary, Secondary, Tertiary" },
   { title: "Characteristics", content: "Organize Characteristics: STR, CON, SIZ, DEX, INT, POW, CHA" },
-  { title: "Page 5", content: "Content for Page 5" },
+  { title: "Occupation", content: "Select Occupation" },
   { title: "Page 6", content: "Content for Page 6" },
   { title: "Page 7", content: "Content for Page 7" },
   { title: "Page 8", content: "Content for Page 8" },
@@ -19,23 +19,105 @@ const globalOptions = {
     darktroll: { STR: "3D6+6", CON: "3D6", DEX: "3D6", POW: "3D6", CHA: "3D6", SIZ: "2D6+6", INT: "2D6+6", charAvg: 12, weight: 50, weightFunctions: [(details) => details.homeland === 'Esrolia' ? 20 : 0] }
   },
   homelands: {
-    auto: { weight: 0 },
-    "Sartar": { weight: 33, weightFunctions: [(details) => details.race === 'human' ? 17 : 0] },
-    "Esrolia": { weight: 33, weightFunctions: [(details) => details.race === 'darktroll' ? 17 : 0] },
-    "Grazeland Pony Breeders": { weight: 34 },
-    "Praxian Tribes: Bison Rider": { weight: 34 },
-    "Praxian Tribes: High Llama Rider": { weight: 34 },
-    "Praxian Tribes: Impala Rider": { weight: 34 },
-    "Praxian Tribes: Pol Joni": { weight: 34 },
-    "Praxian Tribes: Sable Rider": { weight: 34 },
-    "Lunar Tarsh": { weight: 34 },
-    "Old Tarsh": { weight: 34 }
+    auto: { weight: 0, occupations: [] },
+    "Sartar": { 
+      weight: 33, 
+      weightFunctions: [(details) => details.race === 'human' ? 17 : 0],
+      occupations: [
+        "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer",
+        "Herder", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry",
+        "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+      ]
+    },
+    "Esrolia": { 
+      weight: 33, 
+      weightFunctions: [(details) => details.race === 'darktroll' ? 17 : 0],
+      occupations: [
+        "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer",
+        "Herder", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry",
+        "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+      ]
+    },
+    "Grazeland Pony Breeders": { 
+      weight: 34,
+      occupations: [
+        "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble", 
+        "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+      ]
+    },
+    "Praxian Tribes: Bison Rider": { 
+      weight: 34,
+      occupations: [
+        "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
+        "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+      ]
+    },
+    "Praxian Tribes: High Llama Rider": { 
+      weight: 34,
+      occupations: [
+        "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
+        "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+      ]
+    },
+    "Praxian Tribes: Impala Rider": { 
+      weight: 34,
+      occupations: [
+        "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
+        "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+      ]
+    },
+    "Praxian Tribes: Pol Joni": { 
+      weight: 34,
+      occupations: [
+        "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
+        "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+      ]
+    },
+    "Praxian Tribes: Sable Rider": { 
+      weight: 34,
+      occupations: [
+        "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
+        "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+      ]
+    },
+    "Lunar Tarsh": { 
+      weight: 34,
+      occupations: [
+        "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer",
+        "Herder", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry",
+        "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+      ]
+    },
+    "Old Tarsh": { 
+      weight: 34,
+      occupations: [
+        "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer", "Herder",
+        "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Warrior: Light Infantry", 
+        "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+      ]
+    }
   },
   occupations: {
     auto: { weight: 0 },
-    "Occupation X": { weight: 40, weightFunctions: [(details) => details.cult === 'Cult 1' ? 20 : 0] },
-    "Occupation Y": { weight: 30, weightFunctions: [(details) => details.cult === 'Cult 2' ? 20 : 0] },
-    "Occupation Z": { weight: 30 }
+    "Assistant Shaman": { weight: 40, weightFunctions: [(details) => details.cult === 'Cult 1' ? 20 : 0] },
+    "Bandit": { weight: 30, weightFunctions: [(details) => details.cult === 'Cult 2' ? 20 : 0] },
+    "Chariot Driver": { weight: 30 },
+    "Crafter (Brewer, Carpenter, Jeweler, Leatherworker, Mason, Potter, Redsmith, Tanner, Weaver)": { weight: 30 },
+    "Entertainer": { weight: 30 },
+    "Farmer": { weight: 30 },
+    "Fisher": { weight: 30 },
+    "Healer": { weight: 30 },
+    "Herder": { weight: 30 },
+    "Merchant": { weight: 30 },
+    "Noble": { weight: 30 },
+    "Philosopher": { weight: 30 },
+    "Priest": { weight: 30 },
+    "Scribe": { weight: 30 },
+    "Thief": { weight: 30 },
+    "Warrior: Heavy Infantry": { weight: 30 },
+    "Warrior: Light Infantry": { weight: 30 },
+    "Warrior: Heavy Cavalry": { weight: 30 },
+    "Warrior: Light Cavalry": { weight: 30 }
   },
   cults: {
     auto: { weight: 0 },
@@ -601,6 +683,21 @@ async function renderPage(pageIndex) {
       </div>
       `).join('')}
     `;
+  } else if (pageIndex === 4) {
+    // Dropdown for occupation on Page 5
+    let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
+    const details = actorDetails[selectedActors[0].id];
+    const occupations = globalOptions.homelands[details.homeland].occupations;
+    content += `
+      <div>
+        <label for="actor-detail-occupation-select">Actor:</label>
+        <select id="actor-detail-occupation-select">${actors}</select>
+      </div>
+      <div>
+        <label for="occupation-select">Occupation:</label>
+        <select id="occupation-select">${occupations.map(occupation => `<option value="${occupation}">${occupation}</option>`).join('')}</select>
+      </div>
+    `;
   }
   return content;
 }
@@ -627,6 +724,8 @@ function createBottomPanel(pageIndex) {
     nextButton = `<button id="next-button-page-3" style="margin-left: 10px;">Next</button>`;
   } else if (pageIndex === 3) {
     nextButton = `<button id="next-button-page-4" style="margin-left: 10px;">Next</button>`;
+  } else if (pageIndex === 4) {
+    nextButton = `<button id="next-button-page-5" style="margin-left: 10px;">Next</button>`;
   } else {
     nextButton = pageIndex < pages.length - 1 ? `<button id="next-button">Next</button>` : '';
   }
