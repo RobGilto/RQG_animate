@@ -158,6 +158,7 @@ function initializeRuneDetails(categorizedRunes) {
   return runeDetails;
 }
 
+
 // Function to find and set the homeland modifier for a rune
 function setHomelandModifier(details, runeKey, modifier) {
   for (let key in details.runes.all) {
@@ -296,22 +297,19 @@ async function renderPage(pageIndex) {
       <div>
         <label for="primary-rune-select">Primary Rune:</label>
         <select id="primary-rune-select">
-          <option value="auto">auto</option>
-          ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+          <option value="default">default (undefined)</option>
         </select>
       </div>
       <div>
         <label for="secondary-rune-select">Secondary Rune:</label>
         <select id="secondary-rune-select">
-          <option value="auto">auto</option>
-          ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+          <option value="default">default (undefined)</option>
         </select>
       </div>
       <div>
         <label for="tertiary-rune-select">Tertiary Rune:</label>
         <select id="tertiary-rune-select">
-          <option value="auto">auto</option>
-          ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+          <option value="default">default (undefined)</option>
         </select>
       </div>
       <div>
@@ -344,6 +342,7 @@ async function renderPage(pageIndex) {
   }
   return content;
 }
+
 
 // Create the side navigator content
 function createSideNav() {
@@ -447,6 +446,7 @@ function updateRuneSelections(actorId) {
 // Function to handle auto rune selection
 function handleAutoRuneSelection(actorId) {
   const details = actorDetails[actorId];
+  console.log("Details before auto rune selection:", details);
   const primarySelect = document.getElementById('primary-rune-select');
   const secondarySelect = document.getElementById('secondary-rune-select');
   const tertiarySelect = document.getElementById('tertiary-rune-select');
@@ -482,10 +482,13 @@ function handleAutoRuneSelection(actorId) {
   selectedRunes.push(details.runes.tertiary);
 
   // Update the rune values
-  details.runes.all[details.runes.primary].primaryMod = 60;
-  details.runes.all[details.runes.secondary].secondaryMod = 40;
-  details.runes.all[details.runes.tertiary].tertiaryMod = 20;
+  if(details.runes.all[details.runes.primary]) details.runes.all[details.runes.primary].primaryMod = 60;
+  if(details.runes.all[details.runes.secondary]) details.runes.all[details.runes.secondary].secondaryMod = 40;
+  if(details.runes.all[details.runes.tertiary]) details.runes.all[details.runes.tertiary].tertiaryMod = 20;
+  console.log("Details after auto rune selection:", details);
 }
+
+
 
 // Function to apply auto selections to all actors
 function applyAutoSelections() {
