@@ -123,7 +123,7 @@ async function loadSkills() {
     };
 
     skillItems.forEach(skill => {
-      const category = skill.system.category;
+      const category = skill.system.category.charAt(0).toUpperCase() + skill.system.category.slice(1);
       if (skills[category]) {
         skills[category].skills[skill.name] = { baseChance: skill.system.baseChance };
       }
@@ -330,6 +330,7 @@ function calculateAttributes(details) {
   const str = details.characteristics.STR.total;
   const pow = details.characteristics.POW.total;
   const cha = details.characteristics.CHA.total;
+  const dex = details.characteristics.DEX.total;
 
   // Calculate Healing Rate
   let healingRate = 1;
