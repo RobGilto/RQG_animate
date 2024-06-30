@@ -486,10 +486,13 @@ function applyHomelandSkillModifiers(details) {
     // Apply cultural skills
     for (const skill in modifiers.culturalSkills) {
       const skillName = skill.split(" (")[0]; // Normalize skill name without any details
+      const skillValue = modifiers.culturalSkills[skill];
       for (const category in details.skills) {
-        if (details.skills[category].skills[skillName]) {
-          details.skills[category].skills[skillName].homelandMod = modifiers.culturalSkills[skill];
-          details.skills[category].skills[skillName].total += modifiers.culturalSkills[skill];
+        for (const skillKey in details.skills[category].skills) {
+          if (skillKey.startsWith(skillName)) {
+            details.skills[category].skills[skillKey].homelandMod += skillValue;
+            details.skills[category].skills[skillKey].total += skillValue;
+          }
         }
       }
     }
