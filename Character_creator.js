@@ -100,6 +100,42 @@ async function loadRunes() {
   }
 }
 
+// Function to load skills data from the selected compendium and categorize them by type
+async function loadSkills() {
+  try {
+    const pack = game.packs.get("wiki-en-rqg.skills");
+    if (!pack) {
+      console.error("Compendium 'wiki-en-rqg.skills' not found");
+      return {};
+    }
+    await pack.getIndex(); // Load the index
+    const skillItems = await pack.getDocuments(); // Load all items
+    console.log("Loaded skill items:", skillItems);
+
+    const skills = {
+      Agility: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} },
+      Communication: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} },
+      Knowledge: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} },
+      Magic: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} },
+      Manipulation: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} },
+      Perception: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} },
+      Stealth: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} }
+    };
+
+    skillItems.forEach(skill => {
+      const category = skill.system.category;
+      if (skills[category]) {
+        skills[category].skills[skill.name] = { baseChance: skill.system.baseChance };
+      }
+    });
+
+    return skills;
+  } catch (error) {
+    console.error("Error loading skills:", error);
+    return {};
+  }
+}
+
 // Function to get all actors
 function getActors() {
   return game.actors.map(actor => actor);
@@ -287,28 +323,65 @@ function calculateCharacteristicsTotal(details) {
   }
 }
 
-// Function to load skills from the compendium and populate the skills object
-async function loadSkills() {
-  try {
-    const skillsCompendium = game.packs.get("wiki-en-rqg.skills");
-    if (!skillsCompendium) {
-      console.error("Compendium 'wiki-en-rqg.skills' not found");
-      return {};
-    }
-    await skillsCompendium.getIndex(); // Load the index
-    const skillItems = await skillsCompendium.getDocuments(); // Load all items
-    console.log("Loaded skill items:", skillItems);
+// Function to calculate attributes based on characteristics
+function calculateAttributes(details) {
+  const con = details.characteristics.CON.total;
+  const siz = details.characteristics.SIZ.total;
+  const str = details.characteristics.STR.total;
+  const pow = details.characteristics.POW.total;
+  const cha = details.characteristics.CHA.total;
 
-    const skills = {};
-    skillItems.forEach(skill => {
-      skills[skill.name] = { baseChance: skill.system.baseChance };
-    });
+  // Calculate Healing Rate
+  let healingRate = 1;
+  if (con >= 7 && con <= 12) healingRate = 2;
+  else if (con >= 13 && con <= 18) healingRate = 3;
+  else if (con >= 19) healingRate = 3 + Math.floor((con - 13) / 6);
 
-    return skills;
-  } catch (error) {
-    console.error("Error loading skills:", error);
-    return {};
-  }
+  // Calculate Hit Points Modifiers
+  const sizMod = siz >= 1 && siz <= 4 ? -2 : siz >= 5 && siz <= 8 ? -1 : siz >= 13 && siz <= 16 ? 1 : siz >= 17 && siz <= 20 ? 2 : siz >= 21 && siz <= 24 ? 3 : siz >= 25 && siz <= 28 ? 4 : siz >= 29 ? Math.floor((siz - 21) / 4) + 3 : 0;
+  const powMod = pow >= 1 && pow <= 4 ? -1 : pow >= 17 && pow <= 20 ? 1 : pow >= 21 && pow <= 24 ? 2 : pow >= 25 && pow <= 28 ? 3 : pow >= 29 ? Math.floor((pow - 21) / 4) + 2 : 0;
+
+  // Calculate Spirit Combat Damage
+  const powCha = pow + cha;
+  let spiritCombat = "1D3";
+  if (powCha >= 13 && powCha <= 24) spiritCombat = "1D6";
+  else if (powCha >= 25 && powCha <= 32) spiritCombat = "1D6+1";
+  else if (powCha >= 33 && powCha <= 40) spiritCombat = "1D6+3";
+  else if (powCha >= 41) spiritCombat = "2D6+3";
+
+  // Calculate Damage Bonus
+  const strSiz = str + siz;
+  let damageBonus = "-1D4";
+  if (strSiz >= 13 && strSiz <= 24) damageBonus = "—";
+  else if (strSiz >= 25 && strSiz <= 32) damageBonus = "+1D4";
+  else if (strSiz >= 33 && strSiz <= 40) damageBonus = "+1D6";
+  else if (strSiz >= 41) damageBonus = "+2D6";
+
+  // Calculate Max ENC
+  const maxENC = Math.floor((str + con) / 2);
+
+  // Calculate Agility Skills Modifiers
+  const agilityModifiers = {
+    STR: str <= 4 ? -5 : str >= 13 && str <= 16 ? 5 : str >= 17 ? Math.floor((str - 13) / 4) * 5 + 5 : 0,
+    SIZ: siz <= 4 ? 5 : siz >= 17 ? Math.floor((siz - 13) / 4) * -5 - 5 : 0,
+    DEX: dex <= 4 ? -10 : dex >= 5 && dex <= 8 ? -5 : dex >= 13 && dex <= 16 ? 5 : dex >= 17 ? Math.floor((dex - 13) / 4) * 5 + 10 : 0,
+    POW: pow <= 4 ? -5 : pow >= 13 && pow <= 16 ? 5 : pow >= 17 ? Math.floor((pow - 13) / 4) * 5 + 5 : 0
+  };
+
+  // Set the calculated attributes
+  details.attributes = {
+    magicpoints: pow,
+    hitpoints: {
+      basevalue: Math.floor((con + siz) / 2),
+      sizMod: sizMod,
+      powMod: powMod
+    },
+    healingrate: healingRate,
+    damagebonus: damageBonus,
+    spiritcombat: spiritCombat,
+    maxENC: maxENC,
+    agilityModifiers: agilityModifiers
+  };
 }
 
 // Create a function to render a specific page
@@ -571,22 +644,6 @@ function loadCharacteristics(actorId) {
       if (select) select.value = characteristics[char.toUpperCase()].baseValue || 0;
     });
   }
-}
-
-// Function to calculate attributes based on characteristics
-function calculateAttributes(details) {
-  details.attributes = {
-    magicpoints: details.characteristics.POW.total,
-    hitpoints: {
-      basevalue: Math.floor((details.characteristics.CON.total + details.characteristics.SIZ.total) / 2),
-      sizMod: 0,
-      powMod: 0
-    },
-    healingrate: Math.floor((details.characteristics.CON.total + 19) / 20),
-    damagebonus: Math.floor(details.characteristics.STR.total + details.characteristics.SIZ.total),
-    spiritcombat: Math.floor((details.characteristics.CHA.total + details.characteristics.INT.total) / 2),
-    maxENC: Math.floor(details.characteristics.STR.total * 2.5)
-  };
 }
 
 // Create the dialog
