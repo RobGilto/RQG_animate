@@ -158,7 +158,6 @@ function initializeRuneDetails(categorizedRunes) {
   return runeDetails;
 }
 
-
 // Function to find and set the homeland modifier for a rune
 function setHomelandModifier(details, runeKey, modifier) {
   for (let key in details.runes.all) {
@@ -192,91 +191,15 @@ function rollCharacteristics(race, charAvg) {
     total = 0;
     for (let char in characteristics) {
       if (char !== 'weight' && char !== 'weightFunctions' && char !== 'charAvg') {
-        const base = rollDice(characteristics[char]);
-        values[char] = {
-          base: base,
-          primaryMod: 0,
-          secondaryMod: 0
-        };
-        total += base;
+        const value = rollDice(characteristics[char]);
+        values[char] = { baseValue: value, primaryMod: 0, secondaryMod: 0, homelandMod: 0 };
+        total += value;
       }
     }
   } while (total / Object.keys(values).length < charAvg);
 
   return values;
 }
-
-function applyRuneModifications(actorId) {
-  const details = actorDetails[actorId];
-  const primaryRune = details.runes.primary;
-  const secondaryRune = details.runes.secondary;
-  const characteristics = details.characteristics;
-
-  function applyRuneToCharacteristic(rune, primaryMod, secondaryMod) {
-    switch (rune) {
-      case 'Darkness':
-        if (Math.random() < 0.5) {
-          characteristics.SIZ.primaryMod += primaryMod;
-          characteristics.SIZ.secondaryMod += secondaryMod;
-        } else {
-          characteristics.CHA.primaryMod += primaryMod;
-          characteristics.CHA.secondaryMod += secondaryMod;
-        }
-        break;
-      case 'Water':
-        if (Math.random() < 0.5) {
-          characteristics.DEX.primaryMod += primaryMod;
-          characteristics.DEX.secondaryMod += secondaryMod;
-        } else {
-          characteristics.CHA.primaryMod += primaryMod;
-          characteristics.CHA.secondaryMod += secondaryMod;
-        }
-        break;
-      case 'Earth':
-        if (Math.random() < 0.5) {
-          characteristics.CON.primaryMod += primaryMod;
-          characteristics.CON.secondaryMod += secondaryMod;
-        } else {
-          characteristics.CHA.primaryMod += primaryMod;
-          characteristics.CHA.secondaryMod += secondaryMod;
-        }
-        break;
-      case 'Air':
-        if (Math.random() < 0.5) {
-          characteristics.STR.primaryMod += primaryMod;
-          characteristics.STR.secondaryMod += secondaryMod;
-        } else {
-          characteristics.CHA.primaryMod += primaryMod;
-          characteristics.CHA.secondaryMod += secondaryMod;
-        }
-        break;
-      case 'Fire/Sky':
-        if (Math.random() < 0.5) {
-          characteristics.INT.primaryMod += primaryMod;
-          characteristics.INT.secondaryMod += secondaryMod;
-        } else {
-          characteristics.CHA.primaryMod += primaryMod;
-          characteristics.CHA.secondaryMod += secondaryMod;
-        }
-        break;
-      case 'Moon':
-        if (Math.random() < 0.5) {
-          characteristics.POW.primaryMod += primaryMod;
-          characteristics.POW.secondaryMod += secondaryMod;
-        } else {
-          characteristics.CHA.primaryMod += primaryMod;
-          characteristics.CHA.secondaryMod += secondaryMod;
-        }
-        break;
-      default:
-        break;
-    }
-  }
-
-  applyRuneToCharacteristic(primaryRune, 2, 0);
-  applyRuneToCharacteristic(secondaryRune, 0, 1);
-}
-
 
 // Function to load the details of the selected actor
 function loadActorDetails(actorId) {
@@ -304,16 +227,7 @@ function handleAutoSelections() {
     if (details.cult === 'auto') details.cult = getWeightedRandomSelection(globalOptions.cults, actor.id);
 
     // Apply homeland modifiers
-    if (details.homeland === 'Sartar') setHomelandModifier(details, 'Air', 10);
-    if (details.homeland === 'Esrolia') setHomelandModifier(details, 'Earth', 10);
-    if (details.homeland === 'Grazeland Pony Breeders') setHomelandModifier(details, 'Fire/Sky', 10);
-    if (details.homeland === 'Praxian Tribes: Bison Rider') setHomelandModifier(details, 'Air', 10);
-    if (details.homeland === 'Praxian Tribes: High Llama Rider') setHomelandModifier(details, 'Water', 10);
-    if (details.homeland === 'Praxian Tribes: Impala Rider') setHomelandModifier(details, 'Fire/Sky', 10);
-    if (details.homeland === 'Praxian Tribes: Pol Joni') setHomelandModifier(details, 'Air', 10);
-    if (details.homeland === 'Praxian Tribes: Sable Rider') setHomelandModifier(details, 'Moon', 10);
-    if (details.homeland === 'Lunar Tarsh') setHomelandModifier(details, 'Moon', 10);
-    if (details.homeland === 'Old Tarsh') setHomelandModifier(details, 'Earth', 10);
+    applyHomelandModifiers(details);
   });
 }
 
@@ -324,6 +238,45 @@ function logSelectedActorsAndDetails() {
     const details = actorDetails[actor.id];
     console.log(`Actor ID: ${actor.id}, Actor: ${actor.name}, Details:`, details);
   });
+}
+
+// Function to apply homeland modifiers to characteristics
+function applyHomelandModifiers(details) {
+  const homelandModifiers = {
+    "Praxian Tribes: Bison Rider": { "SIZ": 2, "DEX": -2 },
+    "Praxian Tribes: High Llama Rider": { "SIZ": 1, "DEX": -1 },
+    "Praxian Tribes: Impala Rider": { "SIZ": -2, "DEX": 2 }
+  };
+
+  const modifiers = homelandModifiers[details.homeland] || {};
+  for (const char in modifiers) {
+    details.characteristics[char].homelandMod = modifiers[char];
+  }
+}
+
+// Function to update characteristics based on the rune selection
+function updateCharacteristicsWithRunes(details) {
+  const runeModifications = {
+    "Darkness": ["SIZ", "CHA"],
+    "Water": ["DEX", "CHA"],
+    "Earth": ["CON", "CHA"],
+    "Air": ["STR", "CHA"],
+    "Fire/Sky": ["INT", "CHA"],
+    "Moon": ["POW", "CHA"]
+  };
+
+  function applyRuneMod(rune, modValue, modType) {
+    const options = runeModifications[rune];
+    if (!options) return;
+    const selectedChar = options[Math.floor(Math.random() * options.length)]; // Randomly choose one option
+    details.characteristics[selectedChar][modType] += modValue;
+  }
+
+  // Apply primary rune modification
+  applyRuneMod(details.runes.primary.split(" ")[0], 2, "primaryMod");
+
+  // Apply secondary rune modification
+  applyRuneMod(details.runes.secondary.split(" ")[0], 1, "secondaryMod");
 }
 
 // Create a function to render a specific page
@@ -373,21 +326,21 @@ async function renderPage(pageIndex) {
       <div>
         <label for="primary-rune-select">Primary Rune:</label>
         <select id="primary-rune-select">
-          <option value="default">default (undefined)</option>
+          <option value="auto">auto</option>
           ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
         </select>
       </div>
       <div>
         <label for="secondary-rune-select">Secondary Rune:</label>
         <select id="secondary-rune-select">
-          <option value="default">default (undefined)</option>
+          <option value="auto">auto</option>
           ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
         </select>
       </div>
       <div>
         <label for="tertiary-rune-select">Tertiary Rune:</label>
         <select id="tertiary-rune-select">
-          <option value="default">default (undefined)</option>
+          <option value="auto">auto</option>
           ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
         </select>
       </div>
@@ -413,19 +366,14 @@ async function renderPage(pageIndex) {
       <div>
         <label for="${char.toLowerCase()}-select">${char}:</label>
         <select id="${char.toLowerCase()}-select">
-          ${Array.from({ length: 24 }, (_, i) => i + 3).map(value => {
-            const totalValue = (actorDetails[actorId]?.characteristics[char].base || 0) +
-                               (actorDetails[actorId]?.characteristics[char].primaryMod || 0) +
-                               (actorDetails[actorId]?.characteristics[char].secondaryMod || 0);
-            return `<option value="${value}" ${value === totalValue ? 'selected' : ''}>${value}</option>`;
-          }).join('')}
+          ${Array.from({ length: 24 }, (_, i) => i + 3).map(value => `<option value="${value}">${value}</option>`).join('')}
         </select>
       </div>
       `).join('')}
     `;
   }
   return content;
-
+}
 
 // Create the side navigator content
 function createSideNav() {
@@ -529,7 +477,6 @@ function updateRuneSelections(actorId) {
 // Function to handle auto rune selection
 function handleAutoRuneSelection(actorId) {
   const details = actorDetails[actorId];
-  console.log("Details before auto rune selection:", details);
   const primarySelect = document.getElementById('primary-rune-select');
   const secondarySelect = document.getElementById('secondary-rune-select');
   const tertiarySelect = document.getElementById('tertiary-rune-select');
@@ -565,13 +512,13 @@ function handleAutoRuneSelection(actorId) {
   selectedRunes.push(details.runes.tertiary);
 
   // Update the rune values
-  if(details.runes.all[details.runes.primary]) details.runes.all[details.runes.primary].primaryMod = 60;
-  if(details.runes.all[details.runes.secondary]) details.runes.all[details.runes.secondary].secondaryMod = 40;
-  if(details.runes.all[details.runes.tertiary]) details.runes.all[details.runes.tertiary].tertiaryMod = 20;
-  console.log("Details after auto rune selection:", details);
+  details.runes.all[details.runes.primary].primaryMod = 60;
+  details.runes.all[details.runes.secondary].secondaryMod = 40;
+  details.runes.all[details.runes.tertiary].tertiaryMod = 20;
+
+  // Apply rune modifications to characteristics
+  updateCharacteristicsWithRunes(details);
 }
-
-
 
 // Function to apply auto selections to all actors
 function applyAutoSelections() {
@@ -589,7 +536,7 @@ function loadCharacteristics(actorId) {
   if (characteristics) {
     ['str', 'con', 'siz', 'dex', 'int', 'pow', 'cha'].forEach(char => {
       const select = document.getElementById(`${char}-select`);
-      if (select) select.value = characteristics[char.toUpperCase()] || 0;
+      if (select) select.value = characteristics[char.toUpperCase()].baseValue || 0;
     });
   }
 }
@@ -668,6 +615,7 @@ const dialog = new Dialog({
     html.find('#homeland-select').change(function() {
       const actorId = html.find('#actor-detail-select').val();
       actorDetails[actorId].homeland = $(this).val();
+      applyHomelandModifiers(actorDetails[actorId]); // Apply homeland modifiers here
       logSelectedActorsAndDetails();
     });
     html.find('#occupation-select').change(function() {
@@ -719,7 +667,7 @@ const dialog = new Dialog({
     ['str', 'con', 'siz', 'dex', 'int', 'pow', 'cha'].forEach(char => {
       html.find(`#${char}-select`).change(function() {
         const actorId = html.find('#actor-detail-char-select').val();
-        actorDetails[actorId].characteristics[char.toUpperCase()] = parseInt($(this).val());
+        actorDetails[actorId].characteristics[char.toUpperCase()].baseValue = parseInt($(this).val());
         logSelectedActorsAndDetails();
       });
     });
