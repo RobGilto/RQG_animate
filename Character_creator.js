@@ -256,7 +256,7 @@ async function renderPage(pageIndex) {
   if (pageIndex === 0) {
     // Dropdown for actor selection on Page 1 (Start)
     let actors = getActors().filter(actor => !selectedActors.some(selected => selected.id === actor.id));
-    content += `<select id="actor-select"><option value="">Select an Actor</option>${actors.map(actor => `<option value="${actor.id}">${actor.name}</option>`)}</select>`;
+    content += `<select id="actor-select">${actors.map(actor => `<option value="${actor.id}">${actor.name}</option>`)}</select>`;
     content += `<button id="add-actor-button" style="margin-left: 10px;">Add Actor</button>`;
   } else if (pageIndex === 1) {
     // Dropdowns for race, homeland, occupation, and cult on Page 2
@@ -264,7 +264,7 @@ async function renderPage(pageIndex) {
     content += `
       <div>
         <label for="actor-detail-select">Actor:</label>
-        <select id="actor-detail-select"><option value="">Select an Actor</option>${actors}</select>
+        <select id="actor-detail-select">${actors}</select>
       </div>
       <div>
         <label for="race-select">Race:</label>
@@ -291,7 +291,7 @@ async function renderPage(pageIndex) {
     content += `
       <div>
         <label for="actor-detail-rune-select">Actor:</label>
-        <select id="actor-detail-rune-select"><option value="">Select an Actor</option>${actors}</select>
+        <select id="actor-detail-rune-select">${actors}</select>
       </div>
       <div>
         <label for="primary-rune-select">Primary Rune:</label>
@@ -317,7 +317,7 @@ async function renderPage(pageIndex) {
       <div>
         <label for="char-avg-select">Characteristics Average:</label>
         <select id="char-avg-select">
-          <option value="default">default</option>
+          <option value="default">default (${globalOptions.races[selectedActors[0]?.race]?.charAvg})</option>
           ${Array.from({ length: 14 }, (_, i) => i + 7).map(value => `<option value="${value}">${value}</option>`).join('')}
         </select>
       </div>
@@ -330,7 +330,7 @@ async function renderPage(pageIndex) {
     content += `
       <div>
         <label for="actor-detail-char-select">Actor:</label>
-        <select id="actor-detail-char-select"><option value="">Select an Actor</option>${actors}</select>
+        <select id="actor-detail-char-select">${actors}</select>
       </div>
       ${characteristics.map(char => `
       <div>
@@ -517,7 +517,6 @@ const dialog = new Dialog({
     // Add event listener for the next button on Page 1
     html.find('#next-button-page-1').click(async () => {
       const actorId = html.find('#actor-select').val();
-      if (!actorId) return; // Return if no actor is selected
       const actor = game.actors.get(actorId);
       selectedActors.push(actor);
 
@@ -649,7 +648,6 @@ const dialog = new Dialog({
     // Add event listener for the add actor button
     html.find('#add-actor-button').click(async () => {
       const actorId = html.find('#actor-select').val();
-      if (!actorId) return; // Return if no actor is selected
       const actor = game.actors.get(actorId);
       selectedActors.push(actor);
 
@@ -678,12 +676,9 @@ const dialog = new Dialog({
     // Add event listener for the sync all button on Page 2
     html.find('#sync-all-button').click(async () => {
       const actorId = html.find('#actor-detail-select').val();
-      if (!actorId) return; // Return if no actor is selected
       const details = actorDetails[actorId];
       for (const id in actorDetails) {
-        if (id !== actorId) {
-          actorDetails[id] = { ...details, runes: actorDetails[id].runes, characteristics: actorDetails[id].characteristics };
-        }
+        actorDetails[id] = { ...details };
       }
       logSelectedActorsAndDetails();
       dialog.data.content = await createDialogContent(currentPage);
@@ -693,15 +688,12 @@ const dialog = new Dialog({
     // Add event listener for the sync all button on Page 3
     html.find('#sync-all-runes-button').click(async () => {
       const actorId = html.find('#actor-detail-rune-select').val();
-      if (!actorId) return; // Return if no actor is selected
       const details = actorDetails[actorId];
       for (const id in actorDetails) {
-        if (id !== actorId) {
-          actorDetails[id].runes.primary = details.runes.primary;
-          actorDetails[id].runes.secondary = details.runes.secondary;
-          actorDetails[id].runes.tertiary = details.runes.tertiary;
-          actorDetails[id].runes.all = { ...details.runes.all };
-        }
+        actorDetails[id].runes.primary = details.runes.primary;
+        actorDetails[id].runes.secondary = details.runes.secondary;
+        actorDetails[id].runes.tertiary = details.runes.tertiary;
+        actorDetails[id].runes.all = { ...details.runes.all };
       }
       logSelectedActorsAndDetails();
       dialog.data.content = await createDialogContent(currentPage);
