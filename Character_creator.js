@@ -192,7 +192,7 @@ function rollCharacteristics(race, charAvg) {
     for (let char in characteristics) {
       if (char !== 'weight' && char !== 'weightFunctions' && char !== 'charAvg') {
         const value = rollDice(characteristics[char]);
-        values[char] = { baseValue: value, primaryMod: 0, secondaryMod: 0, homelandMod: 0 };
+        values[char] = { baseValue: value, primaryMod: 0, secondaryMod: 0, homelandMod: 0, total: 0 };
         total += value;
       }
     }
@@ -277,6 +277,38 @@ function updateCharacteristicsWithRunes(details) {
 
   // Apply secondary rune modification
   applyRuneMod(details.runes.secondary.split(" ")[0], 1, "secondaryMod");
+}
+
+// Function to calculate the total for each characteristic
+function calculateCharacteristicsTotal(details) {
+  for (const char in details.characteristics) {
+    const characteristic = details.characteristics[char];
+    characteristic.total = characteristic.baseValue + characteristic.primaryMod + characteristic.secondaryMod + characteristic.homelandMod;
+  }
+}
+
+// Function to load skills from the compendium and populate the skills object
+async function loadSkills() {
+  try {
+    const skillsCompendium = game.packs.get("wiki-en-rqg.skills");
+    if (!skillsCompendium) {
+      console.error("Compendium 'wiki-en-rqg.skills' not found");
+      return {};
+    }
+    await skillsCompendium.getIndex(); // Load the index
+    const skillItems = await skillsCompendium.getDocuments(); // Load all items
+    console.log("Loaded skill items:", skillItems);
+
+    const skills = {};
+    skillItems.forEach(skill => {
+      skills[skill.name] = { baseChance: skill.system.baseChance };
+    });
+
+    return skills;
+  } catch (error) {
+    console.error("Error loading skills:", error);
+    return {};
+  }
 }
 
 // Create a function to render a specific page
@@ -541,6 +573,22 @@ function loadCharacteristics(actorId) {
   }
 }
 
+// Function to calculate attributes based on characteristics
+function calculateAttributes(details) {
+  details.attributes = {
+    magicpoints: details.characteristics.POW.total,
+    hitpoints: {
+      basevalue: Math.floor((details.characteristics.CON.total + details.characteristics.SIZ.total) / 2),
+      sizMod: 0,
+      powMod: 0
+    },
+    healingrate: Math.floor((details.characteristics.CON.total + 19) / 20),
+    damagebonus: Math.floor(details.characteristics.STR.total + details.characteristics.SIZ.total),
+    spiritcombat: Math.floor((details.characteristics.CHA.total + details.characteristics.INT.total) / 2),
+    maxENC: Math.floor(details.characteristics.STR.total * 2.5)
+  };
+}
+
 // Create the dialog
 const dialog = new Dialog({
   title: "Multi-Page Dialog",
@@ -567,7 +615,9 @@ const dialog = new Dialog({
           tertiary: 'auto',
           all: runeDetails
         },
-        characteristics: rollCharacteristics('human', globalOptions.races.human.charAvg)
+        characteristics: rollCharacteristics('human', globalOptions.races.human.charAvg),
+        attributes: {},
+        skills: await loadSkills()
       };
       logSelectedActorsAndDetails();
       currentPage++;
@@ -595,6 +645,11 @@ const dialog = new Dialog({
 
     // Add event listener for the next button on Page 4
     html.find('#next-button-page-4').click(async () => {
+      selectedActors.forEach(actor => {
+        const details = actorDetails[actor.id];
+        calculateCharacteristicsTotal(details); // Calculate total for characteristics
+        calculateAttributes(details); // Calculate attributes based on characteristics
+      });
       logSelectedActorsAndDetails();
       currentPage++;
       dialog.data.content = await createDialogContent(currentPage);
@@ -699,7 +754,9 @@ const dialog = new Dialog({
           tertiary: 'auto',
           all: runeDetails
         },
-        characteristics: rollCharacteristics('human', globalOptions.races.human.charAvg)
+        characteristics: rollCharacteristics('human', globalOptions.races.human.charAvg),
+        attributes: {},
+        skills: await loadSkills()
       };
       logSelectedActorsAndDetails();
       // Re-render the current page to update the list of selected actors and remove the added actor
