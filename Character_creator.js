@@ -485,22 +485,21 @@ function applyHomelandSkillModifiers(details) {
   if (modifiers) {
     // Apply cultural skills
     for (const skill in modifiers.culturalSkills) {
-      if (details.skills.Communication.skills[skill]) {
-        details.skills.Communication.skills[skill].homelandMod = modifiers.culturalSkills[skill];
-        details.skills.Communication.skills[skill].total += modifiers.culturalSkills[skill];
+      const skillName = skill.split(" (")[0]; // Normalize skill name without any details
+      for (const category in details.skills) {
+        if (details.skills[category].skills[skillName]) {
+          details.skills[category].skills[skillName].homelandMod = modifiers.culturalSkills[skill];
+          details.skills[category].skills[skillName].total += modifiers.culturalSkills[skill];
+        }
       }
     }
 
     // Apply cultural weapons
     for (const weapon in modifiers.culturalWeapons) {
-      if (details.skills.MeleeWeapons.skills[weapon] || details.skills.MissileWeapons.skills[weapon]) {
-        if (details.skills.MeleeWeapons.skills[weapon]) {
-          details.skills.MeleeWeapons.skills[weapon].homelandMod = modifiers.culturalWeapons[weapon];
-          details.skills.MeleeWeapons.skills[weapon].total += modifiers.culturalWeapons[weapon];
-        }
-        if (details.skills.MissileWeapons.skills[weapon]) {
-          details.skills.MissileWeapons.skills[weapon].homelandMod = modifiers.culturalWeapons[weapon];
-          details.skills.MissileWeapons.skills[weapon].total += modifiers.culturalWeapons[weapon];
+      for (const category of ["MeleeWeapons", "MissileWeapons"]) {
+        if (details.skills[category].skills[weapon]) {
+          details.skills[category].skills[weapon].homelandMod = modifiers.culturalWeapons[weapon];
+          details.skills[category].skills[weapon].total += modifiers.culturalWeapons[weapon];
         }
       }
     }
