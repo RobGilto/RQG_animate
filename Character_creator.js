@@ -103,14 +103,20 @@ async function loadRunes() {
 // Function to load skills data from the selected compendium and categorize them by type
 async function loadSkills() {
   try {
-    const pack = game.packs.get("wiki-en-rqg.skills");
-    if (!pack) {
-      console.error("Compendium 'wiki-en-rqg.skills' not found");
+    const skillPack = game.packs.get("wiki-en-rqg.skills");
+    const weaponPack = game.packs.get("wiki-en-rqg.skills-weapons");
+
+    if (!skillPack || !weaponPack) {
+      console.error("Compendiums not found");
       return {};
     }
-    await pack.getIndex(); // Load the index
-    const skillItems = await pack.getDocuments(); // Load all items
+
+    await skillPack.getIndex(); // Load the index for skills
+    await weaponPack.getIndex(); // Load the index for weapons
+    const skillItems = await skillPack.getDocuments(); // Load all skill items
+    const weaponItems = await weaponPack.getDocuments(); // Load all weapon items
     console.log("Loaded skill items:", skillItems);
+    console.log("Loaded weapon items:", weaponItems);
 
     const skills = {
       Agility: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} },
@@ -119,13 +125,22 @@ async function loadSkills() {
       Magic: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} },
       Manipulation: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} },
       Perception: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} },
-      Stealth: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} }
+      Stealth: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} },
+      MeleeWeapons: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} },
+      MissileWeapons: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} }
     };
 
     skillItems.forEach(skill => {
       const category = skill.system.category.charAt(0).toUpperCase() + skill.system.category.slice(1);
       if (skills[category]) {
-        skills[category].skills[skill.name] = { baseChance: skill.system.baseChance };
+        skills[category].skills[skill.name] = { baseChance: skill.system.baseChance, homelandMod: 0, total: skill.system.baseChance };
+      }
+    });
+
+    weaponItems.forEach(weapon => {
+      const category = weapon.system.category === "missileWeapons" ? "MissileWeapons" : "MeleeWeapons";
+      if (skills[category]) {
+        skills[category].skills[weapon.name] = { baseChance: weapon.system.baseChance, homelandMod: 0, total: weapon.system.baseChance };
       }
     });
 
