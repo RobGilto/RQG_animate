@@ -607,7 +607,7 @@ async function renderPage(pageIndex) {
     content += `<select id="actor-select">${actors.map(actor => `<option value="${actor.id}">${actor.name}</option>`)}</select>`;
     content += `<button id="add-actor-button" style="margin-left: 10px;">Add Actor</button>`;
   } else if (pageIndex === 1) {
-    // Dropdowns for race, homeland, occupation, and cult on Page 2
+    // Dropdowns for race, homeland on Page 2 (Details)
     let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
     content += `
       <div>
@@ -622,13 +622,10 @@ async function renderPage(pageIndex) {
         <label for="homeland-select">Homeland:</label>
         <select id="homeland-select">${Object.keys(globalOptions.homelands).map(homeland => `<option value="${homeland}">${homeland}</option>`)}</select>
       </div>
-      <div>
-        <label for="cult-select">Cult:</label>
-        <select id="cult-select">${Object.keys(globalOptions.cults).map(cult => `<option value="${cult}">${cult}</option>`)}</select>
-      </div>
     `;
     content += `<button id="sync-all-button" style="margin-top: 10px;">Sync All</button>`;
-  } else if (pageIndex === 2) {
+  }
+ else if (pageIndex === 2) {
     // Dropdown for cults on Page 3
     let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
     const details = actorDetails[selectedActors[0]?.id];
