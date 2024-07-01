@@ -233,6 +233,11 @@ async function loadCults() {
     const cultItems = await cultPack.getDocuments(); // Load all cult items
     console.log("Loaded cult items:", cultItems);
 
+    // Populate globalOptions.cults
+    cultItems.forEach(cult => {
+      globalOptions.cults[cult.name] = { weight: 30 };
+    });
+
     return cultItems.map(cult => cult.name);
   } catch (error) {
     console.error("Error loading cults:", error);
@@ -670,8 +675,7 @@ async function renderPage(pageIndex) {
           ${Array.from({ length: 14 }, (_, i) => i + 7).map(value => `<option value="${value}">${value}</option>`).join('')}
         </select>
       </div>
-      <button id="sync-all-runes-button" style="margin-top: 10px;">Sync All</button>
-    `;
+      <button id="sync-all-runes-button" style="margin-top: 10px;">Sync All</button>`;
   } else if (pageIndex === 3) {
     // Dropdowns for characteristics on Page 4
     let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
@@ -770,6 +774,7 @@ function createBottomPanel(pageIndex) {
 
 // Create the dialog content including the side navigator, main page area, and bottom panel
 async function createDialogContent(pageIndex) {
+  console.log(`Navigating to page: ${pages[pageIndex].title}`); // Log the page title
   return `
     <div style="display: flex; flex-direction: column; height: 100%;">
       <div style="flex-grow: 1; display: flex;">
