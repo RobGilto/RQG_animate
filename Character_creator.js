@@ -613,7 +613,7 @@ async function renderPage(pageIndex) {
     content += `<select id="actor-select">${actors.map(actor => `<option value="${actor.id}">${actor.name}</option>`)}</select>`;
     content += `<button id="add-actor-button" style="margin-left: 10px;">Add Actor</button>`;
   } else if (pageIndex === 1) {
-    // Dropdowns for race, homeland, occupation, and cult on Page 2
+    // Dropdowns for race, homeland, and cult on Page 2 (Occupation removed)
     let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
     content += `
       <div>
@@ -629,119 +629,13 @@ async function renderPage(pageIndex) {
         <select id="homeland-select">${Object.keys(globalOptions.homelands).map(homeland => `<option value="${homeland}">${homeland}</option>`)}</select>
       </div>
       <div>
-        <label for="occupation-select">Occupation:</label>
-        <select id="occupation-select">${Object.keys(globalOptions.occupations).map(occupation => `<option value="${occupation}">${occupation}</option>`)}</select>
-      </div>
-      <div>
         <label for="cult-select">Cult:</label>
         <select id="cult-select">${Object.keys(globalOptions.cults).map(cult => `<option value="${cult}">${cult}</option>`)}</select>
       </div>
     `;
     content += `<button id="sync-all-button" style="margin-top: 10px;">Sync All</button>`;
-  } else if (pageIndex === 2) {
-    // Dropdown for cults on Page 3
-    let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
-    const details = actorDetails[selectedActors[0].id];
-    const cults = await loadCults();
-    content += `
-      <div>
-        <label for="actor-detail-cult-select">Actor:</label>
-        <select id="actor-detail-cult-select">${actors}</select>
-      </div>
-      <div>
-        <label for="cult-select">Cult:</label>
-        <select id="cult-select">
-          <option value="auto">auto</option>
-          ${cults.map(cult => `<option value="${cult}">${cult}</option>`).join('')}
-        </select>
-      </div>
-    `;
-  } else if (pageIndex === 3) {
-    // Dropdowns for primary, secondary, and tertiary runes on Page 4
-    const categorizedRunes = await loadRunes();
-    let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
-    content += `
-      <div>
-        <label for="actor-detail-rune-select">Actor:</label>
-        <select id="actor-detail-rune-select">${actors}</select>
-      </div>
-      <div>
-        <label for="primary-rune-select">Primary Rune:</label>
-        <select id="primary-rune-select">
-          <option value="auto">auto</option>
-          ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
-        </select>
-      </div>
-      <div>
-        <label for="secondary-rune-select">Secondary Rune:</label>
-        <select id="secondary-rune-select">
-          <option value="auto">auto</option>
-          ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
-        </select>
-      </div>
-      <div>
-        <label for="tertiary-rune-select">Tertiary Rune:</label>
-        <select id="tertiary-rune-select">
-          <option value="auto">auto</option>
-          ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
-        </select>
-      </div>
-      <div>
-        <label for="form-primary-rune-select">Primary Form Rune:</label>
-        <select id="form-primary-rune-select">
-          <option value="auto">auto</option>
-          ${categorizedRunes.form.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
-        </select>
-      </div>
-      <div>
-        <label for="form-secondary-rune-select">Secondary Form Rune:</label>
-        <select id="form-secondary-rune-select">
-          <option value="auto">auto</option>
-          ${categorizedRunes.form.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
-        </select>
-      </div>
-      <div>
-        <label for="power-primary-rune-select">Primary Power Rune:</label>
-        <select id="power-primary-rune-select">
-          <option value="auto">auto</option>
-          ${categorizedRunes.power.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
-        </select>
-      </div>
-      <div>
-        <label for="power-secondary-rune-select">Secondary Power Rune:</label>
-        <select id="power-secondary-rune-select">
-          <option value="auto">auto</option>
-          ${categorizedRunes.power.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
-        </select>
-      </div>
-      <div>
-        <label for="char-avg-select">Characteristics Average:</label>
-        <select id="char-avg-select">
-          <option value="default">default (${globalOptions.races[selectedActors[0]?.race]?.charAvg})</option>
-          ${Array.from({ length: 14 }, (_, i) => i + 7).map(value => `<option value="${value}">${value}</option>`).join('')}
-        </select>
-      </div>
-      <button id="sync-all-runes-button" style="margin-top: 10px;">Sync All</button>`;
   } else if (pageIndex === 4) {
-    // Dropdowns for characteristics on Page 5
-    let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
-    const characteristics = ['STR', 'CON', 'SIZ', 'DEX', 'INT', 'POW', 'CHA'];
-    content += `
-      <div>
-        <label for="actor-detail-char-select">Actor:</label>
-        <select id="actor-detail-char-select">${actors}</select>
-      </div>
-      ${characteristics.map(char => `
-      <div>
-        <label for="${char.toLowerCase()}-select">${char}:</label>
-        <select id="${char.toLowerCase()}-select">
-          ${Array.from({ length: 24 }, (_, i) => i + 3).map(value => `<option value="${value}">${value}</option>`).join('')}
-        </select>
-      </div>
-      `).join('')}
-    `;
-  } else if (pageIndex === 5) {
-    // Dropdown for occupation on Page 6
+    // Dropdown for occupation on Page 5
     let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
     const details = actorDetails[selectedActors[0].id];
     const occupations = globalOptions.homelands[details.homeland].occupations;
@@ -1137,11 +1031,12 @@ const dialog = new Dialog({
       dialog.render(true);
     });
 
-    // Add event listener for the next button on Page 5 (Occupation page)
+    // Add event listener for the next button on Page 5
     html.find('#next-button-page-5').click(async () => {
       selectedActors.forEach(actor => {
         const details = actorDetails[actor.id];
-        details.occupation = html.find('#occupation-select').val();
+        const selectedOccupation = html.find('#occupation-select').val();
+        details.occupation = selectedOccupation;  // Ensure occupation is set from the dropdown value
       });
       logSelectedActorsAndDetails(5);
       currentPage++;
