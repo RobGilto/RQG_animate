@@ -348,11 +348,9 @@ function loadActorDetails(actorId) {
   if (details) {
     const raceSelect = document.getElementById('race-select');
     const homelandSelect = document.getElementById('homeland-select');
-    const cultSelect = document.getElementById('cult-select');
 
     if (raceSelect) raceSelect.value = details.race || 'human';
     if (homelandSelect) homelandSelect.value = details.homeland || 'auto';
-    if (cultSelect) cultSelect.value = details.cult || 'auto';
   }
 }
 
@@ -1002,11 +1000,6 @@ const dialog = new Dialog({
     html.find('#homeland-select').change(function() {
       const actorId = html.find('#actor-detail-select').val();
       actorDetails[actorId].homeland = $(this).val();
-      logSelectedActorsAndDetails();
-    });
-    html.find('#cult-select').change(function() {
-      const actorId = html.find('#actor-detail-select').val();
-      actorDetails[actorId].cult = $(this).val();
       logSelectedActorsAndDetails();
     });
 
