@@ -436,9 +436,9 @@ class CharacterGenerator {
     const homeland = details.homeland;
     let modifiers;
 
-    if (homeland.startsWith("Praxian Tribes:")) {
+    if (homeland && homeland.startsWith("Praxian Tribes:")) {
       modifiers = praxianSkills[homeland];
-    } else {
+    } else if (homeland) {
       modifiers = homelandSkills[homeland];
     }
 
@@ -622,6 +622,64 @@ class CharacterGenerator {
     `;
   }
 
+  loadCharacteristics(actorId) {
+    const details = this.actorDetails[actorId];
+    const characteristics = details.characteristics;
+    if (characteristics) {
+      ['str', 'con', 'siz', 'dex', 'int', 'pow', 'cha'].forEach(char => {
+        const select = document.getElementById(`${char}-select`);
+        if (select) select.value = characteristics[char.toUpperCase()].baseValue || 0;
+      });
+    }
+  }
+
+  updateRuneSelections(actorId) {
+    const details = this.actorDetails[actorId];
+    const primaryRune = details.runes.primary;
+    const secondaryRune = details.runes.secondary;
+    const tertiaryRune = details.runes.tertiary;
+
+    const primarySelect = document.getElementById('primary-rune-select');
+    const secondarySelect = document.getElementById('secondary-rune-select');
+    const tertiarySelect = document.getElementById('tertiary-rune-select');
+
+    const allRunes = Array.from(primarySelect.options).map(option => option.value);
+
+    allRunes.forEach(rune => {
+      const primaryOption = primarySelect.querySelector(`option[value="${rune}"]`);
+      const secondaryOption = secondarySelect.querySelector(`option[value="${rune}"]`);
+      const tertiaryOption = tertiarySelect.querySelector(`option[value="${rune}"]`);
+
+      if (primaryOption) primaryOption.disabled = false;
+      if (secondaryOption) secondaryOption.disabled = false;
+      if (tertiaryOption) tertiaryOption.disabled = false;
+    });
+
+    if (primaryRune && primaryRune !== 'auto') {
+      const secondaryOption = secondarySelect ? secondarySelect.querySelector(`option[value="${primaryRune}"]`) : null;
+      const tertiaryOption = tertiarySelect ? tertiarySelect.querySelector(`option[value="${primaryRune}"]`) : null;
+
+      if (secondaryOption) secondaryOption.disabled = true;
+      if (tertiaryOption) tertiaryOption.disabled = true;
+    }
+
+    if (secondaryRune && secondaryRune !== 'auto') {
+      const primaryOption = primarySelect ? primarySelect.querySelector(`option[value="${secondaryRune}"]`) : null;
+      const tertiaryOption = tertiarySelect ? tertiarySelect.querySelector(`option[value="${secondaryRune}"]`) : null;
+
+      if (primaryOption) primaryOption.disabled = true;
+      if (tertiaryOption) tertiaryOption.disabled = true;
+    }
+
+    if (tertiaryRune && tertiaryRune !== 'auto') {
+      const primaryOption = primarySelect ? primarySelect.querySelector(`option[value="${tertiaryRune}"]`) : null;
+      const secondaryOption = secondarySelect ? secondarySelect.querySelector(`option[value="${tertiaryRune}"]`) : null;
+
+      if (primaryOption) primaryOption.disabled = true;
+      if (secondaryOption) secondaryOption.disabled = true;
+    }
+  }
+
   async run() {
     const dialog = new Dialog({
       title: "Multi-Page Dialog",
@@ -706,7 +764,7 @@ class CharacterGenerator {
         html.find('#actor-detail-occupation-select').change(() => {
           const actorId = html.find('#actor-detail-occupation-select').val();
           const details = this.actorDetails[actorId];
-          const occupations = this.globalOptions.homelands[details.homeland].occupations;
+          const occupations = this.globalOptions.homelands[details.homeland]?.occupations || [];
           const occupationSelect = html.find('#occupation-select');
           occupationSelect.empty();
           occupationSelect.append(`<option value="auto">auto</option>`);
