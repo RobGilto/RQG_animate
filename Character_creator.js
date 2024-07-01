@@ -5,7 +5,7 @@ const pages = [
   { title: "Runes", content: "Allocate Runes: Primary, Secondary, Tertiary" },
   { title: "Characteristics", content: "Organize Characteristics: STR, CON, SIZ, DEX, INT, POW, CHA" },
   { title: "Occupation", content: "Select Occupation" },
-  { title: "Page 6", content: "Content for Page 6" },
+  { title: "Cult", content: "Select Cult" },
   { title: "Page 7", content: "Content for Page 7" },
   { title: "Page 8", content: "Content for Page 8" },
   { title: "Page 9", content: "Content for Page 9" }
@@ -121,21 +121,7 @@ const globalOptions = {
   },
   cults: {
     auto: { weight: 0 },
-    "Cult 1": {
-      weight: 25,
-      weightFunctions: [
-        (details) => details.race === 'human' ? 10 : 0,
-        (details) => details.occupation === 'Occupation X' ? 10 : 0
-      ]
-    },
-    "Cult 2": {
-      weight: 25,
-      weightFunctions: [
-        (details) => details.race === 'darktroll' ? 10 : 0,
-        (details) => details.occupation === 'Occupation Y' ? 10 : 0
-      ]
-    },
-    "Cult 3": { weight: 50 }
+    // Cults will be populated dynamically from the compendium
   }
 };
 
@@ -230,6 +216,27 @@ async function loadSkills() {
   } catch (error) {
     console.error("Error loading skills:", error);
     return {};
+  }
+}
+
+// Function to load cults data from the selected compendium
+async function loadCults() {
+  try {
+    const cultPack = game.packs.get("wiki-en-rqg-cults");
+
+    if (!cultPack) {
+      console.error("Cults compendium not found");
+      return [];
+    }
+
+    await cultPack.getIndex(); // Load the index for cults
+    const cultItems = await cultPack.getDocuments(); // Load all cult items
+    console.log("Loaded cult items:", cultItems);
+
+    return cultItems.map(cult => cult.name);
+  } catch (error) {
+    console.error("Error loading cults:", error);
+    return [];
   }
 }
 
@@ -437,7 +444,7 @@ function calculateAttributes(details) {
 
   // Calculate Hit Points Modifiers
   const sizMod = siz >= 1 && siz <= 4 ? -2 : siz >= 5 && siz <= 8 ? -1 : siz >= 13 && siz <= 16 ? 1 : siz >= 17 && siz <= 20 ? 2 : siz >= 21 && siz <= 24 ? 3 : siz >= 25 && siz <= 28 ? 4 : siz >= 29 ? Math.floor((siz - 21) / 4) + 3 : 0;
-  const powMod = pow >= 1 && pow <= 4 ? -1 : pow >= 17 && pow <= 20 ? 1 : pow >= 21 && pow <= 24 ? 2 : pow >= 25 && pow <= 28 ? 3 : pow >= 29 ? Math.floor((pow - 21) / 4) + 2 : 0;
+  const powMod = pow >= 1 && pow <= 4 ? -1 : pow >= 17 && pow <= 20 ? 1 : pow >= 21 && pow <= 24 ? 2 : pow >= 25 && pow >= 29 ? Math.floor((pow - 21) / 4) + 2 : 0;
 
   // Calculate Spirit Combat Damage
   const powCha = pow + cha;
@@ -695,7 +702,28 @@ async function renderPage(pageIndex) {
       </div>
       <div>
         <label for="occupation-select">Occupation:</label>
-        <select id="occupation-select">${occupations.map(occupation => `<option value="${occupation}">${occupation}</option>`).join('')}</select>
+        <select id="occupation-select">
+          <option value="auto">auto</option>
+          ${occupations.map(occupation => `<option value="${occupation}">${occupation}</option>`).join('')}
+        </select>
+      </div>
+    `;
+  } else if (pageIndex === 5) {
+    // Dropdown for cults on Page 6
+    let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
+    const details = actorDetails[selectedActors[0].id];
+    const cults = await loadCults();
+    content += `
+      <div>
+        <label for="actor-detail-cult-select">Actor:</label>
+        <select id="actor-detail-cult-select">${actors}</select>
+      </div>
+      <div>
+        <label for="cult-select">Cult:</label>
+        <select id="cult-select">
+          <option value="auto">auto</option>
+          ${cults.map(cult => `<option value="${cult}">${cult}</option>`).join('')}
+        </select>
       </div>
     `;
   }
@@ -726,6 +754,8 @@ function createBottomPanel(pageIndex) {
     nextButton = `<button id="next-button-page-4" style="margin-left: 10px;">Next</button>`;
   } else if (pageIndex === 4) {
     nextButton = `<button id="next-button-page-5" style="margin-left: 10px;">Next</button>`;
+  } else if (pageIndex === 5) {
+    nextButton = `<button id="next-button-page-6" style="margin-left: 10px;">Next</button>`;
   } else {
     nextButton = pageIndex < pages.length - 1 ? `<button id="next-button">Next</button>` : '';
   }
@@ -878,28 +908,30 @@ const dialog = new Dialog({
   render: async (html) => {
     // Add event listener for the next button on Page 1
     html.find('#next-button-page-1').click(async () => {
-      const actorId = html.find('#actor-select').val();
-      const actor = game.actors.get(actorId);
-      selectedActors.push(actor);
+      if (selectedActors.length === 0) {
+        const actorId = html.find('#actor-select').val();
+        const actor = game.actors.get(actorId);
+        selectedActors.push(actor);
 
-      const categorizedRunes = await loadRunes();
-      const runeDetails = initializeRuneDetails(categorizedRunes);
+        const categorizedRunes = await loadRunes();
+        const runeDetails = initializeRuneDetails(categorizedRunes);
 
-      actorDetails[actorId] = {
-        race: 'human',
-        homeland: 'auto',
-        occupation: 'auto',
-        cult: 'auto',
-        runes: {
-          primary: 'auto',
-          secondary: 'auto',
-          tertiary: 'auto',
-          all: runeDetails
-        },
-        characteristics: rollCharacteristics('human', globalOptions.races.human.charAvg),
-        attributes: {},
-        skills: await loadSkills()
-      };
+        actorDetails[actorId] = {
+          race: 'human',
+          homeland: 'auto',
+          occupation: 'auto',
+          cult: 'auto',
+          runes: {
+            primary: 'auto',
+            secondary: 'auto',
+            tertiary: 'auto',
+            all: runeDetails
+          },
+          characteristics: rollCharacteristics('human', globalOptions.races.human.charAvg),
+          attributes: {},
+          skills: await loadSkills()
+        };
+      }
       logSelectedActorsAndDetails();
       currentPage++;
       dialog.data.content = await createDialogContent(currentPage);
@@ -938,6 +970,30 @@ const dialog = new Dialog({
       dialog.render(true);
     });
 
+    // Add event listener for the next button on Page 5
+    html.find('#next-button-page-5').click(async () => {
+      selectedActors.forEach(actor => {
+        const details = actorDetails[actor.id];
+        details.occupation = html.find('#occupation-select').val();
+      });
+      logSelectedActorsAndDetails();
+      currentPage++;
+      dialog.data.content = await createDialogContent(currentPage);
+      dialog.render(true);
+    });
+
+    // Add event listener for the next button on Page 6
+    html.find('#next-button-page-6').click(async () => {
+      selectedActors.forEach(actor => {
+        const details = actorDetails[actor.id];
+        if (details.cult === 'auto') details.cult = getWeightedRandomSelection(globalOptions.cults, actor.id);
+      });
+      logSelectedActorsAndDetails();
+      currentPage++;
+      dialog.data.content = await createDialogContent(currentPage);
+      dialog.render(true);
+    });
+
     // Add event listeners for dropdowns to dynamically save selections
     html.find('#actor-detail-select').change(function() {
       const actorId = $(this).val();
@@ -952,7 +1008,6 @@ const dialog = new Dialog({
     html.find('#homeland-select').change(function() {
       const actorId = html.find('#actor-detail-select').val();
       actorDetails[actorId].homeland = $(this).val();
-      applyHomelandModifiers(actorDetails[actorId]); // Apply homeland modifiers here
       logSelectedActorsAndDetails();
     });
     html.find('#occupation-select').change(function() {
