@@ -700,7 +700,8 @@ async function renderPage(pageIndex) {
       </div>
       `).join('')}
     `;
-  } else if (pageIndex === 5) {
+  }
+   else if (pageIndex === 5) {
     // Dropdown for occupation on Page 5
     let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
     const details = actorDetails[selectedActors[0]?.id];
@@ -904,10 +905,10 @@ const dialog = new Dialog({
         const actorId = html.find('#actor-select').val();
         const actor = game.actors.get(actorId);
         selectedActors.push(actor);
-
+      
         const categorizedRunes = await loadRunes();
         const runeDetails = initializeRuneDetails(categorizedRunes);
-
+      
         actorDetails[actorId] = {
           race: 'human',
           homeland: 'auto',
@@ -924,6 +925,7 @@ const dialog = new Dialog({
           skills: await loadSkills()
         };
       }
+      
       logSelectedActorsAndDetails(1);
       currentPage++;
       dialog.data.content = await createDialogContent(currentPage);
@@ -1042,7 +1044,7 @@ const dialog = new Dialog({
       const actorId = $(this).val();
       loadCharacteristics(actorId);
     });
-
+    
     ['str', 'con', 'siz', 'dex', 'int', 'pow', 'cha'].forEach(char => {
       html.find(`#${char}-select`).change(function() {
         const actorId = html.find('#actor-detail-char-select').val();
@@ -1154,7 +1156,7 @@ const dialog = new Dialog({
 
     // Load the initial details for the first actor on page 4
     if (currentPage === 3 && selectedActors.length > 0) {
-      loadCharacteristics(selectedActors[0].id);
+      html.find('#actor-detail-char-select').change(function()(selectedActors[0].id);
     }
   }
 }).render(true);
