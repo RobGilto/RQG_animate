@@ -14,16 +14,77 @@ class GlobalOptions {
     };
     this.homelands = {
       auto: { weight: 0, occupations: [] },
-      // Add other homelands here...
+      "Sartar": {
+        weight: 33,
+        weightFunctions: [(details) => details.race === 'human' ? 17 : 0],
+        occupations: [
+          "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer",
+          "Herder", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry",
+          "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+        ]
+      },
+      "Esrolia": {
+        weight: 33,
+        weightFunctions: [(details) => details.race === 'darktroll' ? 17 : 0],
+        occupations: [
+          "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer",
+          "Herder", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry",
+          "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+        ]
+      }
     };
     this.occupations = {
       auto: { weight: 0 },
-      // Add other occupations here...
+      "Assistant Shaman": { weight: 40, weightFunctions: [(details) => details.cult === 'Cult 1' ? 20 : 0] },
+      "Bandit": { weight: 30, weightFunctions: [(details) => details.cult === 'Cult 2' ? 20 : 0] },
+      "Chariot Driver": { weight: 30 },
+      "Crafter (Brewer, Carpenter, Jeweler, Leatherworker, Mason, Potter, Redsmith, Tanner, Weaver)": { weight: 30 },
+      "Entertainer": { weight: 30 },
+      "Farmer": { weight: 30 },
+      "Fisher": { weight: 30 },
+      "Healer": { weight: 30 },
+      "Herder": { weight: 30 },
+      "Merchant": { weight: 30 },
+      "Noble": { weight: 30 },
+      "Philosopher": { weight: 30 },
+      "Priest": { weight: 30 },
+      "Scribe": { weight: 30 },
+      "Thief": { weight: 30 },
+      "Warrior: Heavy Infantry": { weight: 30 },
+      "Warrior: Light Infantry": { weight: 30 },
+      "Warrior: Heavy Cavalry": { weight: 30 },
+      "Warrior: Light Cavalry": { weight: 30 }
     };
     this.cults = {
       auto: { weight: 0 },
-      // Cults will be populated dynamically from the compendium
     };
+  }
+
+  async loadCults() {
+    try {
+      const cultPack = game.packs.get("wiki-en-rqg.cults");
+
+      if (!cultPack) {
+        console.error("Cults compendium not found");
+        return [];
+      }
+
+      await cultPack.getIndex();
+      const cultItems = await cultPack.getDocuments();
+      console.log("Loaded cult items:", cultItems);
+
+      return cultItems.map(cult => cult.name);
+    } catch (error) {
+      console.error("Error loading cults:", error);
+      return [];
+    }
+  }
+
+  async initialize() {
+    const cults = await this.loadCults();
+    cults.forEach(cult => {
+      this.cults[cult] = { weight: 30 }; // Assuming a default weight, adjust as necessary
+    });
   }
 }
 
@@ -126,26 +187,6 @@ class CharacterGenerator {
     } catch (error) {
       console.error("Error loading skills:", error);
       return {};
-    }
-  }
-
-  async loadCults() {
-    try {
-      const cultPack = game.packs.get("wiki-en-rqg.cults");
-
-      if (!cultPack) {
-        console.error("Cults compendium not found");
-        return [];
-      }
-
-      await cultPack.getIndex();
-      const cultItems = await cultPack.getDocuments();
-      console.log("Loaded cult items:", cultItems);
-
-      return cultItems.map(cult => cult.name);
-    } catch (error) {
-      console.error("Error loading cults:", error);
-      return [];
     }
   }
 
@@ -681,6 +722,8 @@ class CharacterGenerator {
   }
 
   async run() {
+    await this.globalOptions.initialize();
+
     const dialog = new Dialog({
       title: "Multi-Page Dialog",
       content: await this.createDialogContent(this.currentPage),
