@@ -2,10 +2,10 @@
 const pages = [
   { title: "Start", content: "Choose an Actor" },
   { title: "Details", content: "Select Race, Homeland, Occupation, and Cult" },
+  { title: "Cult", content: "Select Cult" },  // Moved before Runes
   { title: "Runes", content: "Allocate Runes: Primary, Secondary, Tertiary" },
   { title: "Characteristics", content: "Organize Characteristics: STR, CON, SIZ, DEX, INT, POW, CHA" },
   { title: "Occupation", content: "Select Occupation" },
-  { title: "Cult", content: "Select Cult" },
   { title: "Page 7", content: "Content for Page 7" },
   { title: "Page 8", content: "Content for Page 8" },
   { title: "Page 9", content: "Content for Page 9" }
@@ -368,7 +368,7 @@ function handleAutoSelections() {
     const details = actorDetails[actor.id];
     if (details.race === 'auto') details.race = getWeightedRandomSelection(globalOptions.races, actor.id);
     if (details.homeland === 'auto') details.homeland = getWeightedRandomSelection(globalOptions.homelands, actor.id);
-    if (details.occupation === 'auto') details.occupation = getWeightedRandomSelection(globalOptions.occupations, actor.id);
+    if (details.occupation === 'auto') details.occupation = 'auto'; // Keep auto until resolved
     if (details.cult === 'auto') details.cult = getWeightedRandomSelection(globalOptions.cults, actor.id);
 
     // Apply homeland modifiers
@@ -639,7 +639,25 @@ async function renderPage(pageIndex) {
     `;
     content += `<button id="sync-all-button" style="margin-top: 10px;">Sync All</button>`;
   } else if (pageIndex === 2) {
-    // Dropdowns for primary, secondary, and tertiary runes on Page 3
+    // Dropdown for cults on Page 3
+    let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
+    const details = actorDetails[selectedActors[0].id];
+    const cults = await loadCults();
+    content += `
+      <div>
+        <label for="actor-detail-cult-select">Actor:</label>
+        <select id="actor-detail-cult-select">${actors}</select>
+      </div>
+      <div>
+        <label for="cult-select">Cult:</label>
+        <select id="cult-select">
+          <option value="auto">auto</option>
+          ${cults.map(cult => `<option value="${cult}">${cult}</option>`).join('')}
+        </select>
+      </div>
+    `;
+  } else if (pageIndex === 3) {
+    // Dropdowns for primary, secondary, and tertiary runes on Page 4
     const categorizedRunes = await loadRunes();
     let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
     content += `
@@ -669,6 +687,34 @@ async function renderPage(pageIndex) {
         </select>
       </div>
       <div>
+        <label for="form-primary-rune-select">Primary Form Rune:</label>
+        <select id="form-primary-rune-select">
+          <option value="auto">auto</option>
+          ${categorizedRunes.form.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <label for="form-secondary-rune-select">Secondary Form Rune:</label>
+        <select id="form-secondary-rune-select">
+          <option value="auto">auto</option>
+          ${categorizedRunes.form.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <label for="power-primary-rune-select">Primary Power Rune:</label>
+        <select id="power-primary-rune-select">
+          <option value="auto">auto</option>
+          ${categorizedRunes.power.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <label for="power-secondary-rune-select">Secondary Power Rune:</label>
+        <select id="power-secondary-rune-select">
+          <option value="auto">auto</option>
+          ${categorizedRunes.power.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+        </select>
+      </div>
+      <div>
         <label for="char-avg-select">Characteristics Average:</label>
         <select id="char-avg-select">
           <option value="default">default (${globalOptions.races[selectedActors[0]?.race]?.charAvg})</option>
@@ -676,8 +722,8 @@ async function renderPage(pageIndex) {
         </select>
       </div>
       <button id="sync-all-runes-button" style="margin-top: 10px;">Sync All</button>`;
-  } else if (pageIndex === 3) {
-    // Dropdowns for characteristics on Page 4
+  } else if (pageIndex === 4) {
+    // Dropdowns for characteristics on Page 5
     let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
     const characteristics = ['STR', 'CON', 'SIZ', 'DEX', 'INT', 'POW', 'CHA'];
     content += `
@@ -694,8 +740,8 @@ async function renderPage(pageIndex) {
       </div>
       `).join('')}
     `;
-  } else if (pageIndex === 4) {
-    // Dropdown for occupation on Page 5
+  } else if (pageIndex === 5) {
+    // Dropdown for occupation on Page 6
     let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
     const details = actorDetails[selectedActors[0].id];
     const occupations = globalOptions.homelands[details.homeland].occupations;
@@ -709,24 +755,6 @@ async function renderPage(pageIndex) {
         <select id="occupation-select">
           <option value="auto">auto</option>
           ${occupations.map(occupation => `<option value="${occupation}">${occupation}</option>`).join('')}
-        </select>
-      </div>
-    `;
-  } else if (pageIndex === 5) {
-    // Dropdown for cults on Page 6
-    let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
-    const details = actorDetails[selectedActors[0].id];
-    const cults = await loadCults();
-    content += `
-      <div>
-        <label for="actor-detail-cult-select">Actor:</label>
-        <select id="actor-detail-cult-select">${actors}</select>
-      </div>
-      <div>
-        <label for="cult-select">Cult:</label>
-        <select id="cult-select">
-          <option value="auto">auto</option>
-          ${cults.map(cult => `<option value="${cult}">${cult}</option>`).join('')}
         </select>
       </div>
     `;
@@ -794,22 +822,40 @@ function updateRuneSelections(actorId) {
   const primaryRune = details.runes.primary;
   const secondaryRune = details.runes.secondary;
   const tertiaryRune = details.runes.tertiary;
+  const formPrimaryRune = details.runes.formPrimary;
+  const formSecondaryRune = details.runes.formSecondary;
+  const powerPrimaryRune = details.runes.powerPrimary;
+  const powerSecondaryRune = details.runes.powerSecondary;
 
   const primarySelect = document.getElementById('primary-rune-select');
   const secondarySelect = document.getElementById('secondary-rune-select');
   const tertiarySelect = document.getElementById('tertiary-rune-select');
+  const formPrimarySelect = document.getElementById('form-primary-rune-select');
+  const formSecondarySelect = document.getElementById('form-secondary-rune-select');
+  const powerPrimarySelect = document.getElementById('power-primary-rune-select');
+  const powerSecondarySelect = document.getElementById('power-secondary-rune-select');
 
   const allRunes = Array.from(primarySelect.options).map(option => option.value);
+  const allFormRunes = Array.from(formPrimarySelect.options).map(option => option.value);
+  const allPowerRunes = Array.from(powerPrimarySelect.options).map(option => option.value);
 
   // Enable all options initially
-  allRunes.forEach(rune => {
+  [...allRunes, ...allFormRunes, ...allPowerRunes].forEach(rune => {
     const primaryOption = primarySelect.querySelector(`option[value="${rune}"]`);
     const secondaryOption = secondarySelect.querySelector(`option[value="${rune}"]`);
     const tertiaryOption = tertiarySelect.querySelector(`option[value="${rune}"]`);
+    const formPrimaryOption = formPrimarySelect.querySelector(`option[value="${rune}"]`);
+    const formSecondaryOption = formSecondarySelect.querySelector(`option[value="${rune}"]`);
+    const powerPrimaryOption = powerPrimarySelect.querySelector(`option[value="${rune}"]`);
+    const powerSecondaryOption = powerSecondarySelect.querySelector(`option[value="${rune}"]`);
 
     if (primaryOption) primaryOption.disabled = false;
     if (secondaryOption) secondaryOption.disabled = false;
     if (tertiaryOption) tertiaryOption.disabled = false;
+    if (formPrimaryOption) formPrimaryOption.disabled = false;
+    if (formSecondaryOption) formSecondaryOption.disabled = false;
+    if (powerPrimaryOption) powerPrimaryOption.disabled = false;
+    if (powerSecondaryOption) powerSecondaryOption.disabled = false;
   });
 
   // Disable selected options in other dropdowns for the current actor
@@ -836,6 +882,69 @@ function updateRuneSelections(actorId) {
     if (primaryOption) primaryOption.disabled = true;
     if (secondaryOption) secondaryOption.disabled = true;
   }
+
+  // Form runes
+  if (formPrimaryRune && formPrimaryRune !== 'auto') {
+    const secondaryOption = formSecondarySelect ? formSecondarySelect.querySelector(`option[value="${formPrimaryRune}"]`) : null;
+    const matchingPair = getMatchingPair(formPrimaryRune);
+
+    if (secondaryOption) secondaryOption.disabled = true;
+    if (matchingPair) {
+      const matchingOption = formSecondarySelect.querySelector(`option[value="${matchingPair}"]`);
+      if (matchingOption) matchingOption.disabled = true;
+    }
+  }
+
+  if (formSecondaryRune && formSecondaryRune !== 'auto') {
+    const primaryOption = formPrimarySelect ? formPrimarySelect.querySelector(`option[value="${formSecondaryRune}"]`) : null;
+    const matchingPair = getMatchingPair(formSecondaryRune);
+
+    if (primaryOption) primaryOption.disabled = true;
+    if (matchingPair) {
+      const matchingOption = formPrimarySelect.querySelector(`option[value="${matchingPair}"]`);
+      if (matchingOption) matchingOption.disabled = true;
+    }
+  }
+
+  // Power runes
+  if (powerPrimaryRune && powerPrimaryRune !== 'auto') {
+    const secondaryOption = powerSecondarySelect ? powerSecondarySelect.querySelector(`option[value="${powerPrimaryRune}"]`) : null;
+    const matchingPair = getMatchingPair(powerPrimaryRune);
+
+    if (secondaryOption) secondaryOption.disabled = true;
+    if (matchingPair) {
+      const matchingOption = powerSecondarySelect.querySelector(`option[value="${matchingPair}"]`);
+      if (matchingOption) matchingOption.disabled = true;
+    }
+  }
+
+  if (powerSecondaryRune && powerSecondaryRune !== 'auto') {
+    const primaryOption = powerPrimarySelect ? powerPrimarySelect.querySelector(`option[value="${powerSecondaryRune}"]`) : null;
+    const matchingPair = getMatchingPair(powerSecondaryRune);
+
+    if (primaryOption) primaryOption.disabled = true;
+    if (matchingPair) {
+      const matchingOption = powerPrimarySelect.querySelector(`option[value="${matchingPair}"]`);
+      if (matchingOption) matchingOption.disabled = true;
+    }
+  }
+}
+
+// Function to get matching pair of form or power rune
+function getMatchingPair(rune) {
+  const pairs = {
+    "Harmony": "Disorder",
+    "Disorder": "Harmony",
+    "Stasis": "Movement",
+    "Movement": "Stasis",
+    "Truth": "Illusion",
+    "Illusion": "Truth",
+    "Fertility": "Death",
+    "Death": "Fertility",
+    "Man": "Beast",
+    "Beast": "Man"
+  };
+  return pairs[rune] || null;
 }
 
 // Function to handle auto rune selection
@@ -844,17 +953,35 @@ function handleAutoRuneSelection(actorId) {
   const primarySelect = document.getElementById('primary-rune-select');
   const secondarySelect = document.getElementById('secondary-rune-select');
   const tertiarySelect = document.getElementById('tertiary-rune-select');
+  const formPrimarySelect = document.getElementById('form-primary-rune-select');
+  const formSecondarySelect = document.getElementById('form-secondary-rune-select');
+  const powerPrimarySelect = document.getElementById('power-primary-rune-select');
+  const powerSecondarySelect = document.getElementById('power-secondary-rune-select');
 
-  if (!primarySelect || !secondarySelect || !tertiarySelect) {
+  if (!primarySelect || !secondarySelect || !tertiarySelect || !formPrimarySelect || !formSecondarySelect || !powerPrimarySelect || !powerSecondarySelect) {
     console.warn("Rune dropdown elements not found. Skipping auto rune selection.");
     return;
   }
 
   const allRunes = Array.from(primarySelect.options).map(option => option.value).filter(rune => rune !== 'auto');
+  const allFormRunes = Array.from(formPrimarySelect.options).map(option => option.value).filter(rune => rune !== 'auto');
+  const allPowerRunes = Array.from(powerPrimarySelect.options).map(option => option.value).filter(rune => rune !== 'auto');
 
   // Randomly select a rune while respecting previous selections
   function getRandomRune(excludeRunes) {
     const remainingRunes = allRunes.filter(rune => !excludeRunes.includes(rune));
+    const randomIndex = Math.floor(Math.random() * remainingRunes.length);
+    return remainingRunes[randomIndex];
+  }
+
+  function getRandomFormRune(excludeRunes) {
+    const remainingRunes = allFormRunes.filter(rune => !excludeRunes.includes(rune));
+    const randomIndex = Math.floor(Math.random() * remainingRunes.length);
+    return remainingRunes[randomIndex];
+  }
+
+  function getRandomPowerRune(excludeRunes) {
+    const remainingRunes = allPowerRunes.filter(rune => !excludeRunes.includes(rune));
     const randomIndex = Math.floor(Math.random() * remainingRunes.length);
     return remainingRunes[randomIndex];
   }
@@ -875,10 +1002,40 @@ function handleAutoRuneSelection(actorId) {
   }
   selectedRunes.push(details.runes.tertiary);
 
+  const selectedFormRunes = [];
+  if (details.runes.formPrimary === 'auto') {
+    details.runes.formPrimary = getRandomFormRune(selectedFormRunes);
+  }
+  selectedFormRunes.push(details.runes.formPrimary);
+
+  if (details.runes.formSecondary === 'auto') {
+    details.runes.formSecondary = getRandomFormRune(selectedFormRunes);
+  }
+  selectedFormRunes.push(details.runes.formSecondary);
+
+  const selectedPowerRunes = [];
+  if (details.runes.powerPrimary === 'auto') {
+    details.runes.powerPrimary = getRandomPowerRune(selectedPowerRunes);
+  }
+  selectedPowerRunes.push(details.runes.powerPrimary);
+
+  if (details.runes.powerSecondary === 'auto') {
+    details.runes.powerSecondary = getRandomPowerRune(selectedPowerRunes);
+  }
+  selectedPowerRunes.push(details.runes.powerSecondary);
+
   // Update the rune values
   details.runes.all[details.runes.primary].primaryMod = 60;
   details.runes.all[details.runes.secondary].secondaryMod = 40;
   details.runes.all[details.runes.tertiary].tertiaryMod = 20;
+  details.runes.all[details.runes.formPrimary].primaryMod = 75;
+  details.runes.all[getMatchingPair(details.runes.formPrimary)].secondaryMod = 25;
+  details.runes.all[details.runes.formSecondary].secondaryMod = 75;
+  details.runes.all[getMatchingPair(details.runes.formSecondary)].primaryMod = 25;
+  details.runes.all[details.runes.powerPrimary].primaryMod = 75;
+  details.runes.all[getMatchingPair(details.runes.powerPrimary)].secondaryMod = 25;
+  details.runes.all[details.runes.powerSecondary].secondaryMod = 75;
+  details.runes.all[getMatchingPair(details.runes.powerSecondary)].primaryMod = 25;
 
   // Apply rune modifications to characteristics
   updateCharacteristicsWithRunes(details);
@@ -930,6 +1087,10 @@ const dialog = new Dialog({
             primary: 'auto',
             secondary: 'auto',
             tertiary: 'auto',
+            formPrimary: 'auto',
+            formSecondary: 'auto',
+            powerPrimary: 'auto',
+            powerSecondary: 'auto',
             all: runeDetails
           },
           characteristics: rollCharacteristics('human', globalOptions.races.human.charAvg),
@@ -1033,6 +1194,10 @@ const dialog = new Dialog({
       document.getElementById('primary-rune-select').value = details.runes.primary || 'auto';
       document.getElementById('secondary-rune-select').value = details.runes.secondary || 'auto';
       document.getElementById('tertiary-rune-select').value = details.runes.tertiary || 'auto';
+      document.getElementById('form-primary-rune-select').value = details.runes.formPrimary || 'auto';
+      document.getElementById('form-secondary-rune-select').value = details.runes.formSecondary || 'auto';
+      document.getElementById('power-primary-rune-select').value = details.runes.powerPrimary || 'auto';
+      document.getElementById('power-secondary-rune-select').value = details.runes.powerSecondary || 'auto';
       updateRuneSelections(actorId);
     });
 
@@ -1051,6 +1216,31 @@ const dialog = new Dialog({
     html.find('#tertiary-rune-select').change(function() {
       const actorId = html.find('#actor-detail-rune-select').val();
       actorDetails[actorId].runes.tertiary = $(this).val();
+      updateRuneSelections(actorId);
+      logSelectedActorsAndDetails();
+    });
+
+    html.find('#form-primary-rune-select').change(function() {
+      const actorId = html.find('#actor-detail-rune-select').val();
+      actorDetails[actorId].runes.formPrimary = $(this).val();
+      updateRuneSelections(actorId);
+      logSelectedActorsAndDetails();
+    });
+    html.find('#form-secondary-rune-select').change(function() {
+      const actorId = html.find('#actor-detail-rune-select').val();
+      actorDetails[actorId].runes.formSecondary = $(this).val();
+      updateRuneSelections(actorId);
+      logSelectedActorsAndDetails();
+    });
+    html.find('#power-primary-rune-select').change(function() {
+      const actorId = html.find('#actor-detail-rune-select').val();
+      actorDetails[actorId].runes.powerPrimary = $(this).val();
+      updateRuneSelections(actorId);
+      logSelectedActorsAndDetails();
+    });
+    html.find('#power-secondary-rune-select').change(function() {
+      const actorId = html.find('#actor-detail-rune-select').val();
+      actorDetails[actorId].runes.powerSecondary = $(this).val();
       updateRuneSelections(actorId);
       logSelectedActorsAndDetails();
     });
@@ -1094,6 +1284,10 @@ const dialog = new Dialog({
           primary: 'auto',
           secondary: 'auto',
           tertiary: 'auto',
+          formPrimary: 'auto',
+          formSecondary: 'auto',
+          powerPrimary: 'auto',
+          powerSecondary: 'auto',
           all: runeDetails
         },
         characteristics: rollCharacteristics('human', globalOptions.races.human.charAvg),
@@ -1126,6 +1320,10 @@ const dialog = new Dialog({
         actorDetails[id].runes.primary = details.runes.primary;
         actorDetails[id].runes.secondary = details.runes.secondary;
         actorDetails[id].runes.tertiary = details.runes.tertiary;
+        actorDetails[id].runes.formPrimary = details.runes.formPrimary;
+        actorDetails[id].runes.formSecondary = details.runes.formSecondary;
+        actorDetails[id].runes.powerPrimary = details.runes.powerPrimary;
+        actorDetails[id].runes.powerSecondary = details.runes.powerSecondary;
         actorDetails[id].runes.all = { ...details.runes.all };
       }
       logSelectedActorsAndDetails();
@@ -1145,7 +1343,7 @@ const dialog = new Dialog({
     });
 
     // Load the initial details for the first actor on page 4
-    if (currentPage === 3 && selectedActors.length > 0) {
+    if (currentPage === 4 && selectedActors.length > 0) {
       loadCharacteristics(selectedActors[0].id);
     }
   }
