@@ -4,8 +4,8 @@ const pages = [
   { title: "Details", content: "Select Race, Homeland, Occupation, and Cult" },
   { title: "Runes", content: "Allocate Runes: Primary, Secondary, Tertiary" },
   { title: "Characteristics", content: "Organize Characteristics: STR, CON, SIZ, DEX, INT, POW, CHA" },
-  { title: "Occupation", content: "Choose an Occupation" },
-  { title: "Cult", content: "Select a Cult" },
+  { title: "Occupation", content: "Select Occupation" },
+  { title: "Cult", content: "Select Cult" },
   { title: "Page 7", content: "Content for Page 7" },
   { title: "Page 8", content: "Content for Page 8" },
   { title: "Page 9", content: "Content for Page 9" }
@@ -20,29 +20,94 @@ const globalOptions = {
   },
   homelands: {
     auto: { weight: 0, occupations: [] },
-    "Sartar": { weight: 33, occupations: ["Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer", "Herder", "Hunter", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry", "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"], weightFunctions: [(details) => details.race === 'human' ? 17 : 0] },
-    "Esrolia": { weight: 33, occupations: ["Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer", "Herder", "Hunter", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry", "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"], weightFunctions: [(details) => details.race === 'darktroll' ? 17 : 0] },
-    "Grazeland Pony Breeders": { weight: 34, occupations: ["Assistant Shaman", "Bandit", "Entertainer", "Healer", "Herder", "Hunter", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"] },
-    "Praxian Tribes: Bison Rider": { weight: 34, occupations: ["Assistant Shaman", "Bandit", "Entertainer", "Healer", "Herder", "Hunter", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"] },
-    "Praxian Tribes: High Llama Rider": { weight: 34, occupations: ["Assistant Shaman", "Bandit", "Entertainer", "Healer", "Herder", "Hunter", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"] },
-    "Praxian Tribes: Impala Rider": { weight: 34, occupations: ["Assistant Shaman", "Bandit", "Entertainer", "Healer", "Herder", "Hunter", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"] },
-    "Praxian Tribes: Pol Joni": { weight: 34, occupations: ["Assistant Shaman", "Bandit", "Entertainer", "Healer", "Herder", "Hunter", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"] },
-    "Praxian Tribes: Sable Rider": { weight: 34, occupations: ["Assistant Shaman", "Bandit", "Entertainer", "Healer", "Herder", "Hunter", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"] },
-    "Lunar Tarsh": { weight: 34, occupations: ["Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer", "Herder", "Hunter", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry", "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"] },
-    "Old Tarsh": { weight: 34, occupations: ["Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer", "Herder", "Hunter", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"] }
+    "Sartar": { 
+      weight: 33, 
+      weightFunctions: [(details) => details.race === 'human' ? 17 : 0],
+      occupations: [
+        "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer",
+        "Herder", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry",
+        "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+      ]
+    },
+    "Esrolia": { 
+      weight: 33, 
+      weightFunctions: [(details) => details.race === 'darktroll' ? 17 : 0],
+      occupations: [
+        "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer",
+        "Herder", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry",
+        "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+      ]
+    },
+    "Grazeland Pony Breeders": { 
+      weight: 34,
+      occupations: [
+        "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble", 
+        "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+      ]
+    },
+    "Praxian Tribes: Bison Rider": { 
+      weight: 34,
+      occupations: [
+        "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
+        "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+      ]
+    },
+    "Praxian Tribes: High Llama Rider": { 
+      weight: 34,
+      occupations: [
+        "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
+        "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+      ]
+    },
+    "Praxian Tribes: Impala Rider": { 
+      weight: 34,
+      occupations: [
+        "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
+        "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+      ]
+    },
+    "Praxian Tribes: Pol Joni": { 
+      weight: 34,
+      occupations: [
+        "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
+        "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+      ]
+    },
+    "Praxian Tribes: Sable Rider": { 
+      weight: 34,
+      occupations: [
+        "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
+        "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+      ]
+    },
+    "Lunar Tarsh": { 
+      weight: 34,
+      occupations: [
+        "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer",
+        "Herder", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry",
+        "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+      ]
+    },
+    "Old Tarsh": { 
+      weight: 34,
+      occupations: [
+        "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer", "Herder",
+        "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Warrior: Light Infantry", 
+        "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+      ]
+    }
   },
   occupations: {
     auto: { weight: 0 },
-    "Assistant Shaman": { weight: 40 },
-    "Bandit": { weight: 30 },
+    "Assistant Shaman": { weight: 40, weightFunctions: [(details) => details.cult === 'Cult 1' ? 20 : 0] },
+    "Bandit": { weight: 30, weightFunctions: [(details) => details.cult === 'Cult 2' ? 20 : 0] },
     "Chariot Driver": { weight: 30 },
-    "Crafter": { weight: 30 },
+    "Crafter (Brewer, Carpenter, Jeweler, Leatherworker, Mason, Potter, Redsmith, Tanner, Weaver)": { weight: 30 },
     "Entertainer": { weight: 30 },
     "Farmer": { weight: 30 },
     "Fisher": { weight: 30 },
     "Healer": { weight: 30 },
     "Herder": { weight: 30 },
-    "Hunter": { weight: 30 },
     "Merchant": { weight: 30 },
     "Noble": { weight: 30 },
     "Philosopher": { weight: 30 },
@@ -56,7 +121,7 @@ const globalOptions = {
   },
   cults: {
     auto: { weight: 0 },
-    // Add other cults dynamically
+    // Cults will be populated dynamically from the compendium
   }
 };
 
@@ -110,16 +175,14 @@ async function loadSkills() {
     const weaponPack = game.packs.get("wiki-en-rqg.skills-weapons");
 
     if (!skillPack || !weaponPack) {
-      console.error("Skill or Weapon Compendium not found");
+      console.error("Compendiums not found");
       return {};
     }
 
-    await skillPack.getIndex();
-    await weaponPack.getIndex();
-
-    const skillItems = await skillPack.getDocuments();
-    const weaponItems = await weaponPack.getDocuments();
-
+    await skillPack.getIndex(); // Load the index for skills
+    await weaponPack.getIndex(); // Load the index for weapons
+    const skillItems = await skillPack.getDocuments(); // Load all skill items
+    const weaponItems = await weaponPack.getDocuments(); // Load all weapon items
     console.log("Loaded skill items:", skillItems);
     console.log("Loaded weapon items:", weaponItems);
 
@@ -129,23 +192,23 @@ async function loadSkills() {
       Knowledge: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} },
       Magic: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} },
       Manipulation: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} },
-      MeleeWeapons: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} },
-      MissileWeapons: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} },
       Perception: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} },
-      Stealth: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} }
+      Stealth: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} },
+      MeleeWeapons: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} },
+      MissileWeapons: { STR: 0, SIZ: 0, DEX: 0, POW: 0, total: 0, skills: {} }
     };
 
-    skillItems.forEach(item => {
-      const category = item.system.category.toLowerCase();
+    skillItems.forEach(skill => {
+      const category = skill.system.category.charAt(0).toUpperCase() + skill.system.category.slice(1);
       if (skills[category]) {
-        skills[category].skills[item.name] = { baseChance: item.system.baseChance, homelandMod: 0, total: item.system.baseChance };
+        skills[category].skills[skill.name] = { baseChance: skill.system.baseChance, homelandMod: 0, total: skill.system.baseChance };
       }
     });
 
-    weaponItems.forEach(item => {
-      const category = item.system.category.toLowerCase();
+    weaponItems.forEach(weapon => {
+      const category = weapon.system.category === "missileWeapons" ? "MissileWeapons" : "MeleeWeapons";
       if (skills[category]) {
-        skills[category].skills[item.name] = { baseChance: item.system.baseChance, homelandMod: 0, total: item.system.baseChance };
+        skills[category].skills[weapon.name] = { baseChance: weapon.system.baseChance, homelandMod: 0, total: weapon.system.baseChance };
       }
     });
 
@@ -156,21 +219,21 @@ async function loadSkills() {
   }
 }
 
-// Function to load cults from the compendium
+// Function to load cults data from the selected compendium
 async function loadCults() {
   try {
-    const pack = game.packs.get("wiki-en-rqg.cults");
-    if (!pack) {
+    const cultPack = game.packs.get("wiki-en-rqg.cults");
+
+    if (!cultPack) {
       console.error("Cults compendium not found");
       return [];
     }
 
-    await pack.getIndex();
-    const cultItems = await pack.getDocuments();
+    await cultPack.getIndex(); // Load the index for cults
+    const cultItems = await cultPack.getDocuments(); // Load all cult items
     console.log("Loaded cult items:", cultItems);
 
-    const cultNames = cultItems.map(item => item.name);
-    return cultNames;
+    return cultItems.map(cult => cult.name);
   } catch (error) {
     console.error("Error loading cults:", error);
     return [];
@@ -269,7 +332,7 @@ function rollCharacteristics(race, charAvg) {
     for (let char in characteristics) {
       if (char !== 'weight' && char !== 'weightFunctions' && char !== 'charAvg') {
         const value = rollDice(characteristics[char]);
-        values[char] = value;
+        values[char] = { baseValue: value, primaryMod: 0, secondaryMod: 0, homelandMod: 0, total: 0 };
         total += value;
       }
     }
@@ -304,16 +367,7 @@ function handleAutoSelections() {
     if (details.cult === 'auto') details.cult = getWeightedRandomSelection(globalOptions.cults, actor.id);
 
     // Apply homeland modifiers
-    if (details.homeland === 'Sartar') setHomelandModifier(details, 'Air', 10);
-    if (details.homeland === 'Esrolia') setHomelandModifier(details, 'Earth', 10);
-    if (details.homeland === 'Grazeland Pony Breeders') setHomelandModifier(details, 'Fire/Sky', 10);
-    if (details.homeland === 'Praxian Tribes: Bison Rider') setHomelandModifier(details, 'Air', 10);
-    if (details.homeland === 'Praxian Tribes: High Llama Rider') setHomelandModifier(details, 'Water', 10);
-    if (details.homeland === 'Praxian Tribes: Impala Rider') setHomelandModifier(details, 'Fire/Sky', 10);
-    if (details.homeland === 'Praxian Tribes: Pol Joni') setHomelandModifier(details, 'Air', 10);
-    if (details.homeland === 'Praxian Tribes: Sable Rider') setHomelandModifier(details, 'Moon', 10);
-    if (details.homeland === 'Lunar Tarsh') setHomelandModifier(details, 'Moon', 10);
-    if (details.homeland === 'Old Tarsh') setHomelandModifier(details, 'Earth', 10);
+    applyHomelandModifiers(details);
   });
 }
 
@@ -326,7 +380,46 @@ function logSelectedActorsAndDetails() {
   });
 }
 
-// Function to calculate characteristics total
+// Function to apply homeland modifiers to characteristics
+function applyHomelandModifiers(details) {
+  const homelandModifiers = {
+    "Praxian Tribes: Bison Rider": { "SIZ": 2, "DEX": -2 },
+    "Praxian Tribes: High Llama Rider": { "SIZ": 1, "DEX": -1 },
+    "Praxian Tribes: Impala Rider": { "SIZ": -2, "DEX": 2 }
+  };
+
+  const modifiers = homelandModifiers[details.homeland] || {};
+  for (const char in modifiers) {
+    details.characteristics[char].homelandMod = modifiers[char];
+  }
+}
+
+// Function to update characteristics based on the rune selection
+function updateCharacteristicsWithRunes(details) {
+  const runeModifications = {
+    "Darkness": ["SIZ", "CHA"],
+    "Water": ["DEX", "CHA"],
+    "Earth": ["CON", "CHA"],
+    "Air": ["STR", "CHA"],
+    "Fire/Sky": ["INT", "CHA"],
+    "Moon": ["POW", "CHA"]
+  };
+
+  function applyRuneMod(rune, modValue, modType) {
+    const options = runeModifications[rune];
+    if (!options) return;
+    const selectedChar = options[Math.floor(Math.random() * options.length)]; // Randomly choose one option
+    details.characteristics[selectedChar][modType] += modValue;
+  }
+
+  // Apply primary rune modification
+  applyRuneMod(details.runes.primary.split(" ")[0], 2, "primaryMod");
+
+  // Apply secondary rune modification
+  applyRuneMod(details.runes.secondary.split(" ")[0], 1, "secondaryMod");
+}
+
+// Function to calculate the total for each characteristic
 function calculateCharacteristicsTotal(details) {
   for (const char in details.characteristics) {
     const characteristic = details.characteristics[char];
@@ -336,149 +429,176 @@ function calculateCharacteristicsTotal(details) {
 
 // Function to calculate attributes based on characteristics
 function calculateAttributes(details) {
-  const char = details.characteristics;
-  const attributes = details.attributes;
+  const con = details.characteristics.CON.total;
+  const siz = details.characteristics.SIZ.total;
+  const str = details.characteristics.STR.total;
+  const pow = details.characteristics.POW.total;
+  const cha = details.characteristics.CHA.total;
+  const dex = details.characteristics.DEX.total;
 
-  // Magic Points (same as POW total)
-  attributes.magicpoints = char.POW.total;
+  // Calculate Healing Rate
+  let healingRate = 1;
+  if (con >= 7 && con <= 12) healingRate = 2;
+  else if (con >= 13 && con <= 18) healingRate = 3;
+  else if (con >= 19) healingRate = 3 + Math.floor((con - 13) / 6);
 
-  // Hit Points
-  attributes.hitpoints = {
-    basevalue: 0,
-    sizMod: 0,
-    powMod: 0,
-    total: 0
+  // Calculate Hit Points Modifiers
+  const sizMod = siz >= 1 && siz <= 4 ? -2 : siz >= 5 && siz <= 8 ? -1 : siz >= 13 && siz <= 16 ? 1 : siz >= 17 && siz <= 20 ? 2 : siz >= 21 && siz <= 24 ? 3 : siz >= 25 && siz <= 28 ? 4 : siz >= 29 ? Math.floor((siz - 21) / 4) + 3 : 0;
+  const powMod = pow >= 1 && pow <= 4 ? -1 : pow >= 17 && pow <= 20 ? 1 : pow >= 21 && pow <= 24 ? 2 : pow >= 25 && pow >= 29 ? Math.floor((pow - 21) / 4) + 2 : 0;
+
+  // Calculate Spirit Combat Damage
+  const powCha = pow + cha;
+  let spiritCombat = "1D3";
+  if (powCha >= 13 && powCha <= 24) spiritCombat = "1D6";
+  else if (powCha >= 25 && powCha <= 32) spiritCombat = "1D6+1";
+  else if (powCha >= 33 && powCha <= 40) spiritCombat = "1D6+3";
+  else if (powCha >= 41) spiritCombat = "2D6+3";
+
+  // Calculate Damage Bonus
+  const strSiz = str + siz;
+  let damageBonus = "-1D4";
+  if (strSiz >= 13 && strSiz <= 24) damageBonus = "—";
+  else if (strSiz >= 25 && strSiz <= 32) damageBonus = "+1D4";
+  else if (strSiz >= 33 && strSiz <= 40) damageBonus = "+1D6";
+  else if (strSiz >= 41) damageBonus = "+2D6";
+
+  // Calculate Max ENC
+  const maxENC = Math.floor((str + con) / 2);
+
+  // Calculate Agility Skills Modifiers
+  const agilityModifiers = {
+    STR: str <= 4 ? -5 : str >= 13 && str <= 16 ? 5 : str >= 17 ? Math.floor((str - 13) / 4) * 5 + 5 : 0,
+    SIZ: siz <= 4 ? 5 : siz >= 17 ? Math.floor((siz - 13) / 4) * -5 - 5 : 0,
+    DEX: dex <= 4 ? -10 : dex >= 5 && dex <= 8 ? -5 : dex >= 13 && dex <= 16 ? 5 : dex >= 17 ? Math.floor((dex - 13) / 4) * 5 + 10 : 0,
+    POW: pow <= 4 ? -5 : pow >= 13 && pow <= 16 ? 5 : pow >= 17 ? Math.floor((pow - 13) / 4) * 5 + 5 : 0
   };
-  if (char.SIZ.total >= 1 && char.SIZ.total <= 4) attributes.hitpoints.sizMod = -2;
-  else if (char.SIZ.total >= 5 && char.SIZ.total <= 8) attributes.hitpoints.sizMod = -1;
-  else if (char.SIZ.total >= 13 && char.SIZ.total <= 16) attributes.hitpoints.sizMod = 1;
-  else if (char.SIZ.total >= 17 && char.SIZ.total <= 20) attributes.hitpoints.sizMod = 2;
-  else if (char.SIZ.total >= 21 && char.SIZ.total <= 24) attributes.hitpoints.sizMod = 3;
-  else if (char.SIZ.total >= 25 && char.SIZ.total <= 28) attributes.hitpoints.sizMod = 4;
-  if (char.POW.total >= 1 && char.POW.total <= 4) attributes.hitpoints.powMod = -1;
-  else if (char.POW.total >= 17 && char.POW.total <= 20) attributes.hitpoints.powMod = 1;
-  else if (char.POW.total >= 21 && char.POW.total <= 24) attributes.hitpoints.powMod = 2;
-  else if (char.POW.total >= 25 && char.POW.total <= 28) attributes.hitpoints.powMod = 3;
-  attributes.hitpoints.total = attributes.hitpoints.basevalue + attributes.hitpoints.sizMod + attributes.hitpoints.powMod;
 
-  // Healing Rate
-  if (char.CON.total <= 6) attributes.healingrate = 1;
-  else if (char.CON.total >= 7 && char.CON.total <= 12) attributes.healingrate = 2;
-  else if (char.CON.total >= 13 && char.CON.total <= 18) attributes.healingrate = 3;
-  else attributes.healingrate = 3 + Math.floor((char.CON.total - 13) / 6);
-
-  // Damage Bonus
-  const strSizTotal = char.STR.total + char.SIZ.total;
-  if (strSizTotal <= 12) attributes.damagebonus = '-1D4';
-  else if (strSizTotal >= 25 && strSizTotal <= 32) attributes.damagebonus = '+1D6+1';
-  else if (strSizTotal >= 33 && strSizTotal <= 40) attributes.damagebonus = '+1D6+3';
-  else if (strSizTotal >= 41 && strSizTotal <= 56) attributes.damagebonus = '+2D6+3';
-  else attributes.damagebonus = '-';
-
-  // Spirit Combat Damage
-  const powChaTotal = char.POW.total + char.CHA.total;
-  if (powChaTotal <= 12) attributes.spiritcombat = '1D3';
-  else if (powChaTotal >= 13 && powChaTotal <= 24) attributes.spiritcombat = '1D6';
-  else if (powChaTotal >= 25 && powChaTotal <= 32) attributes.spiritcombat = '1D6+1';
-  else if (powChaTotal >= 33 && powChaTotal <= 40) attributes.spiritcombat = '1D6+3';
-  else attributes.spiritcombat = '2D6+3';
-
-  // Max ENC
-  attributes.maxENC = Math.floor((char.STR.total + char.CON.total) / 2);
+  // Set the calculated attributes
+  details.attributes = {
+    magicpoints: pow,
+    hitpoints: {
+      basevalue: Math.floor((con + siz) / 2),
+      sizMod: sizMod,
+      powMod: powMod
+    },
+    healingrate: healingRate,
+    damagebonus: damageBonus,
+    spiritcombat: spiritCombat,
+    maxENC: maxENC,
+    agilityModifiers: agilityModifiers
+  };
 }
 
 // Function to apply homeland skill modifiers
 function applyHomelandSkillModifiers(details) {
-  const modifiers = {
+  const homelandSkills = {
     "Sartar": {
-      culturalSkills: { "Ride": 5, "Dance": 5, "Sing": 10, "Speak Own Language (Heortling)": 50, "Speak Other Language (Tradetalk)": 10, "Customs (Heortling)": 10, "Farm": 20, "Herd": 10, "Spirit Combat": 15 },
-      culturalWeapons: { "Dagger": 10, "Battle Axe": 10, "1H Spear": 10, "Broadsword": 15, "Composite Bow": 10, "Sling": 10, "Javelin": 10, "Medium Shield": 15, "Large Shield": 10 }
+      culturalSkills: {
+        "Ride (any)": 5,
+        "Dance": 5,
+        "Sing": 10,
+        "Speak Own Language (Heortling)": 50,
+        "Speak Other Language (Tradetalk)": 10,
+        "Customs (Heortling)": 25,
+        "Farm": 20,
+        "Herd": 10,
+        "Spirit Combat": 15
+      },
+      culturalWeapons: {
+        "Dagger": 10,
+        "Battle Axe": 10,
+        "1H Spear": 10,
+        "Broadsword": 15,
+        "Composite Bow": 10,
+        "Javelin": 10,
+        "Medium Shield": 15,
+        "Large Shield": 10
+      }
     },
     "Esrolia": {
-      culturalSkills: { "Bargain": 5, "Dance": 10, "Intrigue": 5, "Sing": 5, "Speak Own Language (Esrolian)": 50, "Speak Other Language (Tradetalk)": 20, "Customs (Esrolian)": 10, "Farm": 25, "First Aid": 5, "Spirit Combat": 15 },
-      culturalWeapons: { "Battle Axe": 15, "1H Spear": 10, "Rapier": 10, "Self Bow": 10, "Thrown Axe": 10, "Small Shield": 15, "Medium Shield": 15, "Large Shield": 10 }
+      culturalSkills: {
+        "Bargain": 5,
+        "Dance": 10,
+        "Intrigue": 5,
+        "Sing": 5,
+        "Speak Own Language (Esrolian)": 50,
+        "Speak Other Language (Tradetalk)": 20,
+        "Customs (Esrolian)": 25,
+        "Farm": 25,
+        "First Aid": 5,
+        "Spirit Combat": 15
+      },
+      culturalWeapons: {
+        "Battle Axe": 15,
+        "1H Spear": 10,
+        "Rapier": 10,
+        "Self Bow": 10,
+        "Thrown Axe": 10,
+        "Small Shield": 15,
+        "Medium Shield": 15,
+        "Large Shield": 10
+      }
     },
-    "Grazeland Pony Breeders": {
-      culturalSkills: { "Ride (Horse)": 35, "Speak Own Language (Pure Horse Tongue)": 50, "Speak Other Language (Tradetalk)": 10, "Customs (Grazeland Pony Breeders)": 10, "Herd": 35, "Spirit Combat": 15 },
-      culturalWeapons: { "Dagger": 10, "Lance": 15, "Broadsword": 10, "Composite Bow": 15, "Small Shield": 15, "Medium Shield": 10 }
-    },
+    // Add other homelands with their cultural skills and weapons here...
+  };
+
+  const praxianSkills = {
     "Praxian Tribes: Bison Rider": {
-      culturalSkills: { "Ride (Bison)": 35, "Customs (Bison Tribe)": 10, "Herd": 30, "Peaceful Cut": 15, "Spirit Combat": 20 },
-      culturalWeapons: { "Dagger": 10, "Lance": 15, "Broadsword": 10, "Javelin": 10, "Medium Shield": 10 }
+      culturalSkills: {
+        "Ride (Bison)": 35,
+        "Customs (Bison Tribe)": 25,
+        "Herd": 30,
+        "Peaceful Cut": 15,
+        "Spirit Combat": 20
+      },
+      culturalWeapons: {
+        "Dagger": 10,
+        "Lance": 15,
+        "Broadsword": 10,
+        "Javelin": 10,
+        "Medium Shield": 10
+      }
     },
-    "Praxian Tribes: High Llama Rider": {
-      culturalSkills: { "Ride (High Llama)": 35, "Customs (High Llama Tribe)": 10, "Herd": 30, "Peaceful Cut": 15, "Spirit Combat": 20 },
-      culturalWeapons: { "Dagger": 10, "2H Dagger-Axe": 10, "Pole Lasso": 10 }
-    },
-    "Praxian Tribes: Impala Rider": {
-      culturalSkills: { "Ride (Impala)": 35, "Customs (Impala Tribe)": 10, "Herd": 30, "Peaceful Cut": 15, "Spirit Combat": 20 },
-      culturalWeapons: { "Dagger": 5, "Shortsword": 10, "Composite Bow": 10, "Dart": 10, "Small Shield": 10 }
-    },
-    "Praxian Tribes: Pol Joni": {
-      culturalSkills: { "Ride (Horse)": 35, "Customs (Pol Joni)": 10, "Herd": 30, "Peaceful Cut": 15, "Spirit Combat": 20 },
-      culturalWeapons: { "Dagger": 10, "Lance": 15, "Broadsword": 15, "Composite Bow": 10, "Medium Shield": 10 }
-    },
-    "Praxian Tribes: Sable Rider": {
-      culturalSkills: { "Ride (Sable Antelope)": 35, "Customs (Sable Tribe)": 10, "Herd": 30, "Peaceful Cut": 15, "Spirit Combat": 20 },
-      culturalWeapons: { "Dagger": 10, "Kopis": 15, "1H Axe": 15, "Lance": 10, "Short Spear": 10, "Composite Bow": 10, "Small Shield": 10, "Medium Shield": 10 }
-    },
-    "Lunar Tarsh": {
-      culturalSkills: { "Dance": 5, "Intrigue": 5, "Sing": 5, "Speak Own Language (New Pelorian)": 50, "Speak Other Language (Tarshite)": 20, "Customs (Lunar Provincial)": 10, "Farm": 25, "First Aid": 5, "Spirit Combat": 15 },
-      culturalWeapons: { "Dagger": 10, "1H or 2H Spear": 15, "Kopis": 10, "Composite Bow": 10, "Sling": 10, "Javelin": 10, "Medium Shield": 10, "Large Shield": 15 }
-    },
-    "Old Tarsh": {
-      culturalSkills: { "Dance": 5, "Ride": 5, "Sing": 10, "Speak Own Language (Tarshite)": 50, "Speak Other Language (Tradetalk)": 10, "Customs (Tarshite)": 10, "Farm": 15, "Survival": 5, "Spirit Combat": 15 },
-      culturalWeapons: { "Dagger": 10, "Battle Axe": 15, "1H Spear": 10, "Broadsword": 10, "Composite Bow": 10, "Sling": 10, "Javelin": 10, "Medium Shield": 10, "Large Shield": 10 }
-    }
+    // Add other Praxian tribes here...
   };
 
   const homeland = details.homeland;
-  if (modifiers[homeland]) {
-    const culturalSkills = modifiers[homeland].culturalSkills;
-    const culturalWeapons = modifiers[homeland].culturalWeapons;
+  let modifiers;
 
-    // Apply skill modifiers
-    Object.keys(culturalSkills).forEach(skillName => {
-      const skillCategory = findSkillCategory(skillName, details.skills);
-      if (skillCategory) {
-        const skill = findSkill(skillName, skillCategory);
-        if (skill) {
-          skill.homelandMod = culturalSkills[skillName];
-          skill.total += skill.homelandMod;
-        }
-      }
-    });
-
-    // Apply weapon skill modifiers
-    Object.keys(culturalWeapons).forEach(skillName => {
-      const skillCategory = findSkillCategory(skillName, details.skills);
-      if (skillCategory) {
-        const skill = findSkill(skillName, skillCategory);
-        if (skill) {
-          skill.homelandMod = culturalWeapons[skillName];
-          skill.total += skill.homelandMod;
-        }
-      }
-    });
+  if (homeland.startsWith("Praxian Tribes:")) {
+    modifiers = praxianSkills[homeland];
+  } else {
+    modifiers = homelandSkills[homeland];
   }
-}
 
-// Function to find the skill category
-function findSkillCategory(skillName, skills) {
-  for (const category in skills) {
-    if (skills[category].skills[skillName]) {
-      return skills[category];
+  if (modifiers) {
+    // Apply cultural skills
+    for (const skill in modifiers.culturalSkills) {
+      const skillName = skill.split(" (")[0]; // Normalize skill name without any details
+      const skillValue = modifiers.culturalSkills[skill];
+      for (const category in details.skills) {
+        for (const skillKey in details.skills[category].skills) {
+          if (skillKey.startsWith(skillName)) {
+            details.skills[category].skills[skillKey].homelandMod += skillValue;
+            details.skills[category].skills[skillKey].total += skillValue;
+          }
+        }
+      }
+    }
+
+    // Apply cultural weapons
+    for (const weapon in modifiers.culturalWeapons) {
+      for (const category of ["MeleeWeapons", "MissileWeapons"]) {
+        if (details.skills[category].skills[weapon]) {
+          details.skills[category].skills[weapon].homelandMod = modifiers.culturalWeapons[weapon];
+          details.skills[category].skills[weapon].total += modifiers.culturalWeapons[weapon];
+        }
+      }
     }
   }
-  return null;
 }
 
-// Function to find the skill in a category
-function findSkill(skillName, skillCategory) {
-  return skillCategory.skills[skillName] || null;
-}
-
-// Function to render a specific page
+// Create a function to render a specific page
 async function renderPage(pageIndex) {
   const page = pages[pageIndex];
   let content = `<h2>${page.title}</h2><p>${page.content}</p>`;
@@ -573,10 +693,8 @@ async function renderPage(pageIndex) {
   } else if (pageIndex === 4) {
     // Dropdown for occupation on Page 5
     let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
-    const actor = actorDetails[selectedActors[0].id]; // Assume the first actor is selected by default
-    const homeland = actor.homeland;
-    const occupations = globalOptions.homelands[homeland].occupations;
-
+    const details = actorDetails[selectedActors[0].id];
+    const occupations = globalOptions.homelands[details.homeland].occupations;
     content += `
       <div>
         <label for="actor-detail-occupation-select">Actor:</label>
@@ -591,36 +709,10 @@ async function renderPage(pageIndex) {
       </div>
     `;
   } else if (pageIndex === 5) {
-    // Dropdown for cult on Page 6
+    // Dropdown for cults on Page 6
     let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
-    const actor = actorDetails[selectedActors[0].id]; // Assume the first actor is selected by default
-    const occupation = actor.occupation;
-
-    let whitelistedCults = [];
-    if (occupation === "Assistant Shaman") whitelistedCults = ["Daka Fal", "Waha", "Yelm"];
-    if (occupation === "Bandit") whitelistedCults = ["Babester Gor", "Black Fang", "Eurmal", "Maran Gor", "Orlanth", "Seven Mothers", "Storm Bull"];
-    if (occupation === "Chariot Driver") whitelistedCults = ["Orlanth Adventurous", "Seven Mothers"];
-    if (occupation === "Crafter") whitelistedCults = ["Depends on the craft—Ernalda (potters and weavers), Issaries (all), Gustbran (redsmith)"];
-    if (occupation === "Entertainer") whitelistedCults = ["Donandar", "Ernalda", "Eurmal", "Orlanth", "Seven Mothers"];
-    if (occupation === "Farmer") whitelistedCults = ["Ernalda", "Orlanth", "Seven Mothers (Lunar Tarsh)", "Yelmalio"];
-    if (occupation === "Fisher") whitelistedCults = ["Engizi", "Orlanth"];
-    if (occupation === "Healer") whitelistedCults = ["Chalana Arroy", "Ernalda", "Seven Mothers"];
-    if (occupation === "Herder") whitelistedCults = ["Eiritha", "Orlanth", "Waha", "Yelm", "Yinkin"];
-    if (occupation === "Hunter") whitelistedCults = ["Foundchild", "Odayla", "Orlanth", "Yelmalio"];
-    if (occupation === "Merchant") whitelistedCults = ["Issaries", "Argan Argar", "Eryies", "Seven Mothers"];
-    if (occupation === "Noble") whitelistedCults = ["Ernalda", "Orlanth", "Seven Mothers", "Waha", "Yelm"];
-    if (occupation === "Philosopher") whitelistedCults = ["Lhankor Mhy", "Seven Mothers", "Aeolian"];
-    if (occupation === "Priest") whitelistedCults = ["All except Daka Fal, Eurmal, and Waha"];
-    if (occupation === "Scribe") whitelistedCults = ["Lhankor Mhy"];
-    if (occupation === "Thief") whitelistedCults = ["Eurmal", "Orlanth"];
-    if (occupation === "Warrior: Heavy Infantry") whitelistedCults = ["Argan Argar", "Babester Gor", "Humakt", "Maran Gor", "Orlanth Adventurous", "Seven Mothers", "Yelmalio"];
-    if (occupation === "Warrior: Light Infantry") whitelistedCults = ["Babester Gor", "Humakt", "Maran Gor", "Orlanth Adventurous", "Seven Mothers", "Storm Bull"];
-    if (occupation === "Warrior: Heavy Cavalry") whitelistedCults = ["Humakt", "Orlanth Adventurous", "Orlanth Thunderous", "Seven Mothers", "Storm Bull", "Waha", "Yelm"];
-    if (occupation === "Warrior: Light Cavalry") whitelistedCults = ["Humakt", "Orlanth Adventurous", "Orlanth Thunderous", "Seven Mothers", "Storm Bull", "Waha", "Yelm"];
-
-    const allCults = await loadCults();
-    const cults = allCults.filter(cult => whitelistedCults.includes(cult));
-
+    const details = actorDetails[selectedActors[0].id];
+    const cults = await loadCults();
     content += `
       <div>
         <label for="actor-detail-cult-select">Actor:</label>
@@ -782,6 +874,9 @@ function handleAutoRuneSelection(actorId) {
   details.runes.all[details.runes.primary].primaryMod = 60;
   details.runes.all[details.runes.secondary].secondaryMod = 40;
   details.runes.all[details.runes.tertiary].tertiaryMod = 20;
+
+  // Apply rune modifications to characteristics
+  updateCharacteristicsWithRunes(details);
 }
 
 // Function to apply auto selections to all actors
@@ -800,7 +895,7 @@ function loadCharacteristics(actorId) {
   if (characteristics) {
     ['str', 'con', 'siz', 'dex', 'int', 'pow', 'cha'].forEach(char => {
       const select = document.getElementById(`${char}-select`);
-      if (select) select.value = characteristics[char.toUpperCase()] || 0;
+      if (select) select.value = characteristics[char.toUpperCase()].baseValue || 0;
     });
   }
 }
@@ -813,42 +908,30 @@ const dialog = new Dialog({
   render: async (html) => {
     // Add event listener for the next button on Page 1
     html.find('#next-button-page-1').click(async () => {
-      const actorId = html.find('#actor-select').val();
-      const actor = game.actors.get(actorId);
-      selectedActors.push(actor);
+      if (selectedActors.length === 0) {
+        const actorId = html.find('#actor-select').val();
+        const actor = game.actors.get(actorId);
+        selectedActors.push(actor);
 
-      const categorizedRunes = await loadRunes();
-      const runeDetails = initializeRuneDetails(categorizedRunes);
+        const categorizedRunes = await loadRunes();
+        const runeDetails = initializeRuneDetails(categorizedRunes);
 
-      const skills = await loadSkills();
-
-      actorDetails[actorId] = {
-        race: 'human',
-        homeland: 'auto',
-        occupation: 'auto',
-        cult: 'auto',
-        runes: {
-          primary: 'auto',
-          secondary: 'auto',
-          tertiary: 'auto',
-          all: runeDetails
-        },
-        characteristics: rollCharacteristics('human', globalOptions.races.human.charAvg),
-        attributes: {
-          magicpoints: 0,
-          hitpoints: {
-            basevalue: 0,
-            sizMod: 0,
-            powMod: 0,
-            total: 0
+        actorDetails[actorId] = {
+          race: 'human',
+          homeland: 'auto',
+          occupation: 'auto',
+          cult: 'auto',
+          runes: {
+            primary: 'auto',
+            secondary: 'auto',
+            tertiary: 'auto',
+            all: runeDetails
           },
-          healingrate: 0,
-          damagebonus: '',
-          spiritcombat: '',
-          maxENC: 0
-        },
-        skills
-      };
+          characteristics: rollCharacteristics('human', globalOptions.races.human.charAvg),
+          attributes: {},
+          skills: await loadSkills()
+        };
+      }
       logSelectedActorsAndDetails();
       currentPage++;
       dialog.data.content = await createDialogContent(currentPage);
@@ -875,8 +958,12 @@ const dialog = new Dialog({
 
     // Add event listener for the next button on Page 4
     html.find('#next-button-page-4').click(async () => {
-      calculateCharacteristicsTotal(actorDetails[actorId]);
-      calculateAttributes(actorDetails[actorId]);
+      selectedActors.forEach(actor => {
+        const details = actorDetails[actor.id];
+        calculateCharacteristicsTotal(details); // Calculate total for characteristics
+        calculateAttributes(details); // Calculate attributes based on characteristics
+        applyHomelandSkillModifiers(details); // Apply homeland skill modifiers
+      });
       logSelectedActorsAndDetails();
       currentPage++;
       dialog.data.content = await createDialogContent(currentPage);
@@ -885,10 +972,10 @@ const dialog = new Dialog({
 
     // Add event listener for the next button on Page 5
     html.find('#next-button-page-5').click(async () => {
-      const actorId = html.find('#actor-detail-occupation-select').val();
-      const occupationSelect = document.getElementById('occupation-select');
-      const details = actorDetails[actorId];
-      details.occupation = occupationSelect.value;
+      selectedActors.forEach(actor => {
+        const details = actorDetails[actor.id];
+        details.occupation = html.find('#occupation-select').val();
+      });
       logSelectedActorsAndDetails();
       currentPage++;
       dialog.data.content = await createDialogContent(currentPage);
@@ -897,14 +984,10 @@ const dialog = new Dialog({
 
     // Add event listener for the next button on Page 6
     html.find('#next-button-page-6').click(async () => {
-      const actorId = html.find('#actor-detail-cult-select').val();
-      const cultSelect = document.getElementById('cult-select');
-      const details = actorDetails[actorId];
-      if (cultSelect.value === 'auto') {
-        details.cult = getWeightedRandomSelection(globalOptions.cults, actorId);
-      } else {
-        details.cult = cultSelect.value;
-      }
+      selectedActors.forEach(actor => {
+        const details = actorDetails[actor.id];
+        if (details.cult === 'auto') details.cult = getWeightedRandomSelection(globalOptions.cults, actor.id);
+      });
       logSelectedActorsAndDetails();
       currentPage++;
       dialog.data.content = await createDialogContent(currentPage);
@@ -976,13 +1059,7 @@ const dialog = new Dialog({
     ['str', 'con', 'siz', 'dex', 'int', 'pow', 'cha'].forEach(char => {
       html.find(`#${char}-select`).change(function() {
         const actorId = html.find('#actor-detail-char-select').val();
-        actorDetails[actorId].characteristics[char.toUpperCase()] = {
-          baseValue: parseInt($(this).val()),
-          primaryMod: 0,
-          secondaryMod: 0,
-          homelandMod: 0,
-          total: 0
-        };
+        actorDetails[actorId].characteristics[char.toUpperCase()].baseValue = parseInt($(this).val());
         logSelectedActorsAndDetails();
       });
     });
@@ -994,6 +1071,63 @@ const dialog = new Dialog({
       dialog.render(true);
     });
 
+    // Add event listener for the add actor button
+    html.find('#add-actor-button').click(async () => {
+      const actorId = html.find('#actor-select').val();
+      const actor = game.actors.get(actorId);
+      selectedActors.push(actor);
+
+      const categorizedRunes = await loadRunes();
+      const runeDetails = initializeRuneDetails(categorizedRunes);
+
+      actorDetails[actorId] = {
+        race: 'human',
+        homeland: 'auto',
+        occupation: 'auto',
+        cult: 'auto',
+        runes: {
+          primary: 'auto',
+          secondary: 'auto',
+          tertiary: 'auto',
+          all: runeDetails
+        },
+        characteristics: rollCharacteristics('human', globalOptions.races.human.charAvg),
+        attributes: {},
+        skills: await loadSkills()
+      };
+      logSelectedActorsAndDetails();
+      // Re-render the current page to update the list of selected actors and remove the added actor
+      dialog.data.content = await createDialogContent(currentPage);
+      dialog.render(true);
+    });
+
+    // Add event listener for the sync all button on Page 2
+    html.find('#sync-all-button').click(async () => {
+      const actorId = html.find('#actor-detail-select').val();
+      const details = actorDetails[actorId];
+      for (const id in actorDetails) {
+        actorDetails[id] = { ...details };
+      }
+      logSelectedActorsAndDetails();
+      dialog.data.content = await createDialogContent(currentPage);
+      dialog.render(true);
+    });
+
+    // Add event listener for the sync all button on Page 3
+    html.find('#sync-all-runes-button').click(async () => {
+      const actorId = html.find('#actor-detail-rune-select').val();
+      const details = actorDetails[actorId];
+      for (const id in actorDetails) {
+        actorDetails[id].runes.primary = details.runes.primary;
+        actorDetails[id].runes.secondary = details.runes.secondary;
+        actorDetails[id].runes.tertiary = details.runes.tertiary;
+        actorDetails[id].runes.all = { ...details.runes.all };
+      }
+      logSelectedActorsAndDetails();
+      dialog.data.content = await createDialogContent(currentPage);
+      dialog.render(true);
+    });
+
     // Add event listener for the cancel button
     html.find('#cancel-button').click(() => {
       dialog.close();
@@ -1001,15 +1135,13 @@ const dialog = new Dialog({
 
     // Add event listener for the save button
     html.find('#save-button').click(() => {
-      console.log("Final Selected Actors and Details:");
       logSelectedActorsAndDetails();
-      dialog.close();
+      // Add your save logic here
     });
-  }
-}, {
-  width: 800,
-  height: 600
-});
 
-// Render the dialog
-dialog.render(true);
+    // Load the initial details for the first actor on page 4
+    if (currentPage === 3 && selectedActors.length > 0) {
+      loadCharacteristics(selectedActors[0].id);
+    }
+  }
+}).render(true);
