@@ -222,7 +222,7 @@ async function loadSkills() {
 // Function to load cults data from the selected compendium
 async function loadCults() {
   try {
-    const cultPack = game.packs.get("wiki-en-rqg-cults");
+    const cultPack = game.packs.get("wiki-en-rqg.cults");
 
     if (!cultPack) {
       console.error("Cults compendium not found");
