@@ -1137,7 +1137,7 @@ const dialog = new Dialog({
       dialog.render(true);
     });
 
-    // Add event listener for the next button on Page 5
+    // Add event listener for the next button on Page 5 (Occupation page)
     html.find('#next-button-page-5').click(async () => {
       selectedActors.forEach(actor => {
         const details = actorDetails[actor.id];
@@ -1156,6 +1156,14 @@ const dialog = new Dialog({
         if (details.cult === 'auto') details.cult = getWeightedRandomSelection(globalOptions.cults, actor.id);
       });
       logSelectedActorsAndDetails(6);
+      currentPage++;
+      dialog.data.content = await createDialogContent(currentPage);
+      dialog.render(true);
+    });
+
+    // Add event listener for the next button on Page 7
+    html.find('#next-button').click(async () => {
+      logSelectedActorsAndDetails(7); // Added logging for page 7 transition
       currentPage++;
       dialog.data.content = await createDialogContent(currentPage);
       dialog.render(true);
