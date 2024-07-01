@@ -709,6 +709,7 @@ async function renderPage(pageIndex) {
 }
 
 
+
 // Create the side navigator content
 function createSideNav() {
   return `
@@ -966,6 +967,35 @@ const dialog = new Dialog({
       dialog.render(true);
     });
 
+    // Add event listener for actor selection on Occupation page
+    html.find('#actor-detail-occupation-select').change(function() {
+      const actorId = $(this).val();
+      const details = actorDetails[actorId];
+      const occupations = globalOptions.homelands[details.homeland].occupations;
+      const occupationSelect = html.find('#occupation-select');
+      occupationSelect.empty();
+      occupationSelect.append(`<option value="auto">auto</option>`);
+      occupations.forEach(occupation => {
+        occupationSelect.append(`<option value="${occupation}">${occupation}</option>`);
+      });
+      occupationSelect.val(details.occupation || 'auto');
+    });
+
+
+
+    // Add event listener for occupation selection on Occupation page
+    html.find('#occupation-select').change(function() {
+      const actorId = html.find('#actor-detail-occupation-select').val();
+      actorDetails[actorId].occupation = $(this).val();
+      logSelectedActorsAndDetails();
+    });
+
+    // Set initial actor and occupation selection
+    const initialActorId = html.find('#actor-detail-occupation-select').val();
+    html.find('#actor-detail-occupation-select').change();
+    html.find('#occupation-select').val(actorDetails[initialActorId]?.occupation || 'auto');
+
+    
     // Add event listener for the next button on Page 6
     html.find('#next-button-page-6').click(async () => {
       selectedActors.forEach(actor => {
