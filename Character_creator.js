@@ -32,13 +32,12 @@ class CharacterGenerator {
     this.pages = [
       new Page("Start", "Choose an Actor"),
       new Page("Details", "Select Race, Homeland, and Cult"),
-      new Page("Cult", "Select Cult"),
       new Page("Runes", "Allocate Runes: Primary, Secondary, Tertiary"),
       new Page("Characteristics", "Organize Characteristics: STR, CON, SIZ, DEX, INT, POW, CHA"),
       new Page("Occupation", "Select Occupation"),
+      new Page("Page 6", "Content for Page 6"),
       new Page("Page 7", "Content for Page 7"),
-      new Page("Page 8", "Content for Page 8"),
-      new Page("Page 9", "Content for Page 9")
+      new Page("Page 8", "Content for Page 8")
     ];
     this.globalOptions = new GlobalOptions();
     this.currentPage = 0;
