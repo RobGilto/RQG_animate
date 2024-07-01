@@ -377,11 +377,11 @@ function handleAutoSelections() {
 }
 
 // Function to log all selected actors and their details
-function logSelectedActorsAndDetails() {
-  console.log("Selected Actors and Details:");
+function logSelectedActorsAndDetails(index) {
+  console.log(`Index ${index} - Selected Actors and Details:`);
   selectedActors.forEach(actor => {
     const details = actorDetails[actor.id];
-    console.log(`Actor ID: ${actor.id}, Actor: ${actor.name}, Details:`, details);
+    console.log(`Index ${index} - Actor ID: ${actor.id}, Actor: ${actor.name}, Details:`, details);
   });
 }
 
@@ -802,7 +802,7 @@ function createBottomPanel(pageIndex) {
 
 // Create the dialog content including the side navigator, main page area, and bottom panel
 async function createDialogContent(pageIndex) {
-  console.log(`Navigating to page: ${pages[pageIndex].title}`); // Log the page title
+  console.log(`Index ${pageIndex} - Navigating to page: ${pages[pageIndex].title}`); // Log the page title
   return `
     <div style="display: flex; flex-direction: column; height: 100%;">
       <div style="flex-grow: 1; display: flex;">
@@ -1074,10 +1074,10 @@ const dialog = new Dialog({
         const actorId = html.find('#actor-select').val();
         const actor = game.actors.get(actorId);
         selectedActors.push(actor);
-
+    
         const categorizedRunes = await loadRunes();
         const runeDetails = initializeRuneDetails(categorizedRunes);
-
+    
         actorDetails[actorId] = {
           race: 'human',
           homeland: 'auto',
@@ -1098,16 +1098,17 @@ const dialog = new Dialog({
           skills: await loadSkills()
         };
       }
-      logSelectedActorsAndDetails();
+      logSelectedActorsAndDetails(1);
       currentPage++;
       dialog.data.content = await createDialogContent(currentPage);
       dialog.render(true);
     });
 
+
     // Add event listener for the next button on Page 2
     html.find('#next-button-page-2').click(async () => {
       applyAutoSelections();
-      logSelectedActorsAndDetails();
+      logSelectedActorsAndDetails(2);
       currentPage++;
       dialog.data.content = await createDialogContent(currentPage);
       dialog.render(true);
@@ -1116,7 +1117,7 @@ const dialog = new Dialog({
     // Add event listener for the next button on Page 3
     html.find('#next-button-page-3').click(async () => {
       applyAutoSelections();
-      logSelectedActorsAndDetails();
+      logSelectedActorsAndDetails(3);
       currentPage++;
       dialog.data.content = await createDialogContent(currentPage);
       dialog.render(true);
@@ -1130,7 +1131,7 @@ const dialog = new Dialog({
         calculateAttributes(details); // Calculate attributes based on characteristics
         applyHomelandSkillModifiers(details); // Apply homeland skill modifiers
       });
-      logSelectedActorsAndDetails();
+      logSelectedActorsAndDetails(4);
       currentPage++;
       dialog.data.content = await createDialogContent(currentPage);
       dialog.render(true);
@@ -1142,7 +1143,7 @@ const dialog = new Dialog({
         const details = actorDetails[actor.id];
         details.occupation = html.find('#occupation-select').val();
       });
-      logSelectedActorsAndDetails();
+      logSelectedActorsAndDetails(5);
       currentPage++;
       dialog.data.content = await createDialogContent(currentPage);
       dialog.render(true);
@@ -1154,7 +1155,7 @@ const dialog = new Dialog({
         const details = actorDetails[actor.id];
         if (details.cult === 'auto') details.cult = getWeightedRandomSelection(globalOptions.cults, actor.id);
       });
-      logSelectedActorsAndDetails();
+      logSelectedActorsAndDetails(6);
       currentPage++;
       dialog.data.content = await createDialogContent(currentPage);
       dialog.render(true);
@@ -1262,6 +1263,7 @@ const dialog = new Dialog({
     // Add event listeners for side navigator buttons
     html.find('.nav-button').click(async function() {
       currentPage = parseInt($(this).data('page'));
+      logSelectedActorsAndDetails();
       dialog.data.content = await createDialogContent(currentPage);
       dialog.render(true);
     });
