@@ -315,6 +315,7 @@ function rollDice(dice) {
   if (!match) return 0;
   const [, count, sides, modifier] = match.map(Number);
   let total = 0;
+
   for (let i = 0; i < count; i++) {
     total += Math.floor(Math.random() * sides) + 1;
   }
@@ -347,12 +348,10 @@ function loadActorDetails(actorId) {
   if (details) {
     const raceSelect = document.getElementById('race-select');
     const homelandSelect = document.getElementById('homeland-select');
-    const occupationSelect = document.getElementById('occupation-select');
     const cultSelect = document.getElementById('cult-select');
 
     if (raceSelect) raceSelect.value = details.race || 'human';
     if (homelandSelect) homelandSelect.value = details.homeland || 'auto';
-    if (occupationSelect) occupationSelect.value = details.occupation || 'auto';
     if (cultSelect) cultSelect.value = details.cult || 'auto';
   }
 }
@@ -608,7 +607,7 @@ async function renderPage(pageIndex) {
     content += `<select id="actor-select">${actors.map(actor => `<option value="${actor.id}">${actor.name}</option>`)}</select>`;
     content += `<button id="add-actor-button" style="margin-left: 10px;">Add Actor</button>`;
   } else if (pageIndex === 1) {
-    // Dropdowns for race, homeland, and cult on Page 2 (Occupation removed)
+    // Dropdowns for race, homeland, occupation, and cult on Page 2
     let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
     content += `
       <div>
@@ -630,7 +629,25 @@ async function renderPage(pageIndex) {
     `;
     content += `<button id="sync-all-button" style="margin-top: 10px;">Sync All</button>`;
   } else if (pageIndex === 2) {
-    // Dropdowns for primary, secondary, and tertiary runes on Page 3
+    // Dropdown for cults on Page 3
+    let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
+    const details = actorDetails[selectedActors[0]?.id];
+    const cults = await loadCults();
+    content += `
+      <div>
+        <label for="actor-detail-cult-select">Actor:</label>
+        <select id="actor-detail-cult-select">${actors}</select>
+      </div>
+      <div>
+        <label for="cult-select">Cult:</label>
+        <select id="cult-select">
+          <option value="auto">auto</option>
+          ${cults.map(cult => `<option value="${cult}">${cult}</option>`).join('')}
+        </select>
+      </div>
+    `;
+  } else if (pageIndex === 3) {
+    // Dropdowns for primary, secondary, and tertiary runes on Page 4
     const categorizedRunes = await loadRunes();
     let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
     content += `
@@ -668,8 +685,8 @@ async function renderPage(pageIndex) {
       </div>
       <button id="sync-all-runes-button" style="margin-top: 10px;">Sync All</button>
     `;
-  } else if (pageIndex === 3) {
-    // Dropdowns for characteristics on Page 4
+  } else if (pageIndex === 4) {
+    // Dropdown for characteristics on Page 5
     let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
     const characteristics = ['STR', 'CON', 'SIZ', 'DEX', 'INT', 'POW', 'CHA'];
     content += `
@@ -686,7 +703,7 @@ async function renderPage(pageIndex) {
       </div>
       `).join('')}
     `;
-  } else if (pageIndex === 4) {
+  } else if (pageIndex === 5) {
     // Dropdown for occupation on Page 5
     let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
     const details = actorDetails[selectedActors[0]?.id];
@@ -707,8 +724,6 @@ async function renderPage(pageIndex) {
   }
   return content;
 }
-
-
 
 // Create the side navigator content
 function createSideNav() {
@@ -750,7 +765,6 @@ function createBottomPanel(pageIndex) {
 
 // Create the dialog content including the side navigator, main page area, and bottom panel
 async function createDialogContent(pageIndex) {
-  console.log(`Index ${pageIndex} - Navigating to page: ${pages[pageIndex].title}`); // Log the page title
   return `
     <div style="display: flex; flex-direction: column; height: 100%;">
       <div style="flex-grow: 1; display: flex;">
@@ -906,10 +920,6 @@ const dialog = new Dialog({
             primary: 'auto',
             secondary: 'auto',
             tertiary: 'auto',
-            formPrimary: 'auto',
-            formSecondary: 'auto',
-            powerPrimary: 'auto',
-            powerSecondary: 'auto',
             all: runeDetails
           },
           characteristics: rollCharacteristics('human', globalOptions.races.human.charAvg),
@@ -967,35 +977,6 @@ const dialog = new Dialog({
       dialog.render(true);
     });
 
-    // Add event listener for actor selection on Occupation page
-    html.find('#actor-detail-occupation-select').change(function() {
-      const actorId = $(this).val();
-      const details = actorDetails[actorId];
-      const occupations = globalOptions.homelands[details.homeland].occupations;
-      const occupationSelect = html.find('#occupation-select');
-      occupationSelect.empty();
-      occupationSelect.append(`<option value="auto">auto</option>`);
-      occupations.forEach(occupation => {
-        occupationSelect.append(`<option value="${occupation}">${occupation}</option>`);
-      });
-      occupationSelect.val(details.occupation || 'auto');
-    });
-
-
-
-    // Add event listener for occupation selection on Occupation page
-    html.find('#occupation-select').change(function() {
-      const actorId = html.find('#actor-detail-occupation-select').val();
-      actorDetails[actorId].occupation = $(this).val();
-      logSelectedActorsAndDetails();
-    });
-
-    // Set initial actor and occupation selection
-    const initialActorId = html.find('#actor-detail-occupation-select').val();
-    html.find('#actor-detail-occupation-select').change();
-    html.find('#occupation-select').val(actorDetails[initialActorId]?.occupation || 'auto');
-
-    
     // Add event listener for the next button on Page 6
     html.find('#next-button-page-6').click(async () => {
       selectedActors.forEach(actor => {
@@ -1022,11 +1003,6 @@ const dialog = new Dialog({
     html.find('#homeland-select').change(function() {
       const actorId = html.find('#actor-detail-select').val();
       actorDetails[actorId].homeland = $(this).val();
-      logSelectedActorsAndDetails();
-    });
-    html.find('#occupation-select').change(function() {
-      const actorId = html.find('#actor-detail-select').val();
-      actorDetails[actorId].occupation = $(this).val();
       logSelectedActorsAndDetails();
     });
     html.find('#cult-select').change(function() {
@@ -1152,6 +1128,32 @@ const dialog = new Dialog({
       logSelectedActorsAndDetails();
       // Add your save logic here
     });
+
+    // Add event listener for actor selection on Occupation page
+    html.find('#actor-detail-occupation-select').change(function() {
+      const actorId = $(this).val();
+      const details = actorDetails[actorId];
+      const occupations = globalOptions.homelands[details.homeland].occupations;
+      const occupationSelect = html.find('#occupation-select');
+      occupationSelect.empty();
+      occupationSelect.append(`<option value="auto">auto</option>`);
+      occupations.forEach(occupation => {
+        occupationSelect.append(`<option value="${occupation}">${occupation}</option>`);
+      });
+      occupationSelect.val(details.occupation || 'auto');
+    });
+
+    // Add event listener for occupation selection on Occupation page
+    html.find('#occupation-select').change(function() {
+      const actorId = html.find('#actor-detail-occupation-select').val();
+      actorDetails[actorId].occupation = $(this).val();
+      logSelectedActorsAndDetails();
+    });
+
+    // Set initial actor and occupation selection
+    const initialActorId = html.find('#actor-detail-occupation-select').val();
+    html.find('#actor-detail-occupation-select').change();
+    html.find('#occupation-select').val(actorDetails[initialActorId]?.occupation || 'auto');
 
     // Load the initial details for the first actor on page 4
     if (currentPage === 3 && selectedActors.length > 0) {
