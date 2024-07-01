@@ -689,8 +689,8 @@ async function renderPage(pageIndex) {
   } else if (pageIndex === 4) {
     // Dropdown for occupation on Page 5
     let actors = selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
-    const details = actorDetails[selectedActors[0].id];
-    const occupations = globalOptions.homelands[details.homeland].occupations;
+    const details = actorDetails[selectedActors[0]?.id];
+    const occupations = details ? globalOptions.homelands[details.homeland].occupations : [];
     content += `
       <div>
         <label for="actor-detail-occupation-select">Actor:</label>
@@ -707,6 +707,7 @@ async function renderPage(pageIndex) {
   }
   return content;
 }
+
 
 // Create the side navigator content
 function createSideNav() {
