@@ -676,7 +676,15 @@ class CharacterGenerator {
         </div>
         <div>
           <label for="race-select">Race:</label>
-          <select id="race-select">${Object.keys(this.globalOptions.races).map(race => `<option value="${race}">${race}</option>`)}</select>
+          <select id="race-select">
+            ${Object.keys(this.globalOptions.races).map(race => {
+              if (race === "human") {
+                return `<option value="${race}" selected>${race}</option>`;
+              } else {
+                return `<option value="${race}">${race}</option>`;
+              }
+            }).join('')}
+          </select>
         </div>
         <div>
           <label for="homeland-select">Homeland:</label>
@@ -684,13 +692,28 @@ class CharacterGenerator {
         </div>
         <div>
           <label for="cult-select">Cult:</label>
-          <select id="cult-select">${cults.map(cult => `<option value="${cult}">${cult}</option>`)}</select>
+          <select id="cult-select">
+            <option value="auto">auto</option>
+            ${cults.map(cult => `<option value="${cult}">${cult}</option>`).join('')}
+          </select>
         </div>
       `;
       content += `<button id="sync-all-button" style="margin-top: 10px;">Sync All</button>`;
     } else if (pageIndex === 2) {
       const categorizedRunes = await this.loadRunes();
       let actors = this.selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
+      const details = this.actorDetails[this.selectedActors[0]?.id];
+  
+      let filteredRunes = categorizedRunes.element;
+  
+      // Check for specific cult to filter runes
+      if (details && details.cult === "Orlanth Thunderous (Orlanth)") {
+        filteredRunes = categorizedRunes.element.filter(rune => rune.name === "Air (element)");
+      }
+  
+      // Combine power and form runes for primary and secondary selections
+      const combinedPowerFormRunes = [...categorizedRunes.power, ...categorizedRunes.form];
+  
       content += `
         <div>
           <label for="actor-detail-rune-select">Actor:</label>
@@ -700,7 +723,7 @@ class CharacterGenerator {
           <label for="primary-rune-select">Primary Rune:</label>
           <select id="primary-rune-select">
             <option value="auto">auto</option>
-            ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+            ${filteredRunes.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
           </select>
         </div>
         <div>
@@ -718,31 +741,17 @@ class CharacterGenerator {
           </select>
         </div>
         <div>
-          <label for="form-primary-rune-select">Form Primary Rune:</label>
-          <select id="form-primary-rune-select">
+          <label for="powerform-primary-select">Power/Form Primary Rune:</label>
+          <select id="powerform-primary-select">
             <option value="auto">auto</option>
-            ${categorizedRunes.form.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+            ${combinedPowerFormRunes.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
           </select>
         </div>
         <div>
-          <label for="power-primary-rune-select">Power Primary Rune:</label>
-          <select id="power-primary-rune-select">
+          <label for="powerform-secondary-select">Power/Form Secondary Rune:</label>
+          <select id="powerform-secondary-select">
             <option value="auto">auto</option>
-            ${categorizedRunes.power.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
-          </select>
-        </div>
-        <div>
-          <label for="form-secondary-rune-select">Form Secondary Rune:</label>
-          <select id="form-secondary-rune-select">
-            <option value="auto">auto</option>
-            ${categorizedRunes.form.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
-          </select>
-        </div>
-        <div>
-          <label for="power-secondary-rune-select">Power Secondary Rune:</label>
-          <select id="power-secondary-rune-select">
-            <option value="auto">auto</option>
-            ${categorizedRunes.power.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+            ${combinedPowerFormRunes.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
           </select>
         </div>
         <div>
@@ -791,6 +800,8 @@ class CharacterGenerator {
     }
     return content;
   }
+  
+  
 
   createSideNav() {
     return `
