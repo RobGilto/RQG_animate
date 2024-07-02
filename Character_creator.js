@@ -1,16 +1,3 @@
-// Define the whitelistRunesBasedOnCult function globally
-async function whitelistRunesBasedOnCult(actorId, actorDetails) {
-  const details = actorDetails[actorId];
-  // Implement the necessary logic for whitelisting runes based on the cult
-  // For example:
-  if (details.cult === 'Cult 1') {
-    details.runes.all['Fire'].primaryMod = 20;
-  } else if (details.cult === 'Cult 2') {
-    details.runes.all['Water'].primaryMod = 20;
-  }
-  // Add more logic as needed
-}
-
 class CharacterGenerator {
   constructor() {
     this.pages = [
@@ -1112,6 +1099,15 @@ class CharacterGenerator {
         }
       }
     }).render(true);
+  }
+}
+
+async function whitelistRunesBasedOnCult(actorId, actorDetails) {
+  // Your whitelistRunesBasedOnCult function implementation here
+  // Example:
+  const details = actorDetails[actorId];
+  if (details.cult === "someCult") {
+    // Modify runes whitelist based on cult
   }
 }
 
