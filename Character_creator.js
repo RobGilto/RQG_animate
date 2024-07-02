@@ -279,12 +279,10 @@ class CharacterGenerator {
     if (details) {
       const raceSelect = document.getElementById('race-select');
       const homelandSelect = document.getElementById('homeland-select');
-      const occupationSelect = document.getElementById('occupation-select');
       const cultSelect = document.getElementById('cult-select');
 
       if (raceSelect) raceSelect.value = details.race || 'human';
       if (homelandSelect) homelandSelect.value = details.homeland || 'auto';
-      if (occupationSelect) occupationSelect.value = details.occupation || 'auto';
       if (cultSelect) cultSelect.value = details.cult || 'auto';
     }
   }
@@ -294,11 +292,17 @@ class CharacterGenerator {
       const details = this.actorDetails[actor.id];
       if (details.race === 'auto') details.race = this.getWeightedRandomSelection(this.globalOptions.races, actor.id);
       if (details.homeland === 'auto') details.homeland = this.getWeightedRandomSelection(this.globalOptions.homelands, actor.id);
-      if (details.occupation === 'auto') details.occupation = this.getWeightedRandomSelection(this.globalOptions.occupations, actor.id);
       if (details.cult === 'auto') details.cult = this.getWeightedRandomSelection(this.globalOptions.cults, actor.id);
 
       this.applyHomelandModifiers(details);
     });
+  }
+
+  handleAutoOccupationSelection(actorId) {
+    const details = this.actorDetails[actorId];
+    if (details.occupation === 'auto') {
+      details.occupation = this.getWeightedRandomSelection(this.globalOptions.occupations, actorId);
+    }
   }
 
   logSelectedActorsAndDetails(index) {
@@ -594,7 +598,7 @@ class CharacterGenerator {
     } else if (pageIndex === 4) {
       let actors = this.selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
       const details = this.actorDetails[this.selectedActors[0]?.id];
-      const occupations = details ? this.globalOptions.homelands[details.homeland].occupations : [];
+      const occupations = details ? this.globalOptions.homelands[details.homeland]?.occupations || [] : [];
       content += `
         <div>
           <label for="actor-detail-occupation-select">Actor:</label>
@@ -795,8 +799,7 @@ class CharacterGenerator {
 
         html.find('#next-button-page-5').click(async () => {
           this.selectedActors.forEach(actor => {
-            const details = this.actorDetails[actor.id];
-            details.occupation = html.find('#occupation-select').val();
+            this.handleAutoOccupationSelection(actor.id);
           });
           this.logSelectedActorsAndDetails(5);
           this.currentPage++;
@@ -979,6 +982,10 @@ class CharacterGenerator {
     }).render(true);
   }
 }
+
+const generator = new CharacterGenerator();
+generator.run();
+
 
 const generator = new CharacterGenerator();
 generator.run();
