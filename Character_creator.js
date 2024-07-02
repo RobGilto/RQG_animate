@@ -581,21 +581,21 @@ class CharacterGenerator {
         </div>
         <div>
           <label for="race-select">Race:</label>
-          <select id="race-select">${Object.keys(this.globalOptions.races).map(race => `<option value="${race}">${race}</option>`)}</select>
+          <select id="race-select">${Object.keys(this.globalOptions.races).map(race => `<option value="${race}">${race}</option>`).join('')}<option value="auto">auto</option></select>
         </div>
         <div>
           <label for="homeland-select">Homeland:</label>
-          <select id="homeland-select">${Object.keys(this.globalOptions.homelands).map(homeland => `<option value="${homeland}">${homeland}</option>`)}</select>
+          <select id="homeland-select">${Object.keys(this.globalOptions.homelands).map(homeland => `<option value="${homeland}">${homeland}</option>`).join('')}<option value="auto">auto</option></select>
         </div>
         <div>
           <label for="cult-select">Cult:</label>
-          <select id="cult-select">${Object.keys(this.globalOptions.cults).map(cult => `<option value="${cult}">${cult}</option>`)}</select>
+          <select id="cult-select">${Object.keys(this.globalOptions.cults).map(cult => `<option value="${cult}">${cult}</option>`).join('')}<option value="auto">auto</option></select>
         </div>
       `;
       content += `<button id="sync-all-button" style="margin-top: 10px;">Sync All</button>`;
     } else if (pageIndex === 2) {
       const categorizedRunes = await this.loadRunes();
-      let combinedRunes = [...categorizedRunes.element, ...categorizedRunes.form, ...categorizedRunes.power];
+      const combinedRunes = [...categorizedRunes.element, ...categorizedRunes.power, ...categorizedRunes.form];
       let actors = this.selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
       content += `
         <div>
@@ -825,6 +825,11 @@ class CharacterGenerator {
     const formSecondarySelect = document.getElementById('form-secondary-rune-select');
     const powerSecondarySelect = document.getElementById('power-secondary-rune-select');
 
+    if (!primarySelect || !secondarySelect || !tertiarySelect || !formPrimarySelect || !powerPrimarySelect || !formSecondarySelect || !powerSecondarySelect) {
+      console.warn("Rune dropdown elements not found. Skipping update rune selections.");
+      return;
+    }
+
     const allRunes = Array.from(primarySelect.options).map(option => option.value);
 
     allRunes.forEach(rune => {
@@ -922,6 +927,10 @@ class CharacterGenerator {
     const details = this.actorDetails[actorId];
     const cult = details.cult;
     const primarySelect = document.getElementById('primary-rune-select');
+    if (!primarySelect) {
+      console.warn("Primary rune dropdown element not found. Skipping whitelist runes based on cult.");
+      return;
+    }
     const allRunes = Array.from(primarySelect.options).map(option => option.value);
     let whitelist = [];
 
