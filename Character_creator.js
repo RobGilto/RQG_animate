@@ -14,8 +14,8 @@ class GlobalOptions {
     };
     this.homelands = {
       auto: { weight: 0, occupations: [] },
-      "Sartar": {
-        weight: 33,
+      "Sartar": { 
+        weight: 33, 
         weightFunctions: [(details) => details.race === 'human' ? 17 : 0],
         occupations: [
           "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer",
@@ -23,13 +23,71 @@ class GlobalOptions {
           "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
         ]
       },
-      "Esrolia": {
-        weight: 33,
+      "Esrolia": { 
+        weight: 33, 
         weightFunctions: [(details) => details.race === 'darktroll' ? 17 : 0],
         occupations: [
           "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer",
           "Herder", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry",
           "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+        ]
+      },
+      "Grazeland Pony Breeders": { 
+        weight: 34,
+        occupations: [
+          "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble", 
+          "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+        ]
+      },
+      "Praxian Tribes: Bison Rider": { 
+        weight: 34,
+        occupations: [
+          "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
+          "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+        ]
+      },
+      "Praxian Tribes: High Llama Rider": { 
+        weight: 34,
+        occupations: [
+          "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
+          "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+        ]
+      },
+      "Praxian Tribes: Impala Rider": { 
+        weight: 34,
+        occupations: [
+          "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
+          "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+        ]
+      },
+      "Praxian Tribes: Pol Joni": { 
+        weight: 34,
+        occupations: [
+          "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
+          "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+        ]
+      },
+      "Praxian Tribes: Sable Rider": { 
+        weight: 34,
+        occupations: [
+          "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
+          "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+        ]
+      },
+      "Lunar Tarsh": { 
+        weight: 34,
+        occupations: [
+          "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer",
+          "Herder", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry",
+          "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+        ]
+      },
+      "Old Tarsh": { 
+        weight: 34,
+        occupations: [
+          "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer", "Herder",
+          "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Warrior: Light Infantry", 
+          "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
         ]
       }
     };
@@ -57,6 +115,14 @@ class GlobalOptions {
     };
     this.cults = {
       auto: { weight: 0 },
+      // Cults will be populated dynamically from the compendium
+    };
+  }
+
+  async initialize() {
+    this.cults = {
+      auto: { weight: 0 },
+      ...(await this.loadCults())
     };
   }
 
@@ -66,25 +132,23 @@ class GlobalOptions {
 
       if (!cultPack) {
         console.error("Cults compendium not found");
-        return [];
+        return {};
       }
 
       await cultPack.getIndex();
       const cultItems = await cultPack.getDocuments();
       console.log("Loaded cult items:", cultItems);
 
-      return cultItems.map(cult => cult.name);
+      const cults = {};
+      cultItems.forEach(cult => {
+        cults[cult.name] = { weight: 30 };
+      });
+
+      return cults;
     } catch (error) {
       console.error("Error loading cults:", error);
-      return [];
+      return {};
     }
-  }
-
-  async initialize() {
-    const cults = await this.loadCults();
-    cults.forEach(cult => {
-      this.cults[cult] = { weight: 30 }; // Assuming a default weight, adjust as necessary
-    });
   }
 }
 
@@ -982,10 +1046,6 @@ class CharacterGenerator {
     }).render(true);
   }
 }
-
-const generator = new CharacterGenerator();
-generator.run();
-
 
 const generator = new CharacterGenerator();
 generator.run();
