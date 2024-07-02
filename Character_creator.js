@@ -1,3 +1,16 @@
+// Define the whitelistRunesBasedOnCult function globally
+async function whitelistRunesBasedOnCult(actorId, actorDetails) {
+  const details = actorDetails[actorId];
+  // Implement the necessary logic for whitelisting runes based on the cult
+  // For example:
+  if (details.cult === 'Cult 1') {
+    details.runes.all['Fire'].primaryMod = 20;
+  } else if (details.cult === 'Cult 2') {
+    details.runes.all['Water'].primaryMod = 20;
+  }
+  // Add more logic as needed
+}
+
 class CharacterGenerator {
   constructor() {
     this.pages = [
@@ -6,63 +19,127 @@ class CharacterGenerator {
       { title: "Runes", content: "Allocate Runes: Primary, Secondary, Tertiary" },
       { title: "Characteristics", content: "Organize Characteristics: STR, CON, SIZ, DEX, INT, POW, CHA" },
       { title: "Occupation", content: "Select Occupation" },
-      { title: "Initial Weapons Selection", content: "Select Initial Weapons" },
+      { title: "Initial Weapons Selection", content: "Select Primary and Secondary Weapons" },
       { title: "Page 7", content: "Content for Page 7" },
       { title: "Page 8", content: "Content for Page 8" },
       { title: "Page 9", content: "Content for Page 9" }
     ];
-
     this.globalOptions = {
       races: {
         auto: { weight: 0 },
-        human: {
-          STR: "3D6", CON: "3D6", DEX: "3D6", POW: "3D6", CHA: "3D6",
-          SIZ: "2D6+6", INT: "2D6+6", charAvg: 12, weight: 50,
-          weightFunctions: [(details) => details.homeland === 'Sartar' ? 20 : 0]
-        },
-        darktroll: {
-          STR: "3D6+6", CON: "3D6", DEX: "3D6", POW: "3D6", CHA: "3D6",
-          SIZ: "2D6+6", INT: "2D6+6", charAvg: 12, weight: 50,
-          weightFunctions: [(details) => details.homeland === 'Esrolia' ? 20 : 0]
-        }
+        human: { STR: "3D6", CON: "3D6", DEX: "3D6", POW: "3D6", CHA: "3D6", SIZ: "2D6+6", INT: "2D6+6", charAvg: 12, weight: 50, weightFunctions: [(details) => details.homeland === 'Sartar' ? 20 : 0] },
+        darktroll: { STR: "3D6+6", CON: "3D6", DEX: "3D6", POW: "3D6", CHA: "3D6", SIZ: "2D6+6", INT: "2D6+6", charAvg: 12, weight: 50, weightFunctions: [(details) => details.homeland === 'Esrolia' ? 20 : 0] }
       },
       homelands: {
         auto: { weight: 0, occupations: [] },
-        "Sartar": {
-          weight: 33, weightFunctions: [(details) => details.race === 'human' ? 17 : 0],
+        "Sartar": { 
+          weight: 33, 
+          weightFunctions: [(details) => details.race === 'human' ? 17 : 0],
           occupations: [
             "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer",
             "Herder", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry",
             "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
           ]
         },
-        "Esrolia": {
-          weight: 33, weightFunctions: [(details) => details.race === 'darktroll' ? 17 : 0],
+        "Esrolia": { 
+          weight: 33, 
+          weightFunctions: [(details) => details.race === 'darktroll' ? 17 : 0],
           occupations: [
             "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer",
             "Herder", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry",
             "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
           ]
+        },
+        "Grazeland Pony Breeders": { 
+          weight: 34,
+          occupations: [
+            "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble", 
+            "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+          ]
+        },
+        "Praxian Tribes: Bison Rider": { 
+          weight: 34,
+          occupations: [
+            "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
+            "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+          ]
+        },
+        "Praxian Tribes: High Llama Rider": { 
+          weight: 34,
+          occupations: [
+            "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
+            "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+          ]
+        },
+        "Praxian Tribes: Impala Rider": { 
+          weight: 34,
+          occupations: [
+            "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
+            "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+          ]
+        },
+        "Praxian Tribes: Pol Joni": { 
+          weight: 34,
+          occupations: [
+            "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
+            "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+          ]
+        },
+        "Praxian Tribes: Sable Rider": { 
+          weight: 34,
+          occupations: [
+            "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
+            "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+          ]
+        },
+        "Lunar Tarsh": { 
+          weight: 34,
+          occupations: [
+            "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer",
+            "Herder", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry",
+            "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+          ]
+        },
+        "Old Tarsh": { 
+          weight: 34,
+          occupations: [
+            "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer", "Herder",
+            "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Warrior: Light Infantry", 
+            "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
+          ]
         }
-        // Add other homelands here...
       },
       occupations: {
         auto: { weight: 0 },
         "Assistant Shaman": { weight: 40, weightFunctions: [(details) => details.cult === 'Cult 1' ? 20 : 0] },
         "Bandit": { weight: 30, weightFunctions: [(details) => details.cult === 'Cult 2' ? 20 : 0] },
         "Chariot Driver": { weight: 30 },
-        // Add other occupations here...
+        "Crafter (Brewer, Carpenter, Jeweler, Leatherworker, Mason, Potter, Redsmith, Tanner, Weaver)": { weight: 30 },
+        "Entertainer": { weight: 30 },
+        "Farmer": { weight: 30 },
+        "Fisher": { weight: 30 },
+        "Healer": { weight: 30 },
+        "Herder": { weight: 30 },
+        "Merchant": { weight: 30 },
+        "Noble": { weight: 30 },
+        "Philosopher": { weight: 30 },
+        "Priest": { weight: 30 },
+        "Scribe": { weight: 30 },
+        "Thief": { weight: 30 },
+        "Warrior: Heavy Infantry": { weight: 30 },
+        "Warrior: Light Infantry": { weight: 30 },
+        "Warrior: Heavy Cavalry": { weight: 30 },
+        "Warrior: Light Cavalry": { weight: 30 }
       },
       cults: {
-        auto: { weight: 0 }
+        auto: { weight: 0 },
         // Cults will be populated dynamically from the compendium
       }
     };
-
     this.currentPage = 0;
     this.selectedActors = [];
     this.actorDetails = {};
-    this.selectedCompendium = "wiki-en-rqg.runes";
+    this.selectedCompendium = "wiki-en-rqg.runes"; // Set the correct compendium
   }
 
   async loadRunes() {
@@ -72,8 +149,8 @@ class CharacterGenerator {
         console.error(`Compendium '${this.selectedCompendium}' not found`);
         return { element: [], form: [], technique: [], power: [], condition: [] };
       }
-      await pack.getIndex(); // Load the index
-      const runeItems = await pack.getDocuments(); // Load all items
+      await pack.getIndex();
+      const runeItems = await pack.getDocuments();
       console.log("Loaded rune items:", runeItems);
 
       const categorizedRunes = {
@@ -108,10 +185,10 @@ class CharacterGenerator {
         return {};
       }
 
-      await skillPack.getIndex(); // Load the index for skills
-      await weaponPack.getIndex(); // Load the index for weapons
-      const skillItems = await skillPack.getDocuments(); // Load all skill items
-      const weaponItems = await weaponPack.getDocuments(); // Load all weapon items
+      await skillPack.getIndex();
+      await weaponPack.getIndex();
+      const skillItems = await skillPack.getDocuments();
+      const weaponItems = await weaponPack.getDocuments();
       console.log("Loaded skill items:", skillItems);
       console.log("Loaded weapon items:", weaponItems);
 
@@ -157,8 +234,8 @@ class CharacterGenerator {
         return [];
       }
 
-      await cultPack.getIndex(); // Load the index for cults
-      const cultItems = await cultPack.getDocuments(); // Load all cult items
+      await cultPack.getIndex();
+      const cultItems = await cultPack.getDocuments();
       console.log("Loaded cult items:", cultItems);
 
       return cultItems.map(cult => cult.name);
@@ -277,8 +354,97 @@ class CharacterGenerator {
     }
   }
 
-  handleAutoSelections() {
-    this.selectedActors.forEach(actor => {
+  updateRuneSelections(actorId) {
+    const details = this.actorDetails[actorId];
+    const primaryRune = details.runes.primary;
+    const secondaryRune = details.runes.secondary;
+    const tertiaryRune = details.runes.tertiary;
+
+    const primarySelect = document.getElementById('primary-rune-select');
+    const secondarySelect = document.getElementById('secondary-rune-select');
+    const tertiarySelect = document.getElementById('tertiary-rune-select');
+
+    const allRunes = Array.from(primarySelect.options).map(option => option.value);
+
+    allRunes.forEach(rune => {
+      const primaryOption = primarySelect.querySelector(`option[value="${rune}"]`);
+      const secondaryOption = secondarySelect.querySelector(`option[value="${rune}"]`);
+      const tertiaryOption = tertiarySelect.querySelector(`option[value="${rune}"]`);
+
+      if (primaryOption) primaryOption.disabled = false;
+      if (secondaryOption) secondaryOption.disabled = false;
+      if (tertiaryOption) tertiaryOption.disabled = false;
+    });
+
+    if (primaryRune && primaryRune !== 'auto') {
+      const secondaryOption = secondarySelect ? secondarySelect.querySelector(`option[value="${primaryRune}"]`) : null;
+      const tertiaryOption = tertiarySelect ? tertiarySelect.querySelector(`option[value="${primaryRune}"]`) : null;
+
+      if (secondaryOption) secondaryOption.disabled = true;
+      if (tertiaryOption) tertiaryOption.disabled = true;
+    }
+
+    if (secondaryRune && secondaryRune !== 'auto') {
+      const primaryOption = primarySelect ? primarySelect.querySelector(`option[value="${secondaryRune}"]`) : null;
+      const tertiaryOption = tertiarySelect ? tertiarySelect.querySelector(`option[value="${secondaryRune}"]`) : null;
+
+      if (primaryOption) primaryOption.disabled = true;
+      if (tertiaryOption) tertiaryOption.disabled = true;
+    }
+
+    if (tertiaryRune && tertiaryRune !== 'auto') {
+      const primaryOption = primarySelect ? primarySelect.querySelector(`option[value="${tertiaryRune}"]`) : null;
+      const secondaryOption = secondarySelect ? secondarySelect.querySelector(`option[value="${tertiaryRune}"]`) : null;
+
+      if (primaryOption) primaryOption.disabled = true;
+      if (secondaryOption) secondaryOption.disabled = true;
+    }
+  }
+
+  handleAutoRuneSelection(actorId) {
+    const details = this.actorDetails[actorId];
+    const primarySelect = document.getElementById('primary-rune-select');
+    const secondarySelect = document.getElementById('secondary-rune-select');
+    const tertiarySelect = document.getElementById('tertiary-rune-select');
+
+    if (!primarySelect || !secondarySelect || !tertiarySelect) {
+      console.warn("Rune dropdown elements not found. Skipping auto rune selection.");
+      return;
+    }
+
+    const allRunes = Array.from(primarySelect.options).map(option => option.value).filter(rune => rune !== 'auto');
+
+    function getRandomRune(excludeRunes) {
+      const remainingRunes = allRunes.filter(rune => !excludeRunes.includes(rune));
+      const randomIndex = Math.floor(Math.random() * remainingRunes.length);
+      return remainingRunes[randomIndex];
+    }
+
+    const selectedRunes = [];
+    if (details.runes.primary === 'auto') {
+      details.runes.primary = getRandomRune(selectedRunes);
+    }
+    selectedRunes.push(details.runes.primary);
+
+    if (details.runes.secondary === 'auto') {
+      details.runes.secondary = getRandomRune(selectedRunes);
+    }
+    selectedRunes.push(details.runes.secondary);
+
+    if (details.runes.tertiary === 'auto') {
+      details.runes.tertiary = getRandomRune(selectedRunes);
+    }
+    selectedRunes.push(details.runes.tertiary);
+
+    details.runes.all[details.runes.primary].primaryMod = 60;
+    details.runes.all[details.runes.secondary].secondaryMod = 40;
+    details.runes.all[details.runes.tertiary].tertiaryMod = 20;
+
+    this.updateCharacteristicsWithRunes(details);
+  }
+
+  async handleAutoSelections() {
+    for (const actor of this.selectedActors) {
       const details = this.actorDetails[actor.id];
       if (details.race === 'auto') details.race = this.getWeightedRandomSelection(this.globalOptions.races, actor.id);
       if (details.homeland === 'auto') details.homeland = this.getWeightedRandomSelection(this.globalOptions.homelands, actor.id);
@@ -286,7 +452,9 @@ class CharacterGenerator {
       if (details.cult === 'auto') details.cult = this.getWeightedRandomSelection(this.globalOptions.cults, actor.id);
 
       this.applyHomelandModifiers(details);
-    });
+      await whitelistRunesBasedOnCult(actor.id, this.actorDetails); // Call the global function
+      this.handleAutoRuneSelection(actor.id);
+    }
   }
 
   logSelectedActorsAndDetails(index) {
@@ -496,332 +664,6 @@ class CharacterGenerator {
     }
   }
 
-  async createDialogContent(pageIndex) {
-    console.log(`Index ${pageIndex} - Navigating to page: ${this.pages[pageIndex].title}`);
-    return `
-      <div style="display: flex; flex-direction: column; height: 100%;">
-        <div style="flex-grow: 1; display: flex;">
-          ${this.createSideNav()}
-          <div id="main-content" style="flex-grow: 1; padding-left: 10px;">
-            ${await this.renderPage(pageIndex)}
-          </div>
-        </div>
-        ${this.createBottomPanel(pageIndex)}
-      </div>
-    `;
-  }
-
-  loadCharacteristics(actorId) {
-    const details = this.actorDetails[actorId];
-    const characteristics = details.characteristics;
-    if (characteristics) {
-      ['str', 'con', 'siz', 'dex', 'int', 'pow', 'cha'].forEach(char => {
-        const select = document.getElementById(`${char}-select`);
-        if (select) select.value = characteristics[char.toUpperCase()].baseValue || 0;
-      });
-    }
-  }
-
-  async handleNextButtonClick(html, currentPage) {
-    if (currentPage === 1) {
-      this.applyAutoSelections();
-    }
-    if (currentPage === 2) {
-      this.selectedActors.forEach(actor => {
-        const details = this.actorDetails[actor.id];
-        this.calculateCharacteristicsTotal(details);
-        this.calculateAttributes(details);
-        this.applyHomelandSkillModifiers(details);
-      });
-    }
-    if (currentPage === 3) {
-      this.selectedActors.forEach(actor => {
-        const details = this.actorDetails[actor.id];
-        details.occupation = html.find('#occupation-select').val();
-      });
-    }
-    this.logSelectedActorsAndDetails(currentPage + 1);
-    currentPage++;
-    dialog.data.content = await this.createDialogContent(currentPage);
-    dialog.render(true);
-  }
-
-  async handleActorSelectChange(html, id) {
-    this.actorDetails[id].race = html.find('#race-select').val();
-    this.actorDetails[id].characteristics = this.rollCharacteristics(html.find('#race-select').val(), this.globalOptions.races[html.find('#race-select').val()].charAvg);
-    this.actorDetails[id].homeland = html.find('#homeland-select').val();
-    this.actorDetails[id].occupation = html.find('#occupation-select').val();
-    this.actorDetails[id].cult = html.find('#cult-select').val();
-  }
-
-  async handleRuneSelectChange(html, id) {
-    this.actorDetails[id].runes.primary = html.find('#primary-rune-select').val();
-    this.actorDetails[id].runes.secondary = html.find('#secondary-rune-select').val();
-    this.actorDetails[id].runes.tertiary = html.find('#tertiary-rune-select').val();
-    this.actorDetails[id].runes.formPrimary = html.find('#form-primary-rune-select').val();
-    this.actorDetails[id].runes.powerPrimary = html.find('#power-primary-rune-select').val();
-    this.actorDetails[id].runes.formSecondary = html.find('#form-secondary-rune-select').val();
-    this.actorDetails[id].runes.powerSecondary = html.find('#power-secondary-rune-select').val();
-  }
-
-  async handleSyncAllButton(html) {
-    const actorId = html.find('#actor-detail-select').val();
-    const details = this.actorDetails[actorId];
-    for (const id in this.actorDetails) {
-      this.actorDetails[id] = { ...details };
-    }
-    dialog.data.content = await this.createDialogContent(this.currentPage);
-    dialog.render(true);
-  }
-
-  async handleSyncAllRunesButton(html) {
-    const actorId = html.find('#actor-detail-rune-select').val();
-    const details = this.actorDetails[actorId];
-    for (const id in this.actorDetails) {
-      this.actorDetails[id].runes.primary = details.runes.primary;
-      this.actorDetails[id].runes.secondary = details.runes.secondary;
-      this.actorDetails[id].runes.tertiary = details.runes.tertiary;
-      this.actorDetails[id].runes.formPrimary = details.runes.formPrimary;
-      this.actorDetails[id].runes.powerPrimary = details.runes.powerPrimary;
-      this.actorDetails[id].runes.formSecondary = details.runes.formSecondary;
-      this.actorDetails[id].runes.powerSecondary = details.runes.powerSecondary;
-    }
-    dialog.data.content = await this.createDialogContent(this.currentPage);
-    dialog.render(true);
-  }
-
-  async whitelistRunesBasedOnCult(actorId) {
-    const details = this.actorDetails[actorId];
-    const primarySelect = document.getElementById('primary-rune-select');
-    const secondarySelect = document.getElementById('secondary-rune-select');
-    const cult = details.cult;
-
-    if (cult && primarySelect && secondarySelect) {
-      const primaryOptions = primarySelect.options;
-      const secondaryOptions = secondarySelect.options;
-
-      for (let i = 0; i < primaryOptions.length; i++) {
-        const option = primaryOptions[i];
-        if (cult.includes("Orlanth") && option.text !== "Air") {
-          option.disabled = true;
-        } else if (cult.includes("Kyger Litor") && option.text !== "Darkness") {
-          option.disabled = true;
-        } else {
-          option.disabled = false;
-        }
-      }
-
-      for (let i = 0; i < secondaryOptions.length; i++) {
-        const option = secondaryOptions[i];
-        if (cult.includes("Orlanth") && option.text !== "Air") {
-          option.disabled = true;
-        } else if (cult.includes("Kyger Litor") && option.text !== "Darkness") {
-          option.disabled = true;
-        } else {
-          option.disabled = false;
-        }
-      }
-    }
-  }
-
-  bindEventListeners(html) {
-    html.find('#next-button').click(() => this.handleNextButtonClick(html, this.currentPage));
-
-    html.find('#actor-detail-select').change(function() {
-      const actorId = $(this).val();
-      this.loadActorDetails(actorId);
-    }.bind(this));
-
-    html.find('#race-select').change(function() {
-      const actorId = html.find('#actor-detail-select').val();
-      this.handleActorSelectChange(html, actorId);
-    }.bind(this));
-
-    html.find('#homeland-select').change(function() {
-      const actorId = html.find('#actor-detail-select').val();
-      this.actorDetails[actorId].homeland = $(this).val();
-    }.bind(this));
-
-    html.find('#occupation-select').change(function() {
-      const actorId = html.find('#actor-detail-select').val();
-      this.actorDetails[actorId].occupation = $(this).val();
-    }.bind(this));
-
-    html.find('#cult-select').change(function() {
-      const actorId = html.find('#actor-detail-select').val();
-      this.actorDetails[actorId].cult = $(this).val();
-      this.whitelistRunesBasedOnCult(actorId);
-    }.bind(this));
-
-    html.find('#actor-detail-rune-select').change(function() {
-      const actorId = $(this).val();
-      const details = this.actorDetails[actorId];
-      document.getElementById('primary-rune-select').value = details.runes.primary || 'auto';
-      document.getElementById('secondary-rune-select').value = details.runes.secondary || 'auto';
-      document.getElementById('tertiary-rune-select').value = details.runes.tertiary || 'auto';
-      this.updateRuneSelections(actorId);
-    }.bind(this));
-
-    html.find('#primary-rune-select').change(function() {
-      const actorId = html.find('#actor-detail-rune-select').val();
-      this.actorDetails[actorId].runes.primary = $(this).val();
-      this.updateRuneSelections(actorId);
-    }.bind(this));
-
-    html.find('#secondary-rune-select').change(function() {
-      const actorId = html.find('#actor-detail-rune-select').val();
-      this.actorDetails[actorId].runes.secondary = $(this).val();
-      this.updateRuneSelections(actorId);
-    }.bind(this));
-
-    html.find('#tertiary-rune-select').change(function() {
-      const actorId = html.find('#actor-detail-rune-select').val();
-      this.actorDetails[actorId].runes.tertiary = $(this).val();
-      this.updateRuneSelections(actorId);
-    }.bind(this));
-
-    html.find('#actor-detail-char-select').change(function() {
-      const actorId = $(this).val();
-      this.loadCharacteristics(actorId);
-    }.bind(this));
-
-    ['str', 'con', 'siz', 'dex', 'int', 'pow', 'cha'].forEach(char => {
-      html.find(`#${char}-select`).change(function() {
-        const actorId = html.find('#actor-detail-char-select').val();
-        this.actorDetails[actorId].characteristics[char.toUpperCase()].baseValue = parseInt($(this).val());
-      }.bind(this));
-    });
-
-    html.find('.nav-button').click(async function() {
-      this.currentPage = parseInt($(this).data('page'));
-      dialog.data.content = await this.createDialogContent(this.currentPage);
-      dialog.render(true);
-    }.bind(this));
-
-    html.find('#add-actor-button').click(async () => {
-      const actorId = html.find('#actor-select').val();
-      const actor = game.actors.get(actorId);
-      this.selectedActors.push(actor);
-
-      const categorizedRunes = await this.loadRunes();
-      const runeDetails = this.initializeRuneDetails(categorizedRunes);
-
-      this.actorDetails[actorId] = {
-        race: 'human',
-        homeland: 'auto',
-        occupation: 'auto',
-        cult: 'auto',
-        runes: {
-          primary: 'auto',
-          secondary: 'auto',
-          tertiary: 'auto',
-          formPrimary: 'auto',
-          powerPrimary: 'auto',
-          formSecondary: 'auto',
-          powerSecondary: 'auto',
-          all: runeDetails
-        },
-        characteristics: this.rollCharacteristics('human', this.globalOptions.races.human.charAvg),
-        skills: await this.loadSkills(),
-        attributes: {}
-      };
-
-      dialog.data.content = await this.createDialogContent(this.currentPage);
-      dialog.render(true);
-    });
-
-    html.find('#sync-all-button').click(() => this.handleSyncAllButton(html));
-    html.find('#sync-all-runes-button').click(() => this.handleSyncAllRunesButton(html));
-
-    html.find('#save-button').click(() => {
-      console.log("Save button clicked");
-    });
-
-    html.find('#cancel-button').click(() => {
-      console.log("Cancel button clicked");
-    });
-  }
-
-  async showDialog() {
-    this.selectedActors = this.getActors();
-    for (const actor of this.selectedActors) {
-      const categorizedRunes = await this.loadRunes();
-      const runeDetails = this.initializeRuneDetails(categorizedRunes);
-
-      this.actorDetails[actor.id] = {
-        race: 'human',
-        homeland: 'auto',
-        occupation: 'auto',
-        cult: 'auto',
-        runes: {
-          primary: 'auto',
-          secondary: 'auto',
-          tertiary: 'auto',
-          formPrimary: 'auto',
-          powerPrimary: 'auto',
-          formSecondary: 'auto',
-          powerSecondary: 'auto',
-          all: runeDetails
-        },
-        characteristics: this.rollCharacteristics('human', this.globalOptions.races.human.charAvg),
-        skills: await this.loadSkills(),
-        attributes: {}
-      };
-    }
-
-    const content = await this.createDialogContent(this.currentPage);
-
-    const dialog = new Dialog({
-      title: "Multi-Page Dialog",
-      content: content,
-      buttons: {
-        close: {
-          label: "Close",
-          callback: () => console.log("Dialog closed")
-        }
-      },
-      render: (html) => this.bindEventListeners(html)
-    });
-
-    dialog.render(true);
-  }
-
-  createSideNav() {
-    return `
-      <div id="side-nav" style="float: left; width: 20%; border-right: 1px solid #ccc; padding-right: 10px;">
-        <ul>
-          ${this.pages.map((page, index) => `<li style="margin-bottom: 5px;"><button class="nav-button" data-page="${index}">${page.title}</button></li>`).join('')}
-        </ul>
-      </div>
-    `;
-  }
-
-  createBottomPanel(pageIndex) {
-    let nextButton;
-    if (pageIndex === 0) {
-      nextButton = `<button id="next-button-page-1" style="margin-left: 10px;">Next</button>`;
-    } else if (pageIndex === 1) {
-      nextButton = `<button id="next-button-page-2" style="margin-left: 10px;">Next</button>`;
-    } else if (pageIndex === 2) {
-      nextButton = `<button id="next-button-page-3" style="margin-left: 10px;">Next</button>`;
-    } else if (pageIndex === 3) {
-      nextButton = `<button id="next-button-page-4" style="margin-left: 10px;">Next</button>`;
-    } else if (pageIndex === 4) {
-      nextButton = `<button id="next-button-page-5" style="margin-left: 10px;">Next</button>`;
-    } else if (pageIndex === 5) {
-      nextButton = `<button id="next-button-page-6" style="margin-left: 10px;">Next</button>`;
-    } else {
-      nextButton = pageIndex < this.pages.length - 1 ? `<button id="next-button">Next</button>` : '';
-    }
-    return `
-      <div id="bottom-panel" style="width: 100%; border-top: 1px solid #ccc; padding-top: 10px; display: flex; justify-content: flex-end;">
-        <button id="cancel-button">Cancel</button>
-        <button id="save-button" style="margin-left: 10px;">Save</button>
-        ${nextButton}
-      </div>
-    `;
-  }
-
   async renderPage(pageIndex) {
     const page = this.pages[pageIndex];
     let content = `<h2>${page.title}</h2><p>${page.content}</p>`;
@@ -838,21 +680,15 @@ class CharacterGenerator {
         </div>
         <div>
           <label for="race-select">Race:</label>
-          <select id="race-select">
-            ${Object.keys(this.globalOptions.races).map(race => `<option value="${race}">${race}</option>`).join('')}
-          </select>
+          <select id="race-select">${Object.keys(this.globalOptions.races).map(race => `<option value="${race}">${race}</option>`)}</select>
         </div>
         <div>
           <label for="homeland-select">Homeland:</label>
-          <select id="homeland-select">
-            ${Object.keys(this.globalOptions.homelands).map(homeland => `<option value="${homeland}">${homeland}</option>`).join('')}
-          </select>
+          <select id="homeland-select">${Object.keys(this.globalOptions.homelands).map(homeland => `<option value="${homeland}">${homeland}</option>`)}</select>
         </div>
         <div>
           <label for="cult-select">Cult:</label>
-          <select id="cult-select">
-            ${Object.keys(this.globalOptions.cults).map(cult => `<option value="${cult}">${cult}</option>`).join('')}
-          </select>
+          <select id="cult-select">${Object.keys(this.globalOptions.cults).map(cult => `<option value="${cult}">${cult}</option>`)}</select>
         </div>
       `;
       content += `<button id="sync-all-button" style="margin-top: 10px;">Sync All</button>`;
@@ -959,7 +795,325 @@ class CharacterGenerator {
     }
     return content;
   }
+
+  createSideNav() {
+    return `
+      <div id="side-nav" style="float: left; width: 20%; border-right: 1px solid #ccc; padding-right: 10px;">
+        <ul>
+          ${this.pages.map((page, index) => `<li style="margin-bottom: 5px;"><button class="nav-button" data-page="${index}">${page.title}</button></li>`).join('')}
+        </ul>
+      </div>
+    `;
+  }
+
+  createBottomPanel(pageIndex) {
+    let nextButton;
+    if (pageIndex === 0) {
+      nextButton = `<button id="next-button-page-1" style="margin-left: 10px;">Next</button>`;
+    } else if (pageIndex === 1) {
+      nextButton = `<button id="next-button-page-2" style="margin-left: 10px;">Next</button>`;
+    } else if (pageIndex === 2) {
+      nextButton = `<button id="next-button-page-3" style="margin-left: 10px;">Next</button>`;
+    } else if (pageIndex === 3) {
+      nextButton = `<button id="next-button-page-4" style="margin-left: 10px;">Next</button>`;
+    } else if (pageIndex === 4) {
+      nextButton = `<button id="next-button-page-5" style="margin-left: 10px;">Next</button>`;
+    } else if (pageIndex === 5) {
+      nextButton = `<button id="next-button-page-6" style="margin-left: 10px;">Next</button>`;
+    } else {
+      nextButton = pageIndex < this.pages.length - 1 ? `<button id="next-button">Next</button>` : '';
+    }
+    return `
+      <div id="bottom-panel" style="width: 100%; border-top: 1px solid #ccc; padding-top: 10px; display: flex; justify-content: flex-end;">
+        <button id="cancel-button">Cancel</button>
+        <button id="save-button" style="margin-left: 10px;">Save</button>
+        ${nextButton}
+      </div>
+    `;
+  }
+
+  async createDialogContent(pageIndex) {
+    console.log(`Index ${pageIndex} - Navigating to page: ${this.pages[pageIndex].title}`);
+    return `
+      <div style="display: flex; flex-direction: column; height: 100%;">
+        <div style="flex-grow: 1; display: flex;">
+          ${this.createSideNav()}
+          <div id="main-content" style="flex-grow: 1; padding-left: 10px;">
+            ${await this.renderPage(pageIndex)}
+          </div>
+        </div>
+        ${this.createBottomPanel(pageIndex)}
+      </div>
+    `;
+  }
+
+  loadCharacteristics(actorId) {
+    const details = this.actorDetails[actorId];
+    const characteristics = details.characteristics;
+    if (characteristics) {
+      ['str', 'con', 'siz', 'dex', 'int', 'pow', 'cha'].forEach(char => {
+        const select = document.getElementById(`${char}-select`);
+        if (select) select.value = characteristics[char.toUpperCase()].baseValue || 0;
+      });
+    }
+  }
+
+  async initDialog() {
+    const dialog = new Dialog({
+      title: "Multi-Page Dialog",
+      content: await this.createDialogContent(this.currentPage),
+      buttons: {},
+      render: async (html) => {
+        html.find('#next-button-page-1').click(async () => {
+          if (this.selectedActors.length === 0) {
+            const actorId = html.find('#actor-select').val();
+            const actor = game.actors.get(actorId);
+            this.selectedActors.push(actor);
+
+            const categorizedRunes = await this.loadRunes();
+            const runeDetails = this.initializeRuneDetails(categorizedRunes);
+
+            this.actorDetails[actorId] = {
+              race: 'human',
+              homeland: 'auto',
+              occupation: 'auto',
+              cult: 'auto',
+              runes: {
+                primary: 'auto',
+                secondary: 'auto',
+                tertiary: 'auto',
+                formPrimary: 'auto',
+                formSecondary: 'auto',
+                powerPrimary: 'auto',
+                powerSecondary: 'auto',
+                all: runeDetails
+              },
+              characteristics: this.rollCharacteristics('human', this.globalOptions.races.human.charAvg),
+              attributes: {},
+              skills: await this.loadSkills()
+            };
+          }
+          this.logSelectedActorsAndDetails(1);
+          this.currentPage++;
+          dialog.data.content = await this.createDialogContent(this.currentPage);
+          dialog.render(true);
+        });
+
+        html.find('#next-button-page-2').click(async () => {
+          await this.handleAutoSelections();
+          this.logSelectedActorsAndDetails(2);
+          this.currentPage++;
+          dialog.data.content = await this.createDialogContent(this.currentPage);
+          dialog.render(true);
+        });
+
+        html.find('#next-button-page-3').click(async () => {
+          await this.handleAutoSelections();
+          this.logSelectedActorsAndDetails(3);
+          this.currentPage++;
+          dialog.data.content = await this.createDialogContent(this.currentPage);
+          dialog.render(true);
+        });
+
+        html.find('#next-button-page-4').click(async () => {
+          this.selectedActors.forEach(actor => {
+            const details = this.actorDetails[actor.id];
+            this.calculateCharacteristicsTotal(details);
+            this.calculateAttributes(details);
+            this.applyHomelandSkillModifiers(details);
+          });
+          this.logSelectedActorsAndDetails(4);
+          this.currentPage++;
+          dialog.data.content = await this.createDialogContent(this.currentPage);
+          dialog.render(true);
+        });
+
+        html.find('#next-button-page-5').click(async () => {
+          this.selectedActors.forEach(actor => {
+            const details = this.actorDetails[actor.id];
+            details.occupation = html.find('#occupation-select').val();
+          });
+          this.logSelectedActorsAndDetails(5);
+          this.currentPage++;
+          dialog.data.content = await this.createDialogContent(this.currentPage);
+          dialog.render(true);
+        });
+
+        html.find('#actor-detail-occupation-select').change(function() {
+          const actorId = $(this).val();
+          const details = this.actorDetails[actorId];
+          const occupations = this.globalOptions.homelands[details.homeland].occupations;
+          const occupationSelect = html.find('#occupation-select');
+          occupationSelect.empty();
+          occupationSelect.append(`<option value="auto">auto</option>`);
+          occupations.forEach(occupation => {
+            occupationSelect.append(`<option value="${occupation}">${occupation}</option>`);
+          });
+          occupationSelect.val(details.occupation || 'auto');
+        }.bind(this));
+
+        html.find('#occupation-select').change(function() {
+          const actorId = html.find('#actor-detail-occupation-select').val();
+          this.actorDetails[actorId].occupation = $(this).val();
+          this.logSelectedActorsAndDetails();
+        }.bind(this));
+
+        const initialActorId = html.find('#actor-detail-occupation-select').val();
+        html.find('#actor-detail-occupation-select').change();
+        html.find('#occupation-select').val(this.actorDetails[initialActorId]?.occupation || 'auto');
+
+        html.find('#next-button-page-6').click(async () => {
+          this.selectedActors.forEach(actor => {
+            const details = this.actorDetails[actor.id];
+            if (details.cult === 'auto') details.cult = this.getWeightedRandomSelection(this.globalOptions.cults, actor.id);
+          });
+          this.logSelectedActorsAndDetails(6);
+          this.currentPage++;
+          dialog.data.content = await this.createDialogContent(this.currentPage);
+          dialog.render(true);
+        });
+
+        html.find('#actor-detail-select').change(function() {
+          const actorId = $(this).val();
+          this.loadActorDetails(actorId);
+        }.bind(this));
+        html.find('#race-select').change(function() {
+          const actorId = html.find('#actor-detail-select').val();
+          this.actorDetails[actorId].race = $(this).val();
+          this.actorDetails[actorId].characteristics = this.rollCharacteristics($(this).val(), this.globalOptions.races[$(this).val()].charAvg);
+          this.logSelectedActorsAndDetails();
+        }.bind(this));
+        html.find('#homeland-select').change(function() {
+          const actorId = html.find('#actor-detail-select').val();
+          this.actorDetails[actorId].homeland = $(this).val();
+          this.logSelectedActorsAndDetails();
+        }.bind(this));
+        html.find('#occupation-select').change(function() {
+          const actorId = html.find('#actor-detail-select').val();
+          this.actorDetails[actorId].occupation = $(this).val();
+          this.logSelectedActorsAndDetails();
+        }.bind(this));
+        html.find('#cult-select').change(function() {
+          const actorId = html.find('#actor-detail-select').val();
+          this.actorDetails[actorId].cult = $(this).val();
+          this.logSelectedActorsAndDetails();
+        }.bind(this));
+
+        html.find('#actor-detail-rune-select').change(function() {
+          const actorId = $(this).val();
+          const details = this.actorDetails[actorId];
+          document.getElementById('primary-rune-select').value = details.runes.primary || 'auto';
+          document.getElementById('secondary-rune-select').value = details.runes.secondary || 'auto';
+          document.getElementById('tertiary-rune-select').value = details.runes.tertiary || 'auto';
+          this.updateRuneSelections(actorId);
+        }.bind(this));
+
+        html.find('#primary-rune-select').change(function() {
+          const actorId = html.find('#actor-detail-rune-select').val();
+          this.actorDetails[actorId].runes.primary = $(this).val();
+          this.updateRuneSelections(actorId);
+          this.logSelectedActorsAndDetails();
+        }.bind(this));
+        html.find('#secondary-rune-select').change(function() {
+          const actorId = html.find('#actor-detail-rune-select').val();
+          this.actorDetails[actorId].runes.secondary = $(this).val();
+          this.updateRuneSelections(actorId);
+          this.logSelectedActorsAndDetails();
+        }.bind(this));
+        html.find('#tertiary-rune-select').change(function() {
+          const actorId = html.find('#actor-detail-rune-select').val();
+          this.actorDetails[actorId].runes.tertiary = $(this).val();
+          this.updateRuneSelections(actorId);
+          this.logSelectedActorsAndDetails();
+        }.bind(this));
+
+        html.find('#actor-detail-char-select').change(function() {
+          const actorId = $(this).val();
+          this.loadCharacteristics(actorId);
+        }.bind(this));
+
+        ['str', 'con', 'siz', 'dex', 'int', 'pow', 'cha'].forEach(char => {
+          html.find(`#${char}-select`).change(function() {
+            const actorId = html.find('#actor-detail-char-select').val();
+            this.actorDetails[actorId].characteristics[char.toUpperCase()].baseValue = parseInt($(this).val());
+            this.logSelectedActorsAndDetails();
+          }.bind(this));
+        });
+
+        html.find('.nav-button').click(async function() {
+          this.currentPage = parseInt($(this).data('page'));
+          dialog.data.content = await this.createDialogContent(this.currentPage);
+          dialog.render(true);
+        }.bind(this));
+
+        html.find('#add-actor-button').click(async () => {
+          const actorId = html.find('#actor-select').val();
+          const actor = game.actors.get(actorId);
+          this.selectedActors.push(actor);
+
+          const categorizedRunes = await this.loadRunes();
+          const runeDetails = this.initializeRuneDetails(categorizedRunes);
+
+          this.actorDetails[actorId] = {
+            race: 'human',
+            homeland: 'auto',
+            occupation: 'auto',
+            cult: 'auto',
+            runes: {
+              primary: 'auto',
+              secondary: 'auto',
+              tertiary: 'auto',
+              all: runeDetails
+            },
+            characteristics: this.rollCharacteristics('human', this.globalOptions.races.human.charAvg),
+            attributes: {},
+            skills: await this.loadSkills()
+          };
+          this.logSelectedActorsAndDetails();
+          dialog.data.content = await this.createDialogContent(this.currentPage);
+          dialog.render(true);
+        });
+
+        html.find('#sync-all-button').click(async () => {
+          const actorId = html.find('#actor-detail-select').val();
+          const details = this.actorDetails[actorId];
+          for (const id in this.actorDetails) {
+            this.actorDetails[id] = { ...details };
+          }
+          this.logSelectedActorsAndDetails();
+          dialog.data.content = await this.createDialogContent(this.currentPage);
+          dialog.render(true);
+        });
+
+        html.find('#sync-all-runes-button').click(async () => {
+          const actorId = html.find('#actor-detail-rune-select').val();
+          const details = this.actorDetails[actorId];
+          for (const id in this.actorDetails) {
+            this.actorDetails[id].runes.primary = details.runes.primary;
+            this.actorDetails[id].runes.secondary = details.runes.secondary;
+            this.actorDetails[id].runes.tertiary = details.runes.tertiary;
+            this.actorDetails[id].runes.all = { ...details.runes.all };
+          }
+          this.logSelectedActorsAndDetails();
+          dialog.data.content = await this.createDialogContent(this.currentPage);
+          dialog.render(true);
+        });
+
+        html.find('#cancel-button').click(() => {
+          dialog.close();
+        });
+
+        html.find('#save-button').click(() => {
+          this.logSelectedActorsAndDetails();
+        });
+
+        if (this.currentPage === 3 && this.selectedActors.length > 0) {
+          this.loadCharacteristics(this.selectedActors[0].id);
+        }
+      }
+    }).render(true);
+  }
 }
 
-const characterGenerator = new CharacterGenerator();
-characterGenerator.showDialog();
+const generator = new CharacterGenerator();
+generator.initDialog();
