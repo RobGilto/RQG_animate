@@ -11,60 +11,54 @@ class CharacterGenerator {
       { title: "Page 8", content: "Content for Page 8" },
       { title: "Page 9", content: "Content for Page 9" }
     ];
+
     this.globalOptions = {
       races: {
         auto: { weight: 0 },
-        human: { STR: "3D6", CON: "3D6", DEX: "3D6", POW: "3D6", CHA: "3D6", SIZ: "2D6+6", INT: "2D6+6", charAvg: 12, weight: 50, weightFunctions: [(details) => details.homeland === 'Sartar' ? 20 : 0] },
-        darktroll: { STR: "3D6+6", CON: "3D6", DEX: "3D6", POW: "3D6", CHA: "3D6", SIZ: "2D6+6", INT: "2D6+6", charAvg: 12, weight: 50, weightFunctions: [(details) => details.homeland === 'Esrolia' ? 20 : 0] }
+        human: {
+          STR: "3D6", CON: "3D6", DEX: "3D6", POW: "3D6", CHA: "3D6",
+          SIZ: "2D6+6", INT: "2D6+6", charAvg: 12, weight: 50,
+          weightFunctions: [(details) => details.homeland === 'Sartar' ? 20 : 0]
+        },
+        darktroll: {
+          STR: "3D6+6", CON: "3D6", DEX: "3D6", POW: "3D6", CHA: "3D6",
+          SIZ: "2D6+6", INT: "2D6+6", charAvg: 12, weight: 50,
+          weightFunctions: [(details) => details.homeland === 'Esrolia' ? 20 : 0]
+        }
       },
       homelands: {
         auto: { weight: 0, occupations: [] },
-        "Sartar": { 
-          weight: 33, 
-          weightFunctions: [(details) => details.race === 'human' ? 17 : 0],
+        "Sartar": {
+          weight: 33, weightFunctions: [(details) => details.race === 'human' ? 17 : 0],
           occupations: [
             "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer",
             "Herder", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry",
             "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
           ]
         },
-        "Esrolia": { 
-          weight: 33, 
-          weightFunctions: [(details) => details.race === 'darktroll' ? 17 : 0],
+        "Esrolia": {
+          weight: 33, weightFunctions: [(details) => details.race === 'darktroll' ? 17 : 0],
           occupations: [
             "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer",
             "Herder", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry",
             "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
           ]
         }
+        // Add other homelands here...
       },
       occupations: {
         auto: { weight: 0 },
         "Assistant Shaman": { weight: 40, weightFunctions: [(details) => details.cult === 'Cult 1' ? 20 : 0] },
         "Bandit": { weight: 30, weightFunctions: [(details) => details.cult === 'Cult 2' ? 20 : 0] },
         "Chariot Driver": { weight: 30 },
-        "Crafter (Brewer, Carpenter, Jeweler, Leatherworker, Mason, Potter, Redsmith, Tanner, Weaver)": { weight: 30 },
-        "Entertainer": { weight: 30 },
-        "Farmer": { weight: 30 },
-        "Fisher": { weight: 30 },
-        "Healer": { weight: 30 },
-        "Herder": { weight: 30 },
-        "Merchant": { weight: 30 },
-        "Noble": { weight: 30 },
-        "Philosopher": { weight: 30 },
-        "Priest": { weight: 30 },
-        "Scribe": { weight: 30 },
-        "Thief": { weight: 30 },
-        "Warrior: Heavy Infantry": { weight: 30 },
-        "Warrior: Light Infantry": { weight: 30 },
-        "Warrior: Heavy Cavalry": { weight: 30 },
-        "Warrior: Light Cavalry": { weight: 30 }
+        // Add other occupations here...
       },
       cults: {
         auto: { weight: 0 }
         // Cults will be populated dynamically from the compendium
       }
     };
+
     this.currentPage = 0;
     this.selectedActors = [];
     this.actorDetails = {};
@@ -78,8 +72,8 @@ class CharacterGenerator {
         console.error(`Compendium '${this.selectedCompendium}' not found`);
         return { element: [], form: [], technique: [], power: [], condition: [] };
       }
-      await pack.getIndex();
-      const runeItems = await pack.getDocuments();
+      await pack.getIndex(); // Load the index
+      const runeItems = await pack.getDocuments(); // Load all items
       console.log("Loaded rune items:", runeItems);
 
       const categorizedRunes = {
@@ -114,10 +108,10 @@ class CharacterGenerator {
         return {};
       }
 
-      await skillPack.getIndex();
-      await weaponPack.getIndex();
-      const skillItems = await skillPack.getDocuments();
-      const weaponItems = await weaponPack.getDocuments();
+      await skillPack.getIndex(); // Load the index for skills
+      await weaponPack.getIndex(); // Load the index for weapons
+      const skillItems = await skillPack.getDocuments(); // Load all skill items
+      const weaponItems = await weaponPack.getDocuments(); // Load all weapon items
       console.log("Loaded skill items:", skillItems);
       console.log("Loaded weapon items:", weaponItems);
 
@@ -163,8 +157,8 @@ class CharacterGenerator {
         return [];
       }
 
-      await cultPack.getIndex();
-      const cultItems = await cultPack.getDocuments();
+      await cultPack.getIndex(); // Load the index for cults
+      const cultItems = await cultPack.getDocuments(); // Load all cult items
       console.log("Loaded cult items:", cultItems);
 
       return cultItems.map(cult => cult.name);
@@ -283,300 +277,13 @@ class CharacterGenerator {
     }
   }
 
-  async whitelistRunesBasedOnCult(actorId) {
-    const details = this.actorDetails[actorId];
-    const cult = details.cult;
-
-    const primaryRuneSelect = document.getElementById('primary-rune-select');
-    const secondaryRuneSelect = document.getElementById('secondary-rune-select');
-
-    const elementRunes = this.globalOptions.runes.element.map(rune => rune.name);
-    const formRunes = this.globalOptions.runes.form.map(rune => rune.name);
-    const powerRunes = this.globalOptions.runes.power.map(rune => rune.name);
-
-    const whitelist = (select, runes) => {
-      for (let i = 0; i < select.options.length; i++) {
-        const option = select.options[i];
-        option.style.display = runes.includes(option.value) ? 'block' : 'none';
-      }
-    };
-
-    if (cult.includes("Orlanth")) {
-      whitelist(primaryRuneSelect, ["Air"]);
-    } else if (cult.includes("Kyger Litor")) {
-      whitelist(primaryRuneSelect, ["Darkness"]);
-    } else {
-      whitelist(primaryRuneSelect, elementRunes);
-    }
-
-    whitelist(secondaryRuneSelect, elementRunes.concat(formRunes, powerRunes));
-  }
-
-  async renderPage(pageIndex) {
-    let content = `<h2>${this.pages[pageIndex].title}</h2><p>${this.pages[pageIndex].content}</p>`;
-    if (pageIndex === 0) {
-      let actors = this.getActors().filter(actor => !this.selectedActors.some(selected => selected.id === actor.id));
-      content += `<select id="actor-select">${actors.map(actor => `<option value="${actor.id}">${actor.name}</option>`)}</select>`;
-      content += `<button id="add-actor-button" style="margin-left: 10px;">Add Actor</button>`;
-    } else if (pageIndex === 1) {
-      let actors = this.selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
-      content += `
-        <div>
-          <label for="actor-detail-select">Actor:</label>
-          <select id="actor-detail-select">${actors}</select>
-        </div>
-        <div>
-          <label for="race-select">Race:</label>
-          <select id="race-select">${Object.keys(this.globalOptions.races).map(race => `<option value="${race}">${race}</option>`)}</select>
-        </div>
-        <div>
-          <label for="homeland-select">Homeland:</label>
-          <select id="homeland-select">${Object.keys(this.globalOptions.homelands).map(homeland => `<option value="${homeland}">${homeland}</option>`)}</select>
-        </div>
-        <div>
-          <label for="cult-select">Cult:</label>
-          <select id="cult-select">${Object.keys(this.globalOptions.cults).map(cult => `<option value="${cult}">${cult}</option>`)}</select>
-        </div>
-      `;
-      content += `<button id="sync-all-button" style="margin-top: 10px;">Sync All</button>`;
-    } else if (pageIndex === 2) {
-      const categorizedRunes = await this.loadRunes();
-      let actors = this.selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
-      content += `
-        <div>
-          <label for="actor-detail-rune-select">Actor:</label>
-          <select id="actor-detail-rune-select">${actors}</select>
-        </div>
-        <div>
-          <label for="primary-rune-select">Primary Rune:</label>
-          <select id="primary-rune-select">
-            <option value="auto">auto</option>
-            ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
-          </select>
-        </div>
-        <div>
-          <label for="secondary-rune-select">Secondary Rune:</label>
-          <select id="secondary-rune-select">
-            <option value="auto">auto</option>
-            ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
-          </select>
-        </div>
-        <div>
-          <label for="tertiary-rune-select">Tertiary Rune:</label>
-          <select id="tertiary-rune-select">
-            <option value="auto">auto</option>
-            ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
-          </select>
-        </div>
-        <div>
-          <label for="form-primary-rune-select">Form Primary Rune:</label>
-          <select id="form-primary-rune-select">
-            <option value="auto">auto</option>
-            ${categorizedRunes.form.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
-          </select>
-        </div>
-        <div>
-          <label for="power-primary-rune-select">Power Primary Rune:</label>
-          <select id="power-primary-rune-select">
-            <option value="auto">auto</option>
-            ${categorizedRunes.power.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
-          </select>
-        </div>
-        <div>
-          <label for="form-secondary-rune-select">Form Secondary Rune:</label>
-          <select id="form-secondary-rune-select">
-            <option value="auto">auto</option>
-            ${categorizedRunes.form.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
-          </select>
-        </div>
-        <div>
-          <label for="power-secondary-rune-select">Power Secondary Rune:</label>
-          <select id="power-secondary-rune-select">
-            <option value="auto">auto</option>
-            ${categorizedRunes.power.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
-          </select>
-        </div>
-        <div>
-          <label for="char-avg-select">Characteristics Average:</label>
-          <select id="char-avg-select">
-            <option value="default">default (${this.globalOptions.races[this.selectedActors[0]?.race]?.charAvg})</option>
-            ${Array.from({ length: 14 }, (_, i) => i + 7).map(value => `<option value="${value}">${value}</option>`).join('')}
-          </select>
-        </div>
-        <button id="sync-all-runes-button" style="margin-top: 10px;">Sync All</button>
-      `;
-    } else if (pageIndex === 3) {
-      let actors = this.selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
-      const characteristics = ['STR', 'CON', 'SIZ', 'DEX', 'INT', 'POW', 'CHA'];
-      content += `
-        <div>
-          <label for="actor-detail-char-select">Actor:</label>
-          <select id="actor-detail-char-select">${actors}</select>
-        </div>
-        ${characteristics.map(char => `
-        <div>
-          <label for="${char.toLowerCase()}-select">${char}:</label>
-          <select id="${char.toLowerCase()}-select">
-            ${Array.from({ length: 24 }, (_, i) => i + 3).map(value => `<option value="${value}">${value}</option>`).join('')}
-          </select>
-        </div>
-        `).join('')}
-      `;
-    } else if (pageIndex === 4) {
-      let actors = this.selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
-      const details = this.actorDetails[this.selectedActors[0]?.id];
-      const occupations = details ? this.globalOptions.homelands[details.homeland].occupations : [];
-      content += `
-        <div>
-          <label for="actor-detail-occupation-select">Actor:</label>
-          <select id="actor-detail-occupation-select">${actors}</select>
-        </div>
-        <div>
-          <label for="occupation-select">Occupation:</label>
-          <select id="occupation-select">
-            <option value="auto">auto</option>
-            ${occupations.map(occupation => `<option value="${occupation}">${occupation}</option>`).join('')}
-          </select>
-        </div>
-      `;
-    }
-    return content;
-  }
-
-  createSideNav() {
-    return `
-      <div id="side-nav" style="float: left; width: 20%; border-right: 1px solid #ccc; padding-right: 10px;">
-        <ul>
-          ${this.pages.map((page, index) => `<li style="margin-bottom: 5px;"><button class="nav-button" data-page="${index}">${page.title}</button></li>`).join('')}
-        </ul>
-      </div>
-    `;
-  }
-
-  createBottomPanel(pageIndex) {
-    let nextButton;
-    if (pageIndex === 0) {
-      nextButton = `<button id="next-button-page-1" style="margin-left: 10px;">Next</button>`;
-    } else if (pageIndex === 1) {
-      nextButton = `<button id="next-button-page-2" style="margin-left: 10px;">Next</button>`;
-    } else if (pageIndex === 2) {
-      nextButton = `<button id="next-button-page-3" style="margin-left: 10px;">Next</button>`;
-    } else if (pageIndex === 3) {
-      nextButton = `<button id="next-button-page-4" style="margin-left: 10px;">Next</button>`;
-    } else if (pageIndex === 4) {
-      nextButton = `<button id="next-button-page-5" style="margin-left: 10px;">Next</button>`;
-    } else if (pageIndex === 5) {
-      nextButton = `<button id="next-button-page-6" style="margin-left: 10px;">Next</button>`;
-    } else {
-      nextButton = pageIndex < this.pages.length - 1 ? `<button id="next-button">Next</button>` : '';
-    }
-    return `
-      <div id="bottom-panel" style="width: 100%; border-top: 1px solid #ccc; padding-top: 10px; display: flex; justify-content: flex-end;">
-        <button id="cancel-button">Cancel</button>
-        <button id="save-button" style="margin-left: 10px;">Save</button>
-        ${nextButton}
-      </div>
-    `;
-  }
-
-  updateRuneSelections(actorId) {
-    const details = this.actorDetails[actorId];
-    const primaryRune = details.runes.primary;
-    const secondaryRune = details.runes.secondary;
-    const tertiaryRune = details.runes.tertiary;
-
-    const primarySelect = document.getElementById('primary-rune-select');
-    const secondarySelect = document.getElementById('secondary-rune-select');
-    const tertiarySelect = document.getElementById('tertiary-rune-select');
-
-    const allRunes = Array.from(primarySelect.options).map(option => option.value);
-
-    allRunes.forEach(rune => {
-      const primaryOption = primarySelect.querySelector(`option[value="${rune}"]`);
-      const secondaryOption = secondarySelect.querySelector(`option[value="${rune}"]`);
-      const tertiaryOption = tertiarySelect.querySelector(`option[value="${rune}"]`);
-
-      if (primaryOption) primaryOption.disabled = false;
-      if (secondaryOption) secondaryOption.disabled = false;
-      if (tertiaryOption) tertiaryOption.disabled = false;
-    });
-
-    if (primaryRune && primaryRune !== 'auto') {
-      const secondaryOption = secondarySelect ? secondarySelect.querySelector(`option[value="${primaryRune}"]`) : null;
-      const tertiaryOption = tertiarySelect ? tertiarySelect.querySelector(`option[value="${primaryRune}"]`) : null;
-
-      if (secondaryOption) secondaryOption.disabled = true;
-      if (tertiaryOption) tertiaryOption.disabled = true;
-    }
-
-    if (secondaryRune && secondaryRune !== 'auto') {
-      const primaryOption = primarySelect ? primarySelect.querySelector(`option[value="${secondaryRune}"]`) : null;
-      const tertiaryOption = tertiarySelect ? tertiarySelect.querySelector(`option[value="${secondaryRune}"]`) : null;
-
-      if (primaryOption) primaryOption.disabled = true;
-      if (tertiaryOption) tertiaryOption.disabled = true;
-    }
-
-    if (tertiaryRune && tertiaryRune !== 'auto') {
-      const primaryOption = primarySelect ? primarySelect.querySelector(`option[value="${tertiaryRune}"]`) : null;
-      const secondaryOption = secondarySelect ? secondarySelect.querySelector(`option[value="${tertiaryRune}"]`) : null;
-
-      if (primaryOption) primaryOption.disabled = true;
-      if (secondaryOption) secondaryOption.disabled = true;
-    }
-  }
-
-  handleAutoRuneSelection(actorId) {
-    const details = this.actorDetails[actorId];
-    const primarySelect = document.getElementById('primary-rune-select');
-    const secondarySelect = document.getElementById('secondary-rune-select');
-    const tertiarySelect = document.getElementById('tertiary-rune-select');
-
-    if (!primarySelect || !secondarySelect || !tertiarySelect) {
-      console.warn("Rune dropdown elements not found. Skipping auto rune selection.");
-      return;
-    }
-
-    const allRunes = Array.from(primarySelect.options).map(option => option.value).filter(rune => rune !== 'auto');
-
-    function getRandomRune(excludeRunes) {
-      const remainingRunes = allRunes.filter(rune => !excludeRunes.includes(rune));
-      const randomIndex = Math.floor(Math.random() * remainingRunes.length);
-      return remainingRunes[randomIndex];
-    }
-
-    const selectedRunes = [];
-    if (details.runes.primary === 'auto') {
-      details.runes.primary = getRandomRune(selectedRunes);
-    }
-    selectedRunes.push(details.runes.primary);
-
-    if (details.runes.secondary === 'auto') {
-      details.runes.secondary = getRandomRune(selectedRunes);
-    }
-    selectedRunes.push(details.runes.secondary);
-
-    if (details.runes.tertiary === 'auto') {
-      details.runes.tertiary = getRandomRune(selectedRunes);
-    }
-    selectedRunes.push(details.runes.tertiary);
-
-    details.runes.all[details.runes.primary].primaryMod = 60;
-    details.runes.all[details.runes.secondary].secondaryMod = 40;
-    details.runes.all[details.runes.tertiary].tertiaryMod = 20;
-
-    this.updateCharacteristicsWithRunes(details);
-  }
-
-  applyAutoSelections() {
+  handleAutoSelections() {
     this.selectedActors.forEach(actor => {
       const details = this.actorDetails[actor.id];
       if (details.race === 'auto') details.race = this.getWeightedRandomSelection(this.globalOptions.races, actor.id);
       if (details.homeland === 'auto') details.homeland = this.getWeightedRandomSelection(this.globalOptions.homelands, actor.id);
       if (details.occupation === 'auto') details.occupation = this.getWeightedRandomSelection(this.globalOptions.occupations, actor.id);
       if (details.cult === 'auto') details.cult = this.getWeightedRandomSelection(this.globalOptions.cults, actor.id);
-
-      this.whitelistRunesBasedOnCult(actor.id);
 
       this.applyHomelandModifiers(details);
     });
@@ -833,7 +540,7 @@ class CharacterGenerator {
         details.occupation = html.find('#occupation-select').val();
       });
     }
-    logSelectedActorsAndDetails(currentPage + 1);
+    this.logSelectedActorsAndDetails(currentPage + 1);
     currentPage++;
     dialog.data.content = await this.createDialogContent(currentPage);
     dialog.render(true);
@@ -881,6 +588,40 @@ class CharacterGenerator {
     }
     dialog.data.content = await this.createDialogContent(this.currentPage);
     dialog.render(true);
+  }
+
+  async whitelistRunesBasedOnCult(actorId) {
+    const details = this.actorDetails[actorId];
+    const primarySelect = document.getElementById('primary-rune-select');
+    const secondarySelect = document.getElementById('secondary-rune-select');
+    const cult = details.cult;
+
+    if (cult && primarySelect && secondarySelect) {
+      const primaryOptions = primarySelect.options;
+      const secondaryOptions = secondarySelect.options;
+
+      for (let i = 0; i < primaryOptions.length; i++) {
+        const option = primaryOptions[i];
+        if (cult.includes("Orlanth") && option.text !== "Air") {
+          option.disabled = true;
+        } else if (cult.includes("Kyger Litor") && option.text !== "Darkness") {
+          option.disabled = true;
+        } else {
+          option.disabled = false;
+        }
+      }
+
+      for (let i = 0; i < secondaryOptions.length; i++) {
+        const option = secondaryOptions[i];
+        if (cult.includes("Orlanth") && option.text !== "Air") {
+          option.disabled = true;
+        } else if (cult.includes("Kyger Litor") && option.text !== "Darkness") {
+          option.disabled = true;
+        } else {
+          option.disabled = false;
+        }
+      }
+    }
   }
 
   bindEventListeners(html) {
@@ -993,19 +734,17 @@ class CharacterGenerator {
     html.find('#sync-all-runes-button').click(() => this.handleSyncAllRunesButton(html));
 
     html.find('#save-button').click(() => {
-      // Handle save logic
       console.log("Save button clicked");
     });
 
     html.find('#cancel-button').click(() => {
-      // Handle cancel logic
       console.log("Cancel button clicked");
     });
   }
 
   async showDialog() {
     this.selectedActors = this.getActors();
-    this.selectedActors.forEach(actor => {
+    for (const actor of this.selectedActors) {
       const categorizedRunes = await this.loadRunes();
       const runeDetails = this.initializeRuneDetails(categorizedRunes);
 
@@ -1028,7 +767,7 @@ class CharacterGenerator {
         skills: await this.loadSkills(),
         attributes: {}
       };
-    });
+    }
 
     const content = await this.createDialogContent(this.currentPage);
 
@@ -1046,8 +785,181 @@ class CharacterGenerator {
 
     dialog.render(true);
   }
+
+  createSideNav() {
+    return `
+      <div id="side-nav" style="float: left; width: 20%; border-right: 1px solid #ccc; padding-right: 10px;">
+        <ul>
+          ${this.pages.map((page, index) => `<li style="margin-bottom: 5px;"><button class="nav-button" data-page="${index}">${page.title}</button></li>`).join('')}
+        </ul>
+      </div>
+    `;
+  }
+
+  createBottomPanel(pageIndex) {
+    let nextButton;
+    if (pageIndex === 0) {
+      nextButton = `<button id="next-button-page-1" style="margin-left: 10px;">Next</button>`;
+    } else if (pageIndex === 1) {
+      nextButton = `<button id="next-button-page-2" style="margin-left: 10px;">Next</button>`;
+    } else if (pageIndex === 2) {
+      nextButton = `<button id="next-button-page-3" style="margin-left: 10px;">Next</button>`;
+    } else if (pageIndex === 3) {
+      nextButton = `<button id="next-button-page-4" style="margin-left: 10px;">Next</button>`;
+    } else if (pageIndex === 4) {
+      nextButton = `<button id="next-button-page-5" style="margin-left: 10px;">Next</button>`;
+    } else if (pageIndex === 5) {
+      nextButton = `<button id="next-button-page-6" style="margin-left: 10px;">Next</button>`;
+    } else {
+      nextButton = pageIndex < this.pages.length - 1 ? `<button id="next-button">Next</button>` : '';
+    }
+    return `
+      <div id="bottom-panel" style="width: 100%; border-top: 1px solid #ccc; padding-top: 10px; display: flex; justify-content: flex-end;">
+        <button id="cancel-button">Cancel</button>
+        <button id="save-button" style="margin-left: 10px;">Save</button>
+        ${nextButton}
+      </div>
+    `;
+  }
+
+  async renderPage(pageIndex) {
+    const page = this.pages[pageIndex];
+    let content = `<h2>${page.title}</h2><p>${page.content}</p>`;
+    if (pageIndex === 0) {
+      let actors = this.getActors().filter(actor => !this.selectedActors.some(selected => selected.id === actor.id));
+      content += `<select id="actor-select">${actors.map(actor => `<option value="${actor.id}">${actor.name}</option>`)}</select>`;
+      content += `<button id="add-actor-button" style="margin-left: 10px;">Add Actor</button>`;
+    } else if (pageIndex === 1) {
+      let actors = this.selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
+      content += `
+        <div>
+          <label for="actor-detail-select">Actor:</label>
+          <select id="actor-detail-select">${actors}</select>
+        </div>
+        <div>
+          <label for="race-select">Race:</label>
+          <select id="race-select">
+            ${Object.keys(this.globalOptions.races).map(race => `<option value="${race}">${race}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label for="homeland-select">Homeland:</label>
+          <select id="homeland-select">
+            ${Object.keys(this.globalOptions.homelands).map(homeland => `<option value="${homeland}">${homeland}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label for="cult-select">Cult:</label>
+          <select id="cult-select">
+            ${Object.keys(this.globalOptions.cults).map(cult => `<option value="${cult}">${cult}</option>`).join('')}
+          </select>
+        </div>
+      `;
+      content += `<button id="sync-all-button" style="margin-top: 10px;">Sync All</button>`;
+    } else if (pageIndex === 2) {
+      const categorizedRunes = await this.loadRunes();
+      let actors = this.selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
+      content += `
+        <div>
+          <label for="actor-detail-rune-select">Actor:</label>
+          <select id="actor-detail-rune-select">${actors}</select>
+        </div>
+        <div>
+          <label for="primary-rune-select">Primary Rune:</label>
+          <select id="primary-rune-select">
+            <option value="auto">auto</option>
+            ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label for="secondary-rune-select">Secondary Rune:</label>
+          <select id="secondary-rune-select">
+            <option value="auto">auto</option>
+            ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label for="tertiary-rune-select">Tertiary Rune:</label>
+          <select id="tertiary-rune-select">
+            <option value="auto">auto</option>
+            ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label for="form-primary-rune-select">Form Primary Rune:</label>
+          <select id="form-primary-rune-select">
+            <option value="auto">auto</option>
+            ${categorizedRunes.form.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label for="power-primary-rune-select">Power Primary Rune:</label>
+          <select id="power-primary-rune-select">
+            <option value="auto">auto</option>
+            ${categorizedRunes.power.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label for="form-secondary-rune-select">Form Secondary Rune:</label>
+          <select id="form-secondary-rune-select">
+            <option value="auto">auto</option>
+            ${categorizedRunes.form.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label for="power-secondary-rune-select">Power Secondary Rune:</label>
+          <select id="power-secondary-rune-select">
+            <option value="auto">auto</option>
+            ${categorizedRunes.power.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label for="char-avg-select">Characteristics Average:</label>
+          <select id="char-avg-select">
+            <option value="default">default (${this.globalOptions.races[this.selectedActors[0]?.race]?.charAvg})</option>
+            ${Array.from({ length: 14 }, (_, i) => i + 7).map(value => `<option value="${value}">${value}</option>`).join('')}
+          </select>
+        </div>
+        <button id="sync-all-runes-button" style="margin-top: 10px;">Sync All</button>
+      `;
+    } else if (pageIndex === 3) {
+      let actors = this.selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
+      const characteristics = ['STR', 'CON', 'SIZ', 'DEX', 'INT', 'POW', 'CHA'];
+      content += `
+        <div>
+          <label for="actor-detail-char-select">Actor:</label>
+          <select id="actor-detail-char-select">${actors}</select>
+        </div>
+        ${characteristics.map(char => `
+        <div>
+          <label for="${char.toLowerCase()}-select">${char}:</label>
+          <select id="${char.toLowerCase()}-select">
+            ${Array.from({ length: 24 }, (_, i) => i + 3).map(value => `<option value="${value}">${value}</option>`).join('')}
+          </select>
+        </div>
+        `).join('')}
+      `;
+    } else if (pageIndex === 4) {
+      let actors = this.selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
+      const details = this.actorDetails[this.selectedActors[0]?.id];
+      const occupations = details ? this.globalOptions.homelands[details.homeland].occupations : [];
+      content += `
+        <div>
+          <label for="actor-detail-occupation-select">Actor:</label>
+          <select id="actor-detail-occupation-select">${actors}</select>
+        </div>
+        <div>
+          <label for="occupation-select">Occupation:</label>
+          <select id="occupation-select">
+            <option value="auto">auto</option>
+            ${occupations.map(occupation => `<option value="${occupation}">${occupation}</option>`).join('')}
+          </select>
+        </div>
+      `;
+    }
+    return content;
+  }
 }
 
-// Create a new instance of the class and show the dialog
 const characterGenerator = new CharacterGenerator();
 characterGenerator.showDialog();
