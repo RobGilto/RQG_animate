@@ -977,3 +977,6 @@ Hooks.on('ready', () => {
   });
   document.body.appendChild(button);
 });
+
+const generator = new CharacterGenerator();
+generator.initDialog();
