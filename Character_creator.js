@@ -21,7 +21,18 @@ class GlobalOptions {
           "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer",
           "Herder", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry",
           "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
-        ]
+        ],
+        culturalWeapons: {
+          "Dagger": 10,
+          "Battle Axe": 10,
+          "1H Spear": 10,
+          "Broadsword": 15,
+          "Composite Bow": 10,
+          "Sling": 10,
+          "Javelin": 10,
+          "Medium Shield": 15,
+          "Large Shield": 10
+        }
       },
       "Esrolia": { 
         weight: 33, 
@@ -30,66 +41,43 @@ class GlobalOptions {
           "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer",
           "Herder", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry",
           "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
-        ]
+        ],
+        culturalWeapons: {
+          "Battle Axe": 15,
+          "1H Spear": 10,
+          "Rapier": 10,
+          "Self Bow": 10,
+          "Thrown Axe": 10,
+          "Small Shield": 15,
+          "Medium Shield": 15,
+          "Large Shield": 10
+        }
       },
       "Grazeland Pony Breeders": { 
         weight: 34,
         occupations: [
           "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble", 
           "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
-        ]
+        ],
+        culturalWeapons: {
+          // Add cultural weapons for Grazeland Pony Breeders if needed
+        }
       },
       "Praxian Tribes: Bison Rider": { 
         weight: 34,
         occupations: [
           "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
           "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
-        ]
-      },
-      "Praxian Tribes: High Llama Rider": { 
-        weight: 34,
-        occupations: [
-          "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
-          "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
-        ]
-      },
-      "Praxian Tribes: Impala Rider": { 
-        weight: 34,
-        occupations: [
-          "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
-          "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
-        ]
-      },
-      "Praxian Tribes: Pol Joni": { 
-        weight: 34,
-        occupations: [
-          "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
-          "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
-        ]
-      },
-      "Praxian Tribes: Sable Rider": { 
-        weight: 34,
-        occupations: [
-          "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Healer", "Herder", "Merchant", "Noble",
-          "Philosopher", "Priest", "Scribe", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
-        ]
-      },
-      "Lunar Tarsh": { 
-        weight: 34,
-        occupations: [
-          "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer",
-          "Herder", "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry",
-          "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
-        ]
-      },
-      "Old Tarsh": { 
-        weight: 34,
-        occupations: [
-          "Assistant Shaman", "Bandit", "Crafter", "Entertainer", "Farmer", "Fisher", "Healer", "Herder",
-          "Merchant", "Noble", "Philosopher", "Priest", "Scribe", "Warrior: Light Infantry", 
-          "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
-        ]
+        ],
+        culturalWeapons: {
+          "Dagger": 10,
+          "Lance": 15,
+          "Broadsword": 10,
+          "Javelin": 10,
+          "Medium Shield": 10
+        }
       }
+      // Add other homelands with their cultural weapons here...
     };
     this.occupations = {
       auto: { weight: 0 },
@@ -492,6 +480,7 @@ class CharacterGenerator {
           "1H Spear": 10,
           "Broadsword": 15,
           "Composite Bow": 10,
+          "Sling": 10,
           "Javelin": 10,
           "Medium Shield": 15,
           "Large Shield": 10
@@ -632,6 +621,34 @@ class CharacterGenerator {
           <select id="tertiary-rune-select">
             <option value="auto">auto</option>
             ${combinedRunes.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label for="form-primary-rune-select">Form Primary Rune:</label>
+          <select id="form-primary-rune-select">
+            <option value="auto">auto</option>
+            ${categorizedRunes.form.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label for="power-primary-rune-select">Power Primary Rune:</label>
+          <select id="power-primary-rune-select">
+            <option value="auto">auto</option>
+            ${categorizedRunes.power.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label for="form-secondary-rune-select">Form Secondary Rune:</label>
+          <select id="form-secondary-rune-select">
+            <option value="auto">auto</option>
+            ${categorizedRunes.form.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label for="power-secondary-rune-select">Power Secondary Rune:</label>
+          <select id="power-secondary-rune-select">
+            <option value="auto">auto</option>
+            ${categorizedRunes.power.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
           </select>
         </div>
         <div>
@@ -803,6 +820,10 @@ class CharacterGenerator {
     const primarySelect = document.getElementById('primary-rune-select');
     const secondarySelect = document.getElementById('secondary-rune-select');
     const tertiarySelect = document.getElementById('tertiary-rune-select');
+    const formPrimarySelect = document.getElementById('form-primary-rune-select');
+    const powerPrimarySelect = document.getElementById('power-primary-rune-select');
+    const formSecondarySelect = document.getElementById('form-secondary-rune-select');
+    const powerSecondarySelect = document.getElementById('power-secondary-rune-select');
 
     const allRunes = Array.from(primarySelect.options).map(option => option.value);
 
@@ -810,10 +831,18 @@ class CharacterGenerator {
       const primaryOption = primarySelect.querySelector(`option[value="${rune}"]`);
       const secondaryOption = secondarySelect.querySelector(`option[value="${rune}"]`);
       const tertiaryOption = tertiarySelect.querySelector(`option[value="${rune}"]`);
+      const formPrimaryOption = formPrimarySelect.querySelector(`option[value="${rune}"]`);
+      const powerPrimaryOption = powerPrimarySelect.querySelector(`option[value="${rune}"]`);
+      const formSecondaryOption = formSecondarySelect.querySelector(`option[value="${rune}"]`);
+      const powerSecondaryOption = powerSecondarySelect.querySelector(`option[value="${rune}"]`);
 
       if (primaryOption) primaryOption.disabled = false;
       if (secondaryOption) secondaryOption.disabled = false;
       if (tertiaryOption) tertiaryOption.disabled = false;
+      if (formPrimaryOption) formPrimaryOption.disabled = false;
+      if (powerPrimaryOption) powerPrimaryOption.disabled = false;
+      if (formSecondaryOption) formSecondaryOption.disabled = false;
+      if (powerSecondaryOption) powerSecondaryOption.disabled = false;
     });
 
     if (primaryRune && primaryRune !== 'auto') {
@@ -838,6 +867,77 @@ class CharacterGenerator {
 
       if (primaryOption) primaryOption.disabled = true;
       if (secondaryOption) secondaryOption.disabled = true;
+    }
+
+    if (formPrimaryRune && formPrimaryRune !== 'auto') {
+      const formPrimaryOption = formPrimarySelect.querySelector(`option[value="${formPrimaryRune}"]`);
+      const powerPrimaryOption = powerPrimarySelect.querySelector(`option[value="${formPrimaryRune}"]`);
+      const formSecondaryOption = formSecondarySelect.querySelector(`option[value="${formPrimaryRune}"]`);
+      const powerSecondaryOption = powerSecondarySelect.querySelector(`option[value="${formPrimaryRune}"]`);
+
+      if (formPrimaryOption) formPrimaryOption.disabled = true;
+      if (powerPrimaryOption) powerPrimaryOption.disabled = true;
+      if (formSecondaryOption) formSecondaryOption.disabled = true;
+      if (powerSecondaryOption) powerSecondaryOption.disabled = true;
+    }
+
+    if (powerPrimaryRune && powerPrimaryRune !== 'auto') {
+      const formPrimaryOption = formPrimarySelect.querySelector(`option[value="${powerPrimaryRune}"]`);
+      const powerPrimaryOption = powerPrimarySelect.querySelector(`option[value="${powerPrimaryRune}"]`);
+      const formSecondaryOption = formSecondarySelect.querySelector(`option[value="${powerPrimaryRune}"]`);
+      const powerSecondaryOption = powerSecondarySelect.querySelector(`option[value="${powerPrimaryRune}"]`);
+
+      if (formPrimaryOption) formPrimaryOption.disabled = true;
+      if (powerPrimaryOption) powerPrimaryOption.disabled = true;
+      if (formSecondaryOption) formSecondaryOption.disabled = true;
+      if (powerSecondaryOption) powerSecondaryOption.disabled = true;
+    }
+
+    if (formSecondaryRune && formSecondaryRune !== 'auto') {
+      const formPrimaryOption = formPrimarySelect.querySelector(`option[value="${formSecondaryRune}"]`);
+      const powerPrimaryOption = powerPrimarySelect.querySelector(`option[value="${formSecondaryRune}"]`);
+      const formSecondaryOption = formSecondarySelect.querySelector(`option[value="${formSecondaryRune}"]`);
+      const powerSecondaryOption = powerSecondarySelect.querySelector(`option[value="${formSecondaryRune}"]`);
+
+      if (formPrimaryOption) formPrimaryOption.disabled = true;
+      if (powerPrimaryOption) powerPrimaryOption.disabled = true;
+      if (formSecondaryOption) formSecondaryOption.disabled = true;
+      if (powerSecondaryOption) powerSecondaryOption.disabled = true;
+    }
+
+    if (powerSecondaryRune && powerSecondaryRune !== 'auto') {
+      const formPrimaryOption = formPrimarySelect.querySelector(`option[value="${powerSecondaryRune}"]`);
+      const powerPrimaryOption = powerPrimarySelect.querySelector(`option[value="${powerSecondaryRune}"]`);
+      const formSecondaryOption = formSecondarySelect.querySelector(`option[value="${powerSecondaryRune}"]`);
+      const powerSecondaryOption = powerSecondarySelect.querySelector(`option[value="${powerSecondaryRune}"]`);
+
+      if (formPrimaryOption) formPrimaryOption.disabled = true;
+      if (powerPrimaryOption) powerPrimaryOption.disabled = true;
+      if (formSecondaryOption) formSecondaryOption.disabled = true;
+      if (powerSecondaryOption) powerSecondaryOption.disabled = true;
+    }
+  }
+
+  whitelistRunesBasedOnCult(actorId) {
+    const details = this.actorDetails[actorId];
+    const cult = details.cult;
+    const primarySelect = document.getElementById('primary-rune-select');
+    const allRunes = Array.from(primarySelect.options).map(option => option.value);
+    let whitelist = [];
+
+    if (cult.includes("Orlanth")) {
+      whitelist = allRunes.filter(rune => rune.includes("Air"));
+    } else if (cult.includes("Kyger Litor")) {
+      whitelist = allRunes.filter(rune => rune.includes("Darkness"));
+    }
+
+    allRunes.forEach(rune => {
+      const primaryOption = primarySelect.querySelector(`option[value="${rune}"]`);
+      if (primaryOption) primaryOption.disabled = !whitelist.includes(rune);
+    });
+
+    if (!whitelist.includes(details.runes.primary)) {
+      details.runes.primary = 'auto';
     }
   }
 
@@ -950,6 +1050,7 @@ class CharacterGenerator {
           this.selectedActors.forEach(actor => {
             const details = this.actorDetails[actor.id];
             if (details.cult === 'auto') details.cult = this.getWeightedRandomSelection(this.globalOptions.cults, actor.id);
+            this.whitelistRunesBasedOnCult(actor.id);
           });
           this.logSelectedActorsAndDetails(6);
           this.currentPage++;
@@ -978,6 +1079,7 @@ class CharacterGenerator {
         html.find('#cult-select').change(() => {
           const actorId = html.find('#actor-detail-select').val();
           this.actorDetails[actorId].cult = html.find('#cult-select').val();
+          this.whitelistRunesBasedOnCult(actorId);
           this.logSelectedActorsAndDetails();
         });
 
@@ -987,6 +1089,10 @@ class CharacterGenerator {
           document.getElementById('primary-rune-select').value = details.runes.primary || 'auto';
           document.getElementById('secondary-rune-select').value = details.runes.secondary || 'auto';
           document.getElementById('tertiary-rune-select').value = details.runes.tertiary || 'auto';
+          document.getElementById('form-primary-rune-select').value = details.runes.formPrimary || 'auto';
+          document.getElementById('power-primary-rune-select').value = details.runes.powerPrimary || 'auto';
+          document.getElementById('form-secondary-rune-select').value = details.runes.formSecondary || 'auto';
+          document.getElementById('power-secondary-rune-select').value = details.runes.powerSecondary || 'auto';
           this.updateRuneSelections(actorId);
         });
 
@@ -1007,6 +1113,34 @@ class CharacterGenerator {
         html.find('#tertiary-rune-select').change(() => {
           const actorId = html.find('#actor-detail-rune-select').val();
           this.actorDetails[actorId].runes.tertiary = html.find('#tertiary-rune-select').val();
+          this.updateRuneSelections(actorId);
+          this.logSelectedActorsAndDetails();
+        });
+
+        html.find('#form-primary-rune-select').change(() => {
+          const actorId = html.find('#actor-detail-rune-select').val();
+          this.actorDetails[actorId].runes.formPrimary = html.find('#form-primary-rune-select').val();
+          this.updateRuneSelections(actorId);
+          this.logSelectedActorsAndDetails();
+        });
+
+        html.find('#power-primary-rune-select').change(() => {
+          const actorId = html.find('#actor-detail-rune-select').val();
+          this.actorDetails[actorId].runes.powerPrimary = html.find('#power-primary-rune-select').val();
+          this.updateRuneSelections(actorId);
+          this.logSelectedActorsAndDetails();
+        });
+
+        html.find('#form-secondary-rune-select').change(() => {
+          const actorId = html.find('#actor-detail-rune-select').val();
+          this.actorDetails[actorId].runes.formSecondary = html.find('#form-secondary-rune-select').val();
+          this.updateRuneSelections(actorId);
+          this.logSelectedActorsAndDetails();
+        });
+
+        html.find('#power-secondary-rune-select').change(() => {
+          const actorId = html.find('#actor-detail-rune-select').val();
+          this.actorDetails[actorId].runes.powerSecondary = html.find('#power-secondary-rune-select').val();
           this.updateRuneSelections(actorId);
           this.logSelectedActorsAndDetails();
         });
