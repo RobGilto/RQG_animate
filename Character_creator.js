@@ -127,7 +127,14 @@ class CharacterGenerator {
     this.selectedActors = [];
     this.actorDetails = {};
     this.selectedCompendium = "wiki-en-rqg.runes"; // Set the correct compendium
-    this.categorizedRunes = null; // Initialize categorizedRunes as a property of the class
+    this.cults = [];
+    this.categorizedRunes = {};
+  }
+
+  async initializeData() {
+    await this.loadRunes();
+    await this.loadSkills();
+    await this.loadCults();
   }
 
   async loadRunes() {
@@ -135,7 +142,8 @@ class CharacterGenerator {
       const pack = game.packs.get(this.selectedCompendium);
       if (!pack) {
         console.error(`Compendium '${this.selectedCompendium}' not found`);
-        return { element: [], form: [], technique: [], power: [], condition: [] };
+        this.categorizedRunes = { element: [], form: [], technique: [], power: [], condition: [] };
+        return;
       }
       await pack.getIndex();
       const runeItems = await pack.getDocuments();
@@ -156,10 +164,9 @@ class CharacterGenerator {
         }
       });
 
-      return this.categorizedRunes;
     } catch (error) {
       console.error("Error loading runes:", error);
-      return { element: [], form: [], technique: [], power: [], condition: [] };
+      this.categorizedRunes = { element: [], form: [], technique: [], power: [], condition: [] };
     }
   }
 
@@ -170,7 +177,7 @@ class CharacterGenerator {
 
       if (!skillPack || !weaponPack) {
         console.error("Compendiums not found");
-        return {};
+        return;
       }
 
       await skillPack.getIndex();
@@ -206,10 +213,9 @@ class CharacterGenerator {
         }
       });
 
-      return skills;
+      this.skills = skills;
     } catch (error) {
       console.error("Error loading skills:", error);
-      return {};
     }
   }
 
@@ -219,19 +225,16 @@ class CharacterGenerator {
 
       if (!cultPack) {
         console.error("Cults compendium not found");
-        return [];
+        return;
       }
 
       await cultPack.getIndex();
       const cultItems = await cultPack.getDocuments();
       console.log("Loaded cult items:", cultItems);
 
-      this.globalOptions.cults = ["auto", ...cultItems.map(cult => cult.name)];
-
-      return cultItems.map(cult => cult.name);
+      this.cults = cultItems.map(cult => cult.name);
     } catch (error) {
       console.error("Error loading cults:", error);
-      return [];
     }
   }
 
@@ -344,8 +347,8 @@ class CharacterGenerator {
     }
   }
 
-  handleAutoSelections() {
-    this.selectedActors.forEach(actor => {
+  async handleAutoSelections() {
+    for (const actor of this.selectedActors) {
       const details = this.actorDetails[actor.id];
       if (details.race === 'auto') details.race = this.getWeightedRandomSelection(this.globalOptions.races, actor.id);
       if (details.homeland === 'auto') details.homeland = this.getWeightedRandomSelection(this.globalOptions.homelands, actor.id);
@@ -353,7 +356,9 @@ class CharacterGenerator {
       if (details.cult === 'auto') details.cult = this.getWeightedRandomSelection(this.globalOptions.cults, actor.id);
 
       this.applyHomelandModifiers(details);
-    });
+      await whitelistRunesBasedOnCult(actor.id, this.actorDetails);
+      this.handleAutoRuneSelection(actor.id);
+    }
   }
 
   logSelectedActorsAndDetails(index) {
@@ -579,22 +584,19 @@ class CharacterGenerator {
         </div>
         <div>
           <label for="race-select">Race:</label>
-          <select id="race-select">
-            ${Object.keys(this.globalOptions.races).map(race => `<option value="${race}" ${race === 'human' ? 'selected' : ''}>${race}</option>`).join('')}
-          </select>
+          <select id="race-select">${Object.keys(this.globalOptions.races).map(race => `<option value="${race}">${race}</option>`).join('')}</select>
         </div>
         <div>
           <label for="homeland-select">Homeland:</label>
-          <select id="homeland-select">${Object.keys(this.globalOptions.homelands).map(homeland => `<option value="${homeland}">${homeland}</option>`)}</select>
+          <select id="homeland-select">${Object.keys(this.globalOptions.homelands).map(homeland => `<option value="${homeland}">${homeland}</option>`).join('')}</select>
         </div>
         <div>
           <label for="cult-select">Cult:</label>
-          <select id="cult-select">${this.globalOptions.cults.map(cult => `<option value="${cult}">${cult}</option>`)}</select>
+          <select id="cult-select"><option value="auto">auto</option>${this.cults.map(cult => `<option value="${cult}">${cult}</option>`).join('')}</select>
         </div>
       `;
       content += `<button id="sync-all-button" style="margin-top: 10px;">Sync All</button>`;
     } else if (pageIndex === 2) {
-      const categorizedRunes = this.categorizedRunes || await this.loadRunes();
       let actors = this.selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
       content += `
         <div>
@@ -605,35 +607,35 @@ class CharacterGenerator {
           <label for="primary-rune-select">Primary Rune:</label>
           <select id="primary-rune-select">
             <option value="auto">auto</option>
-            ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+            ${this.categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
           </select>
         </div>
         <div>
           <label for="secondary-rune-select">Secondary Rune:</label>
           <select id="secondary-rune-select">
             <option value="auto">auto</option>
-            ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+            ${this.categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
           </select>
         </div>
         <div>
           <label for="tertiary-rune-select">Tertiary Rune:</label>
           <select id="tertiary-rune-select">
             <option value="auto">auto</option>
-            ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+            ${this.categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
           </select>
         </div>
         <div>
           <label for="powerform-primary-select">Power/Form Primary Rune:</label>
           <select id="powerform-primary-select">
             <option value="auto">auto</option>
-            ${[...categorizedRunes.form, ...categorizedRunes.power].map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+            ${[...this.categorizedRunes.form, ...this.categorizedRunes.power].map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
           </select>
         </div>
         <div>
           <label for="powerform-secondary-select">Power/Form Secondary Rune:</label>
           <select id="powerform-secondary-select">
             <option value="auto">auto</option>
-            ${[...categorizedRunes.form, ...categorizedRunes.power].map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+            ${[...this.categorizedRunes.form, ...this.categorizedRunes.power].map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
           </select>
         </div>
         <div>
@@ -739,244 +741,218 @@ class CharacterGenerator {
     const primaryRune = details.runes.primary;
     const secondaryRune = details.runes.secondary;
     const tertiaryRune = details.runes.tertiary;
-    const powerPrimaryRune = details.runes.powerPrimary;
-    const powerSecondaryRune = details.runes.powerSecondary;
 
-    document.getElementById('primary-rune-select').value = primaryRune;
-    document.getElementById('secondary-rune-select').value = secondaryRune;
-    document.getElementById('tertiary-rune-select').value = tertiaryRune;
-    document.getElementById('powerform-primary-select').value = powerPrimaryRune;
-    document.getElementById('powerform-secondary-select').value = powerSecondaryRune;
+    const primarySelect = document.getElementById('primary-rune-select');
+    const secondarySelect = document.getElementById('secondary-rune-select');
+    const tertiarySelect = document.getElementById('tertiary-rune-select');
+
+    if (primarySelect) primarySelect.value = primaryRune;
+    if (secondarySelect) secondarySelect.value = secondaryRune;
+    if (tertiarySelect) tertiarySelect.value = tertiaryRune;
   }
 
-  async activateListeners(html) {
-    html.find('.nav-button').click(async (event) => {
-      const pageIndex = parseInt(event.currentTarget.getAttribute('data-page'));
-      if (pageIndex < this.pages.length) {
-        this.currentPage = pageIndex;
-        const content = await this.createDialogContent(pageIndex);
-        this.element.innerHTML = content;
-        this.activateListeners($(this.element));
-      }
-    });
+  handleRuneSelections(actorId) {
+    const primarySelect = document.getElementById('primary-rune-select');
+    const secondarySelect = document.getElementById('secondary-rune-select');
+    const tertiarySelect = document.getElementById('tertiary-rune-select');
+    const powerformPrimarySelect = document.getElementById('powerform-primary-select');
+    const powerformSecondarySelect = document.getElementById('powerform-secondary-select');
 
-    html.find('#add-actor-button').click(async () => {
-      const actorId = document.getElementById('actor-select').value;
-      const actor = game.actors.get(actorId);
-      if (actor && !this.selectedActors.some(selected => selected.id === actor.id)) {
-        this.selectedActors.push(actor);
-        this.actorDetails[actor.id] = {
-          race: 'auto',
-          homeland: 'auto',
-          occupation: 'auto',
-          cult: 'auto',
-          characteristics: this.rollCharacteristics('human', this.globalOptions.races.human.charAvg),
-          runes: this.initializeRuneDetails(await this.loadRunes()),
-          skills: await this.loadSkills(),
-          attributes: {}
-        };
-        this.applyHomelandSkillModifiers(this.actorDetails[actor.id]);
-        this.calculateAttributes(this.actorDetails[actor.id]);
-        this.calculateCharacteristicsTotal(this.actorDetails[actor.id]);
-        this.updateRuneSelections(actor.id);
-        this.updateCharacteristicsWithRunes(this.actorDetails[actor.id]);
-        this.logSelectedActorsAndDetails(this.selectedActors.length);
-      }
-      const content = await this.createDialogContent(this.currentPage);
-      this.element.innerHTML = content;
-      this.activateListeners($(this.element));
-    });
+    const primaryRune = primarySelect.value;
+    const secondaryRune = secondarySelect.value;
+    const tertiaryRune = tertiarySelect.value;
+    const powerformPrimaryRune = powerformPrimarySelect.value;
+    const powerformSecondaryRune = powerformSecondarySelect.value;
 
-    html.find('#sync-all-button').click(async () => {
-      const actorId = document.getElementById('actor-detail-select').value;
-      this.loadActorDetails(actorId);
-      this.handleAutoSelections();
-      this.logSelectedActorsAndDetails(actorId);
-    });
+    const details = this.actorDetails[actorId];
+    details.runes.primary = primaryRune;
+    details.runes.secondary = secondaryRune;
+    details.runes.tertiary = tertiaryRune;
+    details.runes.powerformPrimary = powerformPrimaryRune;
+    details.runes.powerformSecondary = powerformSecondaryRune;
 
-    html.find('#sync-all-runes-button').click(async () => {
-      const actorId = document.getElementById('actor-detail-rune-select').value;
-      this.updateRuneSelections(actorId);
-    });
-
-    html.find('#next-button').click(async () => {
-      if (this.currentPage < this.pages.length - 1) {
-        this.currentPage++;
-        const content = await this.createDialogContent(this.currentPage);
-        this.element.innerHTML = content;
-        this.activateListeners($(this.element));
-      }
-    });
-
-    html.find('#next-button-page-1').click(async () => {
-      this.currentPage = 1;
-      const content = await this.createDialogContent(this.currentPage);
-      this.element.innerHTML = content;
-      this.activateListeners($(this.element));
-    });
-
-    html.find('#next-button-page-2').click(async () => {
-      this.currentPage = 2;
-      const content = await this.createDialogContent(this.currentPage);
-      this.element.innerHTML = content;
-      this.activateListeners($(this.element));
-    });
-
-    html.find('#next-button-page-3').click(async () => {
-      this.currentPage = 3;
-      const content = await this.createDialogContent(this.currentPage);
-      this.element.innerHTML = content;
-      this.activateListeners($(this.element));
-    });
-
-    html.find('#next-button-page-4').click(async () => {
-      this.currentPage = 4;
-      const content = await this.createDialogContent(this.currentPage);
-      this.element.innerHTML = content;
-      this.activateListeners($(this.element));
-    });
-
-    html.find('#next-button-page-5').click(async () => {
-      this.currentPage = 5;
-      const content = await this.createDialogContent(this.currentPage);
-      this.element.innerHTML = content;
-      this.activateListeners($(this.element));
-    });
-
-    html.find('#next-button-page-6').click(async () => {
-      this.currentPage = 6;
-      const content = await this.createDialogContent(this.currentPage);
-      this.element.innerHTML = content;
-      this.activateListeners($(this.element));
-    });
-
-    html.find('#actor-detail-select').change((event) => {
-      const actorId = event.currentTarget.value;
-      this.loadActorDetails(actorId);
-    });
-
-    html.find('#actor-detail-rune-select').change((event) => {
-      const actorId = event.currentTarget.value;
-      this.updateRuneSelections(actorId);
-    });
-
-    html.find('#actor-detail-char-select').change((event) => {
-      const actorId = event.currentTarget.value;
-      this.updateCharacteristicsWithRunes(this.actorDetails[actorId]);
-    });
-
-    html.find('#actor-detail-occupation-select').change((event) => {
-      const actorId = event.currentTarget.value;
-      this.updateCharacteristicsWithRunes(this.actorDetails[actorId]);
-    });
-
-    html.find('#race-select').change((event) => {
-      const actorId = document.getElementById('actor-detail-select').value;
-      this.actorDetails[actorId].race = event.currentTarget.value;
-    });
-
-    html.find('#homeland-select').change((event) => {
-      const actorId = document.getElementById('actor-detail-select').value;
-      this.actorDetails[actorId].homeland = event.currentTarget.value;
-    });
-
-    html.find('#cult-select').change((event) => {
-      const actorId = document.getElementById('actor-detail-select').value;
-      this.actorDetails[actorId].cult = event.currentTarget.value;
-    });
-
-    html.find('#primary-rune-select').change((event) => {
-      const actorId = document.getElementById('actor-detail-rune-select').value;
-      this.actorDetails[actorId].runes.primary = event.currentTarget.value;
-      this.updateCharacteristicsWithRunes(this.actorDetails[actorId]);
-    });
-
-    html.find('#secondary-rune-select').change((event) => {
-      const actorId = document.getElementById('actor-detail-rune-select').value;
-      this.actorDetails[actorId].runes.secondary = event.currentTarget.value;
-      this.updateCharacteristicsWithRunes(this.actorDetails[actorId]);
-    });
-
-    html.find('#tertiary-rune-select').change((event) => {
-      const actorId = document.getElementById('actor-detail-rune-select').value;
-      this.actorDetails[actorId].runes.tertiary = event.currentTarget.value;
-      this.updateCharacteristicsWithRunes(this.actorDetails[actorId]);
-    });
-
-    html.find('#powerform-primary-select').change((event) => {
-      const actorId = document.getElementById('actor-detail-rune-select').value;
-      this.actorDetails[actorId].runes.powerPrimary = event.currentTarget.value;
-      this.updateCharacteristicsWithRunes(this.actorDetails[actorId]);
-    });
-
-    html.find('#powerform-secondary-select').change((event) => {
-      const actorId = document.getElementById('actor-detail-rune-select').value;
-      this.actorDetails[actorId].runes.powerSecondary = event.currentTarget.value;
-      this.updateCharacteristicsWithRunes(this.actorDetails[actorId]);
-    });
-
-    html.find('#char-avg-select').change((event) => {
-      const actorId = document.getElementById('actor-detail-rune-select').value;
-      this.actorDetails[actorId].charAvg = parseInt(event.currentTarget.value);
-    });
-
-    html.find('#cancel-button').click(() => {
-      this.close();
-    });
-
-    html.find('#save-button').click(() => {
-      // Handle saving logic here
-      console.log("Saving actors:", this.selectedActors);
-      this.close();
-    });
-  }
-}
-
-// Register the multi-page dialog as a Foundry VTT application
-class CharacterGeneratorDialog extends FormApplication {
-  constructor() {
-    super();
-    this.generator = new CharacterGenerator();
+    this.updateRuneSelections(actorId);
   }
 
-  static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
-      title: "Character Generator",
-      template: "modules/your-module-name/templates/character-generator-dialog.html",
-      classes: ["form"],
-      width: 800,
-      height: 600,
-      closeOnSubmit: false
+  handleAutoRuneSelection(actorId) {
+    const details = this.actorDetails[actorId];
+
+    if (details.cult === 'Orlanth Thunderous (Orlanth)' && details.runes.primary !== 'Air (element)') {
+      details.runes.primary = 'Air (element)';
+      details.runes.secondary = 'auto';
+      details.runes.tertiary = 'auto';
+      details.runes.powerformPrimary = 'auto';
+      details.runes.powerformSecondary = 'auto';
+    }
+
+    const primarySelect = document.getElementById('primary-rune-select');
+    const secondarySelect = document.getElementById('secondary-rune-select');
+    const tertiarySelect = document.getElementById('tertiary-rune-select');
+    const powerformPrimarySelect = document.getElementById('powerform-primary-select');
+    const powerformSecondarySelect = document.getElementById('powerform-secondary-select');
+
+    if (primarySelect) primarySelect.value = details.runes.primary;
+    if (secondarySelect) secondarySelect.value = details.runes.secondary;
+    if (tertiarySelect) tertiarySelect.value = details.runes.tertiary;
+    if (powerformPrimarySelect) powerformPrimarySelect.value = details.runes.powerformPrimary;
+    if (powerformSecondarySelect) powerformSecondarySelect.value = details.runes.powerformSecondary;
+  }
+
+  handleSyncAll() {
+    this.selectedActors.forEach(actor => {
+      const details = this.actorDetails[actor.id];
+      const raceSelect = document.getElementById('race-select');
+      const homelandSelect = document.getElementById('homeland-select');
+      const cultSelect = document.getElementById('cult-select');
+      if (raceSelect) details.race = raceSelect.value;
+      if (homelandSelect) details.homeland = homelandSelect.value;
+      if (cultSelect) details.cult = cultSelect.value;
+
+      this.applyHomelandModifiers(details);
+      this.handleAutoRuneSelection(actor.id);
+      this.calculateAttributes(details);
+      this.calculateCharacteristicsTotal(details);
     });
   }
 
-  async getData() {
-    return {
-      content: await this.generator.createDialogContent(0)
-    };
+  handleSyncAllRunes() {
+    this.selectedActors.forEach(actor => {
+      this.handleRuneSelections(actor.id);
+    });
   }
 
   activateListeners(html) {
-    super.activateListeners(html);
-    this.generator.element = html[0];
-    this.generator.activateListeners(html);
+    html.on('click', '#cancel-button', () => this.closeDialog());
+    html.on('click', '#save-button', () => this.saveData());
+    html.on('click', '#next-button', async () => {
+      await this.nextPage();
+    });
+
+    html.on('click', '#add-actor-button', () => {
+      const actorSelect = document.getElementById('actor-select');
+      if (actorSelect) {
+        const actorId = actorSelect.value;
+        const actor = game.actors.get(actorId);
+        if (actor) {
+          this.selectedActors.push(actor);
+          this.actorDetails[actor.id] = {
+            race: 'human',
+            homeland: 'auto',
+            occupation: 'auto',
+            cult: 'auto',
+            runes: {
+              primary: 'auto',
+              secondary: 'auto',
+              tertiary: 'auto',
+              formPrimary: 'auto',
+              formSecondary: 'auto',
+              powerPrimary: 'auto',
+              powerSecondary: 'auto'
+            },
+            characteristics: this.rollCharacteristics('human', 12),
+            skills: JSON.parse(JSON.stringify(this.skills)),
+            attributes: {}
+          };
+          this.renderPage(this.currentPage);
+        }
+      }
+    });
+
+    html.on('change', '#actor-detail-select', (event) => {
+      const actorId = event.target.value;
+      this.loadActorDetails(actorId);
+    });
+
+    html.on('change', '#race-select', (event) => {
+      const actorId = document.getElementById('actor-detail-select').value;
+      const details = this.actorDetails[actorId];
+      details.race = event.target.value;
+    });
+
+    html.on('change', '#homeland-select', (event) => {
+      const actorId = document.getElementById('actor-detail-select').value;
+      const details = this.actorDetails[actorId];
+      details.homeland = event.target.value;
+    });
+
+    html.on('change', '#cult-select', (event) => {
+      const actorId = document.getElementById('actor-detail-select').value;
+      const details = this.actorDetails[actorId];
+      details.cult = event.target.value;
+    });
+
+    html.on('click', '#sync-all-button', () => this.handleSyncAll());
+
+    html.on('change', '#actor-detail-rune-select', (event) => {
+      const actorId = event.target.value;
+      this.updateRuneSelections(actorId);
+    });
+
+    html.on('change', '#primary-rune-select', (event) => {
+      const actorId = document.getElementById('actor-detail-rune-select').value;
+      const details = this.actorDetails[actorId];
+      details.runes.primary = event.target.value;
+    });
+
+    html.on('change', '#secondary-rune-select', (event) => {
+      const actorId = document.getElementById('actor-detail-rune-select').value;
+      const details = this.actorDetails[actorId];
+      details.runes.secondary = event.target.value;
+    });
+
+    html.on('change', '#tertiary-rune-select', (event) => {
+      const actorId = document.getElementById('actor-detail-rune-select').value;
+      const details = this.actorDetails[actorId];
+      details.runes.tertiary = event.target.value;
+    });
+
+    html.on('change', '#powerform-primary-select', (event) => {
+      const actorId = document.getElementById('actor-detail-rune-select').value;
+      const details = this.actorDetails[actorId];
+      details.runes.powerformPrimary = event.target.value;
+    });
+
+    html.on('change', '#powerform-secondary-select', (event) => {
+      const actorId = document.getElementById('actor-detail-rune-select').value;
+      const details = this.actorDetails[actorId];
+      details.runes.powerformSecondary = event.target.value;
+    });
+
+    html.on('click', '#sync-all-runes-button', () => this.handleSyncAllRunes());
   }
 
-  async _updateObject(event, formData) {
-    // Handle form submission logic here
+  async initDialog() {
+    await this.initializeData();
+
+    const dialogContent = await this.createDialogContent(0);
+    new Dialog({
+      title: "Character Generator",
+      content: dialogContent,
+      buttons: {},
+      render: (html) => this.activateListeners(html)
+    }).render(true);
+  }
+
+  async nextPage() {
+    this.currentPage++;
+    const dialogContent = await this.createDialogContent(this.currentPage);
+    const dialog = document.querySelector('.dialog .dialog-content');
+    if (dialog) {
+      dialog.innerHTML = dialogContent;
+      this.activateListeners($(dialog));
+    }
+  }
+
+  closeDialog() {
+    const dialog = document.querySelector('.dialog');
+    if (dialog) dialog.remove();
+  }
+
+  saveData() {
+    // Save data logic here
+    console.log("Data saved!");
   }
 }
-
-// Create a button to open the character generator dialog
-Hooks.on('ready', () => {
-  const button = document.createElement('button');
-  button.textContent = "Open Character Generator";
-  button.addEventListener('click', () => {
-    const dialog = new CharacterGeneratorDialog();
-    dialog.render(true);
-  });
-  document.body.appendChild(button);
-});
 
 const generator = new CharacterGenerator();
 generator.initDialog();
