@@ -160,7 +160,7 @@ class CharacterGenerator {
       new Page("Runes", "Allocate Runes: Primary, Secondary, Tertiary"),
       new Page("Characteristics", "Organize Characteristics: STR, CON, SIZ, DEX, INT, POW, CHA"),
       new Page("Occupation", "Select Occupation"),
-      new Page("Page 6", "Content for Page 6"),
+      new Page("Initial Weapons Selection", "Select Primary and Secondary Weapons"),
       new Page("Page 7", "Content for Page 7"),
       new Page("Page 8", "Content for Page 8")
     ];
@@ -606,6 +606,7 @@ class CharacterGenerator {
       content += `<button id="sync-all-button" style="margin-top: 10px;">Sync All</button>`;
     } else if (pageIndex === 2) {
       const categorizedRunes = await this.loadRunes();
+      let combinedRunes = [...categorizedRunes.element, ...categorizedRunes.form, ...categorizedRunes.power];
       let actors = this.selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
       content += `
         <div>
@@ -616,49 +617,21 @@ class CharacterGenerator {
           <label for="primary-rune-select">Primary Rune:</label>
           <select id="primary-rune-select">
             <option value="auto">auto</option>
-            ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+            ${combinedRunes.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
           </select>
         </div>
         <div>
           <label for="secondary-rune-select">Secondary Rune:</label>
           <select id="secondary-rune-select">
             <option value="auto">auto</option>
-            ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+            ${combinedRunes.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
           </select>
         </div>
         <div>
           <label for="tertiary-rune-select">Tertiary Rune:</label>
           <select id="tertiary-rune-select">
             <option value="auto">auto</option>
-            ${categorizedRunes.element.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
-          </select>
-        </div>
-        <div>
-          <label for="form-primary-rune-select">Form Primary Rune:</label>
-          <select id="form-primary-rune-select">
-            <option value="auto">auto</option>
-            ${categorizedRunes.form.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
-          </select>
-        </div>
-        <div>
-          <label for="power-primary-rune-select">Power Primary Rune:</label>
-          <select id="power-primary-rune-select">
-            <option value="auto">auto</option>
-            ${categorizedRunes.power.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
-          </select>
-        </div>
-        <div>
-          <label for="form-secondary-rune-select">Form Secondary Rune:</label>
-          <select id="form-secondary-rune-select">
-            <option value="auto">auto</option>
-            ${categorizedRunes.form.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
-          </select>
-        </div>
-        <div>
-          <label for="power-secondary-rune-select">Power Secondary Rune:</label>
-          <select id="power-secondary-rune-select">
-            <option value="auto">auto</option>
-            ${categorizedRunes.power.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
+            ${combinedRunes.map(rune => `<option value="${rune.name}">${rune.name}</option>`).join('')}
           </select>
         </div>
         <div>
@@ -830,10 +803,6 @@ class CharacterGenerator {
     const primarySelect = document.getElementById('primary-rune-select');
     const secondarySelect = document.getElementById('secondary-rune-select');
     const tertiarySelect = document.getElementById('tertiary-rune-select');
-    const formPrimarySelect = document.getElementById('form-primary-rune-select');
-    const powerPrimarySelect = document.getElementById('power-primary-rune-select');
-    const formSecondarySelect = document.getElementById('form-secondary-rune-select');
-    const powerSecondarySelect = document.getElementById('power-secondary-rune-select');
 
     const allRunes = Array.from(primarySelect.options).map(option => option.value);
 
@@ -841,130 +810,34 @@ class CharacterGenerator {
       const primaryOption = primarySelect.querySelector(`option[value="${rune}"]`);
       const secondaryOption = secondarySelect.querySelector(`option[value="${rune}"]`);
       const tertiaryOption = tertiarySelect.querySelector(`option[value="${rune}"]`);
-      const formPrimaryOption = formPrimarySelect.querySelector(`option[value="${rune}"]`);
-      const powerPrimaryOption = powerPrimarySelect.querySelector(`option[value="${rune}"]`);
-      const formSecondaryOption = formSecondarySelect.querySelector(`option[value="${rune}"]`);
-      const powerSecondaryOption = powerSecondarySelect.querySelector(`option[value="${rune}"]`);
 
       if (primaryOption) primaryOption.disabled = false;
       if (secondaryOption) secondaryOption.disabled = false;
       if (tertiaryOption) tertiaryOption.disabled = false;
-      if (formPrimaryOption) formPrimaryOption.disabled = false;
-      if (powerPrimaryOption) powerPrimaryOption.disabled = false;
-      if (formSecondaryOption) formSecondaryOption.disabled = false;
-      if (powerSecondaryOption) powerSecondaryOption.disabled = false;
     });
 
     if (primaryRune && primaryRune !== 'auto') {
       const secondaryOption = secondarySelect.querySelector(`option[value="${primaryRune}"]`);
       const tertiaryOption = tertiarySelect.querySelector(`option[value="${primaryRune}"]`);
-      const formPrimaryOption = formPrimarySelect.querySelector(`option[value="${primaryRune}"]`);
-      const powerPrimaryOption = powerPrimarySelect.querySelector(`option[value="${primaryRune}"]`);
-      const formSecondaryOption = formSecondarySelect.querySelector(`option[value="${primaryRune}"]`);
-      const powerSecondaryOption = powerSecondarySelect.querySelector(`option[value="${primaryRune}"]`);
 
       if (secondaryOption) secondaryOption.disabled = true;
       if (tertiaryOption) tertiaryOption.disabled = true;
-      if (formPrimaryOption) formPrimaryOption.disabled = true;
-      if (powerPrimaryOption) powerPrimaryOption.disabled = true;
-      if (formSecondaryOption) formSecondaryOption.disabled = true;
-      if (powerSecondaryOption) powerSecondaryOption.disabled = true;
     }
 
     if (secondaryRune && secondaryRune !== 'auto') {
       const primaryOption = primarySelect.querySelector(`option[value="${secondaryRune}"]`);
       const tertiaryOption = tertiarySelect.querySelector(`option[value="${secondaryRune}"]`);
-      const formPrimaryOption = formPrimarySelect.querySelector(`option[value="${secondaryRune}"]`);
-      const powerPrimaryOption = powerPrimarySelect.querySelector(`option[value="${secondaryRune}"]`);
-      const formSecondaryOption = formSecondarySelect.querySelector(`option[value="${secondaryRune}"]`);
-      const powerSecondaryOption = powerSecondarySelect.querySelector(`option[value="${secondaryRune}"]`);
 
       if (primaryOption) primaryOption.disabled = true;
       if (tertiaryOption) tertiaryOption.disabled = true;
-      if (formPrimaryOption) formPrimaryOption.disabled = true;
-      if (powerPrimaryOption) powerPrimaryOption.disabled = true;
-      if (formSecondaryOption) formSecondaryOption.disabled = true;
-      if (powerSecondaryOption) powerSecondaryOption.disabled = true;
     }
 
     if (tertiaryRune && tertiaryRune !== 'auto') {
       const primaryOption = primarySelect.querySelector(`option[value="${tertiaryRune}"]`);
       const secondaryOption = secondarySelect.querySelector(`option[value="${tertiaryRune}"]`);
-      const formPrimaryOption = formPrimarySelect.querySelector(`option[value="${tertiaryRune}"]`);
-      const powerPrimaryOption = powerPrimarySelect.querySelector(`option[value="${tertiaryRune}"]`);
-      const formSecondaryOption = formSecondarySelect.querySelector(`option[value="${tertiaryRune}"]`);
-      const powerSecondaryOption = powerSecondarySelect.querySelector(`option[value="${tertiaryRune}"]`);
 
       if (primaryOption) primaryOption.disabled = true;
       if (secondaryOption) secondaryOption.disabled = true;
-      if (formPrimaryOption) formPrimaryOption.disabled = true;
-      if (powerPrimaryOption) powerPrimaryOption.disabled = true;
-      if (formSecondaryOption) formSecondaryOption.disabled = true;
-      if (powerSecondaryOption) powerSecondaryOption.disabled = true;
-    }
-
-    if (formPrimaryRune && formPrimaryRune !== 'auto') {
-      const secondaryOption = secondarySelect.querySelector(`option[value="${formPrimaryRune}"]`);
-      const tertiaryOption = tertiarySelect.querySelector(`option[value="${formPrimaryRune}"]`);
-      const formPrimaryOption = formPrimarySelect.querySelector(`option[value="${formPrimaryRune}"]`);
-      const powerPrimaryOption = powerPrimarySelect.querySelector(`option[value="${formPrimaryRune}"]`);
-      const formSecondaryOption = formSecondarySelect.querySelector(`option[value="${formPrimaryRune}"]`);
-      const powerSecondaryOption = powerSecondarySelect.querySelector(`option[value="${formPrimaryRune}"]`);
-
-      if (secondaryOption) secondaryOption.disabled = true;
-      if (tertiaryOption) tertiaryOption.disabled = true;
-      if (formPrimaryOption) formPrimaryOption.disabled = true;
-      if (powerPrimaryOption) powerPrimaryOption.disabled = true;
-      if (formSecondaryOption) formSecondaryOption.disabled = true;
-      if (powerSecondaryOption) powerSecondaryOption.disabled = true;
-    }
-
-    if (powerPrimaryRune && powerPrimaryRune !== 'auto') {
-      const secondaryOption = secondarySelect.querySelector(`option[value="${powerPrimaryRune}"]`);
-      const tertiaryOption = tertiarySelect.querySelector(`option[value="${powerPrimaryRune}"]`);
-      const formPrimaryOption = formPrimarySelect.querySelector(`option[value="${powerPrimaryRune}"]`);
-      const powerPrimaryOption = powerPrimarySelect.querySelector(`option[value="${powerPrimaryRune}"]`);
-      const formSecondaryOption = formSecondarySelect.querySelector(`option[value="${powerPrimaryRune}"]`);
-      const powerSecondaryOption = powerSecondarySelect.querySelector(`option[value="${powerPrimaryRune}"]`);
-
-      if (secondaryOption) secondaryOption.disabled = true;
-      if (tertiaryOption) tertiaryOption.disabled = true;
-      if (formPrimaryOption) formPrimaryOption.disabled = true;
-      if (powerPrimaryOption) powerPrimaryOption.disabled = true;
-      if (formSecondaryOption) formSecondaryOption.disabled = true;
-      if (powerSecondaryOption) powerSecondaryOption.disabled = true;
-    }
-
-    if (formSecondaryRune && formSecondaryRune !== 'auto') {
-      const secondaryOption = secondarySelect.querySelector(`option[value="${formSecondaryRune}"]`);
-      const tertiaryOption = tertiarySelect.querySelector(`option[value="${formSecondaryRune}"]`);
-      const formPrimaryOption = formPrimarySelect.querySelector(`option[value="${formSecondaryRune}"]`);
-      const powerPrimaryOption = powerPrimarySelect.querySelector(`option[value="${formSecondaryRune}"]`);
-      const formSecondaryOption = formSecondarySelect.querySelector(`option[value="${formSecondaryRune}"]`);
-      const powerSecondaryOption = powerSecondarySelect.querySelector(`option[value="${formSecondaryRune}"]`);
-
-      if (secondaryOption) secondaryOption.disabled = true;
-      if (tertiaryOption) tertiaryOption.disabled = true;
-      if (formPrimaryOption) formPrimaryOption.disabled = true;
-      if (powerPrimaryOption) powerPrimaryOption.disabled = true;
-      if (formSecondaryOption) formSecondaryOption.disabled = true;
-      if (powerSecondaryOption) powerSecondaryOption.disabled = true;
-    }
-
-    if (powerSecondaryRune && powerSecondaryRune !== 'auto') {
-      const secondaryOption = secondarySelect.querySelector(`option[value="${powerSecondaryRune}"]`);
-      const tertiaryOption = tertiarySelect.querySelector(`option[value="${powerSecondaryRune}"]`);
-      const formPrimaryOption = formPrimarySelect.querySelector(`option[value="${powerSecondaryRune}"]`);
-      const powerPrimaryOption = powerPrimarySelect.querySelector(`option[value="${powerSecondaryRune}"]`);
-      const formSecondaryOption = formSecondarySelect.querySelector(`option[value="${powerSecondaryRune}"]`);
-      const powerSecondaryOption = powerSecondarySelect.querySelector(`option[value="${powerSecondaryRune}"]`);
-
-      if (secondaryOption) secondaryOption.disabled = true;
-      if (tertiaryOption) tertiaryOption.disabled = true;
-      if (formPrimaryOption) formPrimaryOption.disabled = true;
-      if (powerPrimaryOption) powerPrimaryOption.disabled = true;
-      if (formSecondaryOption) formSecondaryOption.disabled = true;
-      if (powerSecondaryOption) powerSecondaryOption.disabled = true;
     }
   }
 
@@ -1114,10 +987,6 @@ class CharacterGenerator {
           document.getElementById('primary-rune-select').value = details.runes.primary || 'auto';
           document.getElementById('secondary-rune-select').value = details.runes.secondary || 'auto';
           document.getElementById('tertiary-rune-select').value = details.runes.tertiary || 'auto';
-          document.getElementById('form-primary-rune-select').value = details.runes.formPrimary || 'auto';
-          document.getElementById('power-primary-rune-select').value = details.runes.powerPrimary || 'auto';
-          document.getElementById('form-secondary-rune-select').value = details.runes.formSecondary || 'auto';
-          document.getElementById('power-secondary-rune-select').value = details.runes.powerSecondary || 'auto';
           this.updateRuneSelections(actorId);
         });
 
@@ -1138,34 +1007,6 @@ class CharacterGenerator {
         html.find('#tertiary-rune-select').change(() => {
           const actorId = html.find('#actor-detail-rune-select').val();
           this.actorDetails[actorId].runes.tertiary = html.find('#tertiary-rune-select').val();
-          this.updateRuneSelections(actorId);
-          this.logSelectedActorsAndDetails();
-        });
-
-        html.find('#form-primary-rune-select').change(() => {
-          const actorId = html.find('#actor-detail-rune-select').val();
-          this.actorDetails[actorId].runes.formPrimary = html.find('#form-primary-rune-select').val();
-          this.updateRuneSelections(actorId);
-          this.logSelectedActorsAndDetails();
-        });
-
-        html.find('#power-primary-rune-select').change(() => {
-          const actorId = html.find('#actor-detail-rune-select').val();
-          this.actorDetails[actorId].runes.powerPrimary = html.find('#power-primary-rune-select').val();
-          this.updateRuneSelections(actorId);
-          this.logSelectedActorsAndDetails();
-        });
-
-        html.find('#form-secondary-rune-select').change(() => {
-          const actorId = html.find('#actor-detail-rune-select').val();
-          this.actorDetails[actorId].runes.formSecondary = html.find('#form-secondary-rune-select').val();
-          this.updateRuneSelections(actorId);
-          this.logSelectedActorsAndDetails();
-        });
-
-        html.find('#power-secondary-rune-select').change(() => {
-          const actorId = html.find('#actor-detail-rune-select').val();
-          this.actorDetails[actorId].runes.powerSecondary = html.find('#power-secondary-rune-select').val();
           this.updateRuneSelections(actorId);
           this.logSelectedActorsAndDetails();
         });
