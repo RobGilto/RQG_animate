@@ -127,7 +127,15 @@ class CharacterGenerator {
     this.selectedActors = [];
     this.actorDetails = {};
     this.selectedCompendium = "wiki-en-rqg.runes"; // Set the correct compendium
+
+    // Preload all items from the compendiums
+    this.preloadCompendiumItems();
   }
+
+  async preloadCompendiumItems() {
+    this.globalOptions.cults.list = await this.loadCults();
+  }
+
 
   async loadRunes() {
     try {
@@ -218,17 +226,17 @@ class CharacterGenerator {
 
       if (!cultPack) {
         console.error("Cults compendium not found");
-        return [];
+        return ["auto"];
       }
 
       await cultPack.getIndex();
       const cultItems = await cultPack.getDocuments();
       console.log("Loaded cult items:", cultItems);
 
-      return cultItems.map(cult => cult.name);
+      return ["auto", ...cultItems.map(cult => cult.name)];
     } catch (error) {
       console.error("Error loading cults:", error);
-      return [];
+      return ["auto"];
     }
   }
 
@@ -439,7 +447,7 @@ class CharacterGenerator {
       if (details.cult === 'auto') details.cult = this.getWeightedRandomSelection(this.globalOptions.cults, actor.id);
 
       this.applyHomelandModifiers(details);
-      await whitelistRunesBasedOnCult(actor.id, this.actorDetails); // Call the global function
+      await whitelistRunesBasedOnCult(actor.id, this.actorDetails); // Pass actorDetails to the function
       this.handleAutoRuneSelection(actor.id);
     }
   }
@@ -660,6 +668,7 @@ class CharacterGenerator {
       content += `<button id="add-actor-button" style="margin-left: 10px;">Add Actor</button>`;
     } else if (pageIndex === 1) {
       let actors = this.selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
+      const cults = await this.loadCults(); // Load cults dynamically
       content += `
         <div>
           <label for="actor-detail-select">Actor:</label>
@@ -675,7 +684,7 @@ class CharacterGenerator {
         </div>
         <div>
           <label for="cult-select">Cult:</label>
-          <select id="cult-select">${Object.keys(this.globalOptions.cults).map(cult => `<option value="${cult}">${cult}</option>`)}</select>
+          <select id="cult-select">${cults.map(cult => `<option value="${cult}">${cult}</option>`)}</select>
         </div>
       `;
       content += `<button id="sync-all-button" style="margin-top: 10px;">Sync All</button>`;
@@ -765,7 +774,7 @@ class CharacterGenerator {
     } else if (pageIndex === 4) {
       let actors = this.selectedActors.map(actor => `<option value="${actor.id}">${actor.name}</option>`).join('');
       const details = this.actorDetails[this.selectedActors[0]?.id];
-      const occupations = details ? this.globalOptions.homelands[details.homeland].occupations : [];
+      const occupations = details ? this.globalOptions.homelands[details.homeland]?.occupations || [] : [];
       content += `
         <div>
           <label for="actor-detail-occupation-select">Actor:</label>
@@ -840,7 +849,7 @@ class CharacterGenerator {
     if (characteristics) {
       ['str', 'con', 'siz', 'dex', 'int', 'pow', 'cha'].forEach(char => {
         const select = document.getElementById(`${char}-select`);
-        if (select) select.value = characteristics[char.toUpperCase()].baseValue || 0;
+        if (select) select.value = characteristics[char.toUpperCase()]?.baseValue || 0;
       });
     }
   }
@@ -929,7 +938,7 @@ class CharacterGenerator {
         html.find('#actor-detail-occupation-select').change(function() {
           const actorId = $(this).val();
           const details = this.actorDetails[actorId];
-          const occupations = this.globalOptions.homelands[details.homeland].occupations;
+          const occupations = this.globalOptions.homelands[details.homeland]?.occupations || [];
           const occupationSelect = html.find('#occupation-select');
           occupationSelect.empty();
           occupationSelect.append(`<option value="auto">auto</option>`);
@@ -967,7 +976,9 @@ class CharacterGenerator {
         html.find('#race-select').change(function() {
           const actorId = html.find('#actor-detail-select').val();
           this.actorDetails[actorId].race = $(this).val();
-          this.actorDetails[actorId].characteristics = this.rollCharacteristics($(this).val(), this.globalOptions.races[$(this).val()].charAvg);
+          if (this.actorDetails[actorId].race) {
+            this.actorDetails[actorId].characteristics = this.rollCharacteristics(this.actorDetails[actorId].race, this.globalOptions.races[this.actorDetails[actorId].race].charAvg);
+          }
           this.logSelectedActorsAndDetails();
         }.bind(this));
         html.find('#homeland-select').change(function() {
@@ -1103,8 +1114,6 @@ class CharacterGenerator {
 }
 
 async function whitelistRunesBasedOnCult(actorId, actorDetails) {
-  // Your whitelistRunesBasedOnCult function implementation here
-  // Example:
   const details = actorDetails[actorId];
   if (details.cult === "someCult") {
     // Modify runes whitelist based on cult
