@@ -339,7 +339,7 @@
       const charName = library.characteristicAliases[name.toLowerCase()] || name.toLowerCase();
       if (this.characteristics.hasOwnProperty(charName)) {
         this.characteristics[charName] = value;
-        console.log(`Updated characteristic '${charName}': ${value}`);
+        
       } else {
         console.error(`Characteristic '${charName}' not found`);
       }
@@ -363,7 +363,7 @@
         return;
       }
 
-      console.log(`Updating rune '${name}' in category '${category}'`);
+      
 
       // Update the rune value
       if (this.runes[category][name] !== undefined) {
@@ -466,17 +466,12 @@
     }
 
     addPrimaryRuneToCategory(runeName) {
-      console.log(`Primary Rune Name: '${runeName}'`);
-      console.log('Checking the following categories and runes:');
-      Object.keys(library.runes).forEach(category => {
-        console.log(`Category: ${category}, Runes:`, library.runes[category]);
-      });
 
       for (const category of Object.keys(library.runes)) {
-        console.log(`Checking category '${category}' for rune '${runeName}'`);
+        
         const runesInCategory = library.runes[category];
         if (runesInCategory.some(rune => rune.includes(runeName))) {
-          console.log(`Adding rune '${runeName}' to category '${category}'`);
+          
           this.updateRune(runeName, 75, 'replace');
           return;  // Exit the method once the rune is found and added
         }
@@ -506,7 +501,7 @@
       if (modifiers) {
         for (const [charName, value] of Object.entries(modifiers)) {
           this.updateCharacteristic(charName.toLowerCase(), this.characteristics[charName.toLowerCase()] + value);
-          console.log(`Applied homeland modifier for ${charName}: ${value}`);
+          
         }
       }
     }
@@ -565,7 +560,7 @@
         this.updateCharacteristic(key, value);
       });
 
-      console.log(`Final characteristic rolls for ${this.race}${this.subrace ? " (" + this.subrace + ")" : ""}:`, rolls);
+      
     }
 
     chooseRace(race, subrace = null) {
@@ -618,6 +613,6 @@
 
     // Choose occupation and handle special case for Praxian or Grazelands Farmer
     char.chooseOccupation('Farmer');
-    console.log('Updated Occupation:', char.occupation); // Should print 'Herder' for Praxian or Grazelands
+    
   })();
 })();
