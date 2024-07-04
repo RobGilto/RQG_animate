@@ -203,6 +203,115 @@ class Library {
             { range: [15, 21], rank: 1 },
             { range: [22, Infinity], rank: 0 },
         ];
+
+        this.skillCategoryModifiers = {
+            Agility: [
+                { characteristic: "STR", range: [1, 4], modifier: -5 },
+                { characteristic: "STR", range: [17, 20], modifier: 5 },
+                { characteristic: "STR", range: [21, Infinity], modifier: 5 },
+                { characteristic: "SIZ", range: [1, 4], modifier: 5 },
+                { characteristic: "SIZ", range: [17, 20], modifier: -5 },
+                { characteristic: "SIZ", range: [21, Infinity], modifier: -5 },
+                { characteristic: "DEX", range: [1, 4], modifier: -10 },
+                { characteristic: "DEX", range: [5, 8], modifier: -5 },
+                { characteristic: "DEX", range: [13, 16], modifier: 5 },
+                { characteristic: "DEX", range: [17, 20], modifier: 10 },
+                { characteristic: "DEX", range: [21, Infinity], modifier: 5 },
+                { characteristic: "POW", range: [1, 4], modifier: -5 },
+                { characteristic: "POW", range: [13, 16], modifier: 5 },
+                { characteristic: "POW", range: [17, 20], modifier: 5 },
+                { characteristic: "POW", range: [21, Infinity], modifier: 5 },
+            ],
+            Communication: [
+                { characteristic: "INT", range: [1, 4], modifier: -5 },
+                { characteristic: "INT", range: [13, 16], modifier: 5 },
+                { characteristic: "INT", range: [17, 20], modifier: 5 },
+                { characteristic: "INT", range: [21, Infinity], modifier: 5 },
+                { characteristic: "POW", range: [1, 4], modifier: -5 },
+                { characteristic: "POW", range: [13, 16], modifier: 5 },
+                { characteristic: "POW", range: [17, 20], modifier: 5 },
+                { characteristic: "POW", range: [21, Infinity], modifier: 5 },
+                { characteristic: "CHA", range: [1, 4], modifier: -10 },
+                { characteristic: "CHA", range: [5, 8], modifier: -5 },
+                { characteristic: "CHA", range: [13, 16], modifier: 5 },
+                { characteristic: "CHA", range: [17, 20], modifier: 10 },
+                { characteristic: "CHA", range: [21, Infinity], modifier: 5 },
+            ],
+            Knowledge: [
+                { characteristic: "INT", range: [1, 4], modifier: -10 },
+                { characteristic: "INT", range: [5, 8], modifier: -5 },
+                { characteristic: "INT", range: [13, 16], modifier: 5 },
+                { characteristic: "INT", range: [17, 20], modifier: 10 },
+                { characteristic: "INT", range: [21, Infinity], modifier: 5 },
+                { characteristic: "POW", range: [1, 4], modifier: -5 },
+                { characteristic: "POW", range: [13, 16], modifier: 5 },
+                { characteristic: "POW", range: [17, 20], modifier: 5 },
+                { characteristic: "POW", range: [21, Infinity], modifier: 5 },
+            ],
+            Magic: [
+                { characteristic: "POW", range: [1, 4], modifier: -10 },
+                { characteristic: "POW", range: [5, 8], modifier: -5 },
+                { characteristic: "POW", range: [13, 16], modifier: 5 },
+                { characteristic: "POW", range: [17, 20], modifier: 10 },
+                { characteristic: "POW", range: [21, Infinity], modifier: 5 },
+                { characteristic: "CHA", range: [1, 4], modifier: -5 },
+                { characteristic: "CHA", range: [13, 16], modifier: 5 },
+                { characteristic: "CHA", range: [17, 20], modifier: 5 },
+                { characteristic: "CHA", range: [21, Infinity], modifier: 5 },
+            ],
+            Manipulation: [
+                { characteristic: "STR", range: [1, 4], modifier: -5 },
+                { characteristic: "STR", range: [13, 16], modifier: 5 },
+                { characteristic: "STR", range: [17, 20], modifier: 5 },
+                { characteristic: "STR", range: [21, Infinity], modifier: 5 },
+                { characteristic: "DEX", range: [1, 4], modifier: -10 },
+                { characteristic: "DEX", range: [5, 8], modifier: -5 },
+                { characteristic: "DEX", range: [13, 16], modifier: 5 },
+                { characteristic: "DEX", range: [17, 20], modifier: 10 },
+                { characteristic: "DEX", range: [21, Infinity], modifier: 5 },
+                { characteristic: "INT", range: [1, 4], modifier: -10 },
+                { characteristic: "INT", range: [5, 8], modifier: -5 },
+                { characteristic: "INT", range: [13, 16], modifier: 5 },
+                { characteristic: "INT", range: [17, 20], modifier: 10 },
+                { characteristic: "INT", range: [21, Infinity], modifier: 5 },
+                { characteristic: "POW", range: [1, 4], modifier: -5 },
+                { characteristic: "POW", range: [13, 16], modifier: 5 },
+                { characteristic: "POW", range: [17, 20], modifier: 5 },
+                { characteristic: "POW", range: [21, Infinity], modifier: 5 },
+            ],
+            Perception: [
+                { characteristic: "INT", range: [1, 4], modifier: -10 },
+                { characteristic: "INT", range: [5, 8], modifier: -5 },
+                { characteristic: "INT", range: [13, 16], modifier: 5 },
+                { characteristic: "INT", range: [17, 20], modifier: 10 },
+                { characteristic: "INT", range: [21, Infinity], modifier: 5 },
+                { characteristic: "POW", range: [1, 4], modifier: -5 },
+                { characteristic: "POW", range: [13, 16], modifier: 5 },
+                { characteristic: "POW", range: [17, 20], modifier: 5 },
+                { characteristic: "POW", range: [21, Infinity], modifier: 5 },
+            ],
+            Stealth: [
+                { characteristic: "SIZ", range: [1, 4], modifier: 10 },
+                { characteristic: "SIZ", range: [5, 8], modifier: 5 },
+                { characteristic: "SIZ", range: [13, 16], modifier: -5 },
+                { characteristic: "SIZ", range: [17, 20], modifier: -10 },
+                { characteristic: "SIZ", range: [21, Infinity], modifier: -5 },
+                { characteristic: "DEX", range: [1, 4], modifier: -10 },
+                { characteristic: "DEX", range: [5, 8], modifier: -5 },
+                { characteristic: "DEX", range: [13, 16], modifier: 5 },
+                { characteristic: "DEX", range: [17, 20], modifier: 10 },
+                { characteristic: "DEX", range: [21, Infinity], modifier: 5 },
+                { characteristic: "INT", range: [1, 4], modifier: -10 },
+                { characteristic: "INT", range: [5, 8], modifier: -5 },
+                { characteristic: "INT", range: [13, 16], modifier: 5 },
+                { characteristic: "INT", range: [17, 20], modifier: 10 },
+                { characteristic: "INT", range: [21, Infinity], modifier: 5 },
+                { characteristic: "POW", range: [1, 4], modifier: 5 },
+                { characteristic: "POW", range: [13, 16], modifier: -5 },
+                { characteristic: "POW", range: [17, 20], modifier: -5 },
+                { characteristic: "POW", range: [21, Infinity], modifier: -5 },
+            ],
+        };
     }
 
     async loadCults(sources) {
@@ -672,6 +781,33 @@ class Character {
         return 0;  // Default value if not found
     }
 
+    applySkillCategoryModifiers() {
+        const applyModifiers = (skills, modifiers) => {
+            skills.forEach(skill => {
+                let totalModifier = 0;
+                modifiers.forEach(mod => {
+                    const charValue = this.characteristics[library.characteristicAliases[mod.characteristic.toLowerCase()]];
+                    if (charValue >= mod.range[0] && charValue <= mod.range[1]) {
+                        totalModifier += mod.modifier;
+                    } else if (charValue > mod.range[1]) {
+                        totalModifier += Math.floor((charValue - mod.range[1]) / 4) * mod.modifier;
+                    }
+                });
+                skill.value += totalModifier;
+            });
+        };
+
+        applyModifiers(this.skills.Agility, library.skillCategoryModifiers.Agility);
+        applyModifiers(this.skills.Communication, library.skillCategoryModifiers.Communication);
+        applyModifiers(this.skills.Knowledge, library.skillCategoryModifiers.Knowledge);
+        applyModifiers(this.skills.Magic, library.skillCategoryModifiers.Magic);
+        applyModifiers(this.skills.Manipulation, library.skillCategoryModifiers.Manipulation);
+        applyModifiers(this.skills.MeleeWeapons, library.skillCategoryModifiers.Manipulation);
+        applyModifiers(this.skills.MissileWeapons, library.skillCategoryModifiers.Manipulation);
+        applyModifiers(this.skills.Perception, library.skillCategoryModifiers.Perception);
+        applyModifiers(this.skills.Stealth, library.skillCategoryModifiers.Stealth);
+    }
+
     chooseRace(race, subrace = null) {
         this.race = race;
         this.subrace = subrace;
@@ -719,4 +855,8 @@ let library = new Library();
     // Calculate attributes after all updates
     char.calculateAttributes();
     console.log('Updated Character Attributes:', char.attributes);
+
+    // Apply skill category modifiers
+    char.applySkillCategoryModifiers();
+    console.log('Updated Character Skills:', char.skills);
 })();
