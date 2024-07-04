@@ -319,7 +319,7 @@ class Character {
             power: 0, charisma: 0, size: 0
         };
         this.runes = {
-            elemental: {}, form: {}, technique: {}, power: {}, condition: {}
+            element: {}, form: {}, technique: {}, power: {}, condition: {}
         };
         this.skills = {
             Agility: [], Communication: [], Knowledge: [], Magic: [], Manipulation: [],
