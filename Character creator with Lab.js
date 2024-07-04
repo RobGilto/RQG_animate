@@ -155,6 +155,54 @@ class Library {
             "spirit": "Spirit (form)",
             "dragonewt": "Dragonewt (form)"
         };
+        
+        this.hitPointModifiers = [
+            { range: [1, 4], SIZ: -2, POW: -1 },
+            { range: [5, 8], SIZ: -1, POW: 0 },
+            { range: [9, 12], SIZ: 0, POW: 0 },
+            { range: [13, 16], SIZ: 1, POW: 0 },
+            { range: [17, 20], SIZ: 2, POW: 1 },
+            { range: [21, 24], SIZ: 3, POW: 2 },
+            { range: [25, 28], SIZ: 4, POW: 3 },
+        ];
+
+        this.healingRate = [
+            { range: [1, 6], rate: 1 },
+            { range: [7, 12], rate: 2 },
+            { range: [13, 18], rate: 3 },
+        ];
+
+        this.spiritCombatDamage = [
+            { range: [2, 12], damage: "1D3" },
+            { range: [13, 24], damage: "1D6" },
+            { range: [25, 32], damage: "1D6+1" },
+            { range: [33, 40], damage: "1D6+3" },
+            { range: [41, 56], damage: "2D6+3" },
+        ];
+
+        this.damageBonus = [
+            { range: [1, 12], bonus: "-1D4" },
+            { range: [13, 24], bonus: "0" },
+            { range: [25, 32], bonus: "+1D4" },
+            { range: [33, 40], bonus: "+1D6" },
+            { range: [41, 56], bonus: "+2D6" },
+        ];
+
+        this.dexStrikeRank = [
+            { range: [1, 5], rank: 5 },
+            { range: [6, 8], rank: 4 },
+            { range: [9, 12], rank: 3 },
+            { range: [13, 15], rank: 2 },
+            { range: [16, 18], rank: 1 },
+            { range: [19, Infinity], rank: 0 },
+        ];
+
+        this.sizStrikeRank = [
+            { range: [1, 6], rank: 3 },
+            { range: [7, 14], rank: 2 },
+            { range: [15, 21], rank: 1 },
+            { range: [22, Infinity], rank: 0 },
+        ];
     }
 
     async loadCults(sources) {
@@ -319,7 +367,7 @@ class Character {
             power: 0, charisma: 0, size: 0
         };
         this.runes = {
-            element: {}, form: {}, technique: {}, power: {}, condition: {}
+            elemental: {}, form: {}, technique: {}, power: {}, condition: {}
         };
         this.skills = {
             Agility: [], Communication: [], Knowledge: [], Magic: [], Manipulation: [],
@@ -335,6 +383,14 @@ class Character {
         this.occupation = null;
         this.race = null;
         this.subrace = null;
+        this.attributes = {
+            hitPoints: 0,
+            healingRate: 0,
+            spiritCombatDamage: "",
+            damageBonus: "",
+            dexStrikeRank: 0,
+            sizStrikeRank: 0,
+        };
     }
 
     initializeRunes() {
@@ -570,6 +626,52 @@ class Character {
         });
     }
 
+    calculateAttributes() {
+        this.attributes.hitPoints = this.calculateHitPoints();
+        this.attributes.healingRate = this.calculateHealingRate();
+        this.attributes.spiritCombatDamage = this.calculateSpiritCombatDamage();
+        this.attributes.damageBonus = this.calculateDamageBonus();
+        this.attributes.dexStrikeRank = this.calculateDexStrikeRank();
+        this.attributes.sizStrikeRank = this.calculateSizStrikeRank();
+    }
+
+    calculateHitPoints() {
+        const sizModifier = this.getModifier(this.characteristics.size, library.hitPointModifiers, "SIZ");
+        const powModifier = this.getModifier(this.characteristics.power, library.hitPointModifiers, "POW");
+        return sizModifier + powModifier;
+    }
+
+    calculateHealingRate() {
+        return this.getModifier(this.characteristics.constitution, library.healingRate, "rate");
+    }
+
+    calculateSpiritCombatDamage() {
+        const powChaSum = this.characteristics.power + this.characteristics.charisma;
+        return this.getModifier(powChaSum, library.spiritCombatDamage, "damage");
+    }
+
+    calculateDamageBonus() {
+        const strSizSum = this.characteristics.strength + this.characteristics.size;
+        return this.getModifier(strSizSum, library.damageBonus, "bonus");
+    }
+
+    calculateDexStrikeRank() {
+        return this.getModifier(this.characteristics.dexterity, library.dexStrikeRank, "rank");
+    }
+
+    calculateSizStrikeRank() {
+        return this.getModifier(this.characteristics.size, library.sizStrikeRank, "rank");
+    }
+
+    getModifier(value, table, attribute) {
+        for (let entry of table) {
+            if (value >= entry.range[0] && value <= entry.range[1]) {
+                return entry[attribute];
+            }
+        }
+        return 0;  // Default value if not found
+    }
+
     chooseRace(race, subrace = null) {
         this.race = race;
         this.subrace = subrace;
@@ -613,4 +715,8 @@ let library = new Library();
     char.updatePassion('Devotion', 'Orlanth', 5, 'subtract');  // Decrease Devotion to Orlanth by 5
 
     char.chooseOccupation('Farmer');
+
+    // Calculate attributes after all updates
+    char.calculateAttributes();
+    console.log('Updated Character Attributes:', char.attributes);
 })();
