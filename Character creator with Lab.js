@@ -134,12 +134,26 @@ class Library {
             }
         };
         this.runeAliases = {
-            "fire/sky (element)": "Fire/Sky (element)",
-            "earth (element)": "Earth (element)",
-            "water (element)": "Water (element)",
-            "moon (element)": "Moon (element)",
-            "darkness (element)": "Darkness (element)",
-            "air (element)": "Air (element)"
+            "air": "Air (element)",
+            "darkness": "Darkness (element)",
+            "earth": "Earth (element)",
+            "fire": "Fire/Sky (element)",
+            "water": "Water (element)",
+            "moon": "Moon (element)",
+            "truth": "Truth (power)",
+            "death": "Death (power)",
+            "disorder": "Disorder (power)",
+            "harmony": "Harmony (power)",
+            "illusion": "Illusion (power)",
+            "movement": "Movement (power)",
+            "stasis": "Stasis (power)",
+            "fertility": "Fertility (power)",
+            "beast": "Beast (form)",
+            "man": "Man (form)",
+            "chaos": "Chaos (form)",
+            "plant": "Plant (form)",
+            "spirit": "Spirit (form)",
+            "dragonewt": "Dragonewt (form)"
         };
     }
 
@@ -337,7 +351,6 @@ class Character {
     updateCharacteristic(name, value) {
         const charName = library.characteristicAliases[name.toLowerCase()] || name.toLowerCase();
         if (this.characteristics.hasOwnProperty(charName)) {
-            console.log(`Updating ${charName} to ${value}`);  // Debug log
             this.characteristics[charName] = value;
         } else {
             console.error(`Characteristic '${charName}' not found`);
@@ -354,34 +367,35 @@ class Character {
             return null;
         };
 
-        const category = findRuneCategory(name);
+        const officialName = library.runeAliases[name.toLowerCase()] || name;
+        const category = findRuneCategory(officialName);
 
         if (!category) {
-            console.error(`Rune '${name}' not found in any category`);
+            console.error(`Rune '${officialName}' not found in any category`);
             return;
         }
 
-        if (this.runes[category][name] !== undefined) {
+        if (this.runes[category][officialName] !== undefined) {
             switch (operation) {
                 case 'add':
-                    this.runes[category][name] += value;
+                    this.runes[category][officialName] += value;
                     break;
                 case 'subtract':
-                    this.runes[category][name] -= value;
+                    this.runes[category][officialName] -= value;
                     break;
                 case 'replace':
-                    this.runes[category][name] = value;
+                    this.runes[category][officialName] = value;
                     break;
             }
         } else {
-            this.runes[category][name] = value;
+            this.runes[category][officialName] = value;
         }
 
-        this.runes[category][name] = Math.max(0, Math.min(100, this.runes[category][name]));
+        this.runes[category][officialName] = Math.max(0, Math.min(100, this.runes[category][officialName]));
 
-        const complementaryRune = library.complementaryRunes[category] && library.complementaryRunes[category][name];
+        const complementaryRune = library.complementaryRunes[category] && library.complementaryRunes[category][officialName];
         if (complementaryRune) {
-            this.runes[category][complementaryRune] = 100 - this.runes[category][name];
+            this.runes[category][complementaryRune] = 100 - this.runes[category][officialName];
         }
     }
 
@@ -458,14 +472,15 @@ class Character {
     }
 
     addPrimaryRuneToCategory(runeName) {
+        const officialName = library.runeAliases[runeName.toLowerCase()] || runeName;
         for (const category of Object.keys(library.runes)) {
             const runesInCategory = library.runes[category];
-            if (runesInCategory.some(rune => rune.includes(runeName))) {
-                this.updateRune(runeName, 75, 'replace');
+            if (runesInCategory.some(rune => rune.includes(officialName))) {
+                this.updateRune(officialName, 75, 'replace');
                 return;
             }
         }
-        console.error(`Rune '${runeName}' not found in any category`);
+        console.error(`Rune '${officialName}' not found in any category`);
     }
 
     chooseHomeland(name, tribe) {
@@ -491,7 +506,6 @@ class Character {
             for (const [shortCharName, value] of Object.entries(modifiers)) {
                 const charName = library.characteristicAliases[shortCharName.toLowerCase()];
                 const currentCharacteristic = this.characteristics[charName];
-                console.log(`Current ${charName}: ${currentCharacteristic}, Modifier: ${value}`);  // Debug log
                 if (!isNaN(currentCharacteristic) && !isNaN(value)) {
                     this.updateCharacteristic(charName, currentCharacteristic + value);
                 } else {
@@ -522,7 +536,6 @@ class Character {
         }
         total += modifier;
 
-        console.log(`Rolled ${total} for ${dice}`);  // Debug log
         return total;
     }
 
@@ -585,8 +598,8 @@ let library = new Library();
     char.chooseRace('Human');
     char.chooseHomeland('Prax', 'Bison Rider');
 
-    char.updateRune("Fire/Sky (element)", 75, 'replace');
-    char.updateRune('Truth', 75, 'replace');  // Using correct case for rune name
+    char.updateRune("air", 75, 'replace');
+    char.updateRune('truth', 75, 'replace');  // Using correct case for rune name
     char.updateSkill('sword', 5, 'add');
     char.updateSkill('sword', 2, 'subtract');
     char.chooseCult('Orlanth');
