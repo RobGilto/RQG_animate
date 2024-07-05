@@ -537,26 +537,38 @@ class Character {
         }
     }
 
-    updateSkill(name, value, operation = 'replace') {
-        for (const category in this.skills) {
-            const skill = this.skills[category].find(skill => skill.name === name);
-            if (skill) {
-                switch (operation) {
-                    case 'add':
-                        skill.value += value;
-                        break;
-                    case 'subtract':
-                        skill.value -= value;
-                        break;
-                    case 'replace':
-                        skill.value = value;
-                        break;
-                }
-                return;
+    updateSkill(name, value, category, operation = 'replace') {
+        const skill = this.skills[category].find(skill => skill.name === name);
+        if (skill) {
+            switch (operation) {
+                case 'add':
+                    skill.value += value;
+                    break;
+                case 'subtract':
+                    skill.value -= value;
+                    break;
+                case 'replace':
+                    skill.value = value;
+                    break;
             }
+        } else {
+            this.skills[category].push({ name, value });
         }
-        this.skills.Agility.push({ name, value });
     }
+
+    updateCharacterSkills() {
+        for (const category in library.skills) {
+            library.skills[category].forEach(skill => {
+                if (skill.value > 0 || skill.name === 'Dodge' || skill.name === 'Jump') {
+                    const value = skill.name === 'Dodge' ? 2 * this.characteristics.dexterity :
+                                  skill.name === 'Jump' ? 3 * this.characteristics.dexterity :
+                                  skill.value;
+                    this.updateSkill(skill.name, value, category, 'replace');
+                }
+            });
+        }
+    }
+
 
     addPassion(name, subject, value) {
         const passion = this.passions.find(p => p.name === name && p.subject === subject);
@@ -814,8 +826,8 @@ let library = new Library();
 
     char.updateRune("air", 75, 'replace');
     char.updateRune('truth', 75, 'replace');  // Using correct case for rune name
-    char.updateSkill('sword', 5, 'add');
-    char.updateSkill('sword', 2, 'subtract');
+    char.updateSkill('sword', 5, 'MeleeWeapons', 'add');
+    char.updateSkill('sword', 2, 'MeleeWeapons', 'subtract');
     char.chooseCult('Orlanth');
     char.setLanguage('Heortling', 50);
 
@@ -835,4 +847,8 @@ let library = new Library();
     // Apply skill category modifiers
     char.applySkillCategoryModifiers();
     console.log('Updated Character Skill Category Modifiers:', char.skillCategoryModifiers);
+
+    // Update character skills
+    char.updateCharacterSkills();
+    console.log('Updated Character Skills:', char.skills);
 })();
