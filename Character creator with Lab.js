@@ -120,17 +120,16 @@ class Library {
         this.skillAliases = {
             "Dagger": "1H Daggers (Dagger)",
             "Lance": "2H Spears (Longspear)",
-            "Large Shield": "Shields (Large Shield)",
-            "1H Spear": "1H Spears (1H Spear)",
+            "Large Shield": "Shields (Large)",
+            "1H Spear": "1H Spears (Shortspear)",
             "2H Spear": "2H Spears (2H Spear)",
-            "Shortsword": "1H Shortsword (Shortsword)",
+            "Shortsword": "1H Swords (Shortsword)",
+            "Dart": "Javelins (Dart)",
             "Self Bow": "Bows (Self Bow)",
             "Composite Bow": "Bows (Composite Bow)",
             "Sling": "Thrown Weapons (Sling)",
-            "Kopis": "1H Kopis (Kopis)",
+            "Kopis": "1H Swords (Kopis)",
             "1H Axe": "1H Axes (1H Axe)",
-            "2H Dagger-Axe": "2H Axes (2H Dagger-Axe)",
-            "Pole Lasso": "Polearms (Pole Lasso)",
             "Short Spear": "1H Spears (Short Spear)",
             "1H Lance": "1H Lances (1H Lance)",
             "Thrown Weapons (Thrown Axe)": "Thrown Axe",
@@ -138,12 +137,36 @@ class Library {
             "Broadsword": "1H Swords (Broadsword)",
             "Javelin": "1H Spears (Javelin)",
             "Medium Shield": "Shields (Medium)",
+            "Small Shield": "Shields (Small)",
+            "Large Shield": "Shields (Large)",
             "Shields (Medium Shield)": "Shields (Medium)",
             "1H Broadsword (Broadsword)": "1H Swords (Broadsword)",
             "1H Javelins (Javelin)": "1H Spears (Javelin)",
             "Shields (Medium Shield)": "Shields (Medium)",
-            "Shields (Large Shield)": "Shields (Large Shield)",
+            "Shields (Large Shield)": "Shields (Large)",
             "Shields (Large Small)": "Shields (Small)",
+            "Speak Own Language (Pure Horse Tongue)": "Speak Language (Pure Horse Tongue)",
+            "Speak Own Language (Heortling)": "Speak Language (Heortling)",
+            "Speak Own Language (Esrolian)": "Speak Language (Esrolian)",
+            "Speak Own Language (New Pelorian)": "Speak Language (New Pelorian)",
+            "Speak Own Language (Tarshite)": "Speak Language (Tarshite)",
+            "Speak Other Language (Tradetalk)": "Speak Language (Tradetalk)",
+            "Ride (High Llama)": "Ride (...)",
+            "2H Dagger-Axe": "2H Axes (Dagger Axe)",
+            "Pole Lasso": "Lassos (Pole Lasso)",
+            "Ride (Impala)": "Ride (...)",
+            "Customs (Pol Joni)": "Customs (Pol-Joni)",
+            "Ride (Sable Antelope)": "Ride (...)", 
+            "Kopis or 1H Axe": Math.random() < 0.5 ? "1H Swords (Kopis)" : "1H Axes (Battle Axe)",
+            "Lance or Short Spear": Math.random() < 0.5 ? "2H Spears (Longspear)" : "1H Spears (Shortspear)",
+            "Composite Bow or Javelin": Math.random() < 0.5 ? "Bows (Composite Bow)" : "Thrown Weapons (Javelin)",
+            "Speak Other Language (Tarshite)": "Speak Language (Tarshite)",
+            "1H or 2H Spear": Math.random() < 0.5 ? "1H Spears (Shortspear)" : "2H Spears (Longspear)",
+            "1H Kopis (Kopis)": "1H Swords (Kopis)",
+            "Composite Bow or Sling": Math.random() < 0.5 ? "Bows (Composite Bow)" : "Slings (Sling)",
+            "2H Spears (2H Spear)": "2H Spears (Longspear)",
+            "Thrown Weapons (Sling)": "Slings (Sling)",
+            "Battle Axe": "1H Axes (Battle Axe)",
             
             // Ensure this line is present to categorize Shields properly
             // Add more skill aliases as needed
@@ -417,6 +440,22 @@ class Library {
                     { name: "Small Shield", value: 10 }
                 ]
             },
+            "Pol-Joni": {
+                skills: [
+                    { name: "Ride (Horse)", value: 35 },
+                    { name: "Customs (Pol Joni)", value: 25 },
+                    { name: "Herd", value: 30 },
+                    { name: "Peaceful Cut", value: 15 },
+                    { name: "Spirit Combat", value: 20 }
+                ],
+                weapons: [
+                    { name: "Dagger", value: 10 },
+                    { name: "Lance", value: 10 },
+                    { name: "Broadsword", value: 15 },
+                    { name: "Composite Bow", value: 10 },
+                    { name: "Medium Shield", value: 15 }
+                ]
+            },
             "Pol Joni": {
                 skills: [
                     { name: "Ride (Horse)", value: 35 },
@@ -474,7 +513,7 @@ class Library {
             "Old Tarsh": {
                 skills: [
                     { name: "Dance", value: 5 },
-                    { name: "Ride", value: 5 },
+                    { name: "Ride (...)", value: 5 },
                     { name: "Sing", value: 10 },
                     { name: "Speak Own Language (Tarshite)", value: 50 },
                     { name: "Speak Other Language (Tradetalk)", value: 10 },
@@ -1055,8 +1094,9 @@ let library = new Library();
 
     
 
+
     char.chooseRace('Human');
-    char.chooseHomeland('Prax', 'Bison Rider');
+    char.chooseHomeland('Old Tarsh');
 
     char.updateRune("air", 75, 'replace');
     char.updateRune('truth', 75, 'replace');
