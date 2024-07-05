@@ -534,28 +534,6 @@ class Library {
                 ]
             }
         };
-        this.occupationConstraints = {
-            "Assistant Shaman": ["Daka Fal", "Waha", "Yelm"],
-            "Bandit": ["Babeester Gor", "Black Fang", "Eurmal", "Maran Gor", "Odayla", "Orlanth", "Seven Mothers", "Storm Bull"],
-            "Chariot Driver": ["Orlanth Adventurous", "The Seven Mothers"],
-            "Crafter": ["Ernalda", "Issaries", "Gustbran"],
-            "Entertainer": ["Ernalda", "Eurmal", "Orlanth", "The Seven Mothers"],
-            "Farmer": ["The Seven Mothers", "Ernalda", "Orlanth", "Yelmalio"],
-            "Fisher": ["Engizi", "Orlanth"],
-            "Healer": ["Chalana Arroy", "Eiritha", "Ernalda", "The Seven Mothers"],
-            "Herder": ["Eiritha", "Orlanth", "Waha", "Yelm", "Yinkin"],
-            "Hunter": ["Foundchild", "Odayla", "Orlanth", "Waha", "Yelm", "Yinkin"],
-            "Merchant": ["Issaries", "Argan Argar", "Etyries", "The Seven Mothers"],
-            "Noble": ["Ernalda", "Orlanth", "The Seven Mothers", "Waha", "Yelm"],
-            "Philosopher": ["Lhankor Mhy", "The Seven Mothers"],
-            "Priest": ["All (except Daka Fal, Eurmal, and Waha)"],
-            "Scribe": ["Lhankor Mhy", "The Seven Mothers"],
-            "Thief": ["Eurmal", "Orlanth", "Lanbril"],
-            "Warrior: Heavy Infantry": ["Argan Argar", "Babeester Gor", "Humakt", "The Seven Mothers", "Yelmalio"],
-            "Warrior: Light Infantry": ["Babeester Gor", "Humakt", "Maran Gor", "Orlanth Adventurous", "Orlanth Thunderous", "Storm Bull"],
-            "Warrior: Heavy Cavalry": ["Humakt", "Orlanth Adventurous", "Orlanth Thunderous", "The Seven Mothers", "Storm Bull", "Waha", "Yelm"],
-            "Warrior: Light Cavalry": ["Humakt", "Orlanth Adventurous", "Orlanth Thunderous", "The Seven Mothers", "Storm Bull", "Waha", "Yelm"]
-        };
     }
 
     async loadCults(sources) {
@@ -757,44 +735,9 @@ class Character {
             Stealth: 0,
             Shields: 0
         };
-    }
-
-    filterOccupationsByCult() {
-        if (!this.cult) {
-            console.error("No cult selected");
-            return [];
-        }
-
-        const filteredOccupations = [];
-        for (const [occupation, cults] of Object.entries(library.occupationConstraints)) {
-            if (cults.includes(this.cult.name) || cults.includes("All (except Daka Fal, Eurmal, and Waha)") && !["Daka Fal", "Eurmal", "Waha"].includes(this.cult.name)) {
-                filteredOccupations.push(occupation);
-            }
-        }
-        return filteredOccupations;
-    }
-
-    chooseOccupation(occupation) {
-        const validOccupations = this.filterOccupationsByCult();
-        if (validOccupations.includes(occupation)) {
-            this.occupation = occupation;
-        } else {
-            console.error(`Occupation '${occupation}' is not available for cult '${this.cult.name}'`);
-        }
-    }
-    chooseCult(cultName) {
-        const cult = library.cults.find(c => c.name.includes(cultName));
-        if (cult) {
-            this.cult = cult;
-            const primaryRune = library.primaryRunes[cultName];
-            if (primaryRune) {
-                this.addPrimaryRuneToCategory(primaryRune);
-            } else {
-                console.error(`Primary rune for cult '${cultName}' not found`);
-            }
-        } else {
-            console.error(`Cult '${cultName}' not found in library`);
-        }
+        this.culturalMeleeWeapons = [];
+        this.culturalMissileWeapons = [];
+        this.culturalWeapons = [];
     }
 
     initializeRunes() {
@@ -954,7 +897,13 @@ class Character {
                 this.updateSkill(skill.name, 0, skill.value);
             });
             culturalSkills.weapons.forEach(weapon => {
-                this.updateSkill(weapon.name, 0, weapon.value);
+                if (library.skills.MeleeWeapons.some(w => w.name === weapon.name)) {
+                    this.culturalMeleeWeapons.push(weapon);
+                } else if (library.skills.MissileWeapons.some(w => w.name === weapon.name)) {
+                    this.culturalMissileWeapons.push(weapon);
+                } else {
+                    this.culturalWeapons.push(weapon);
+                }
             });
         } else {
             console.error(`Cultural skills for homeland '${name}' or tribe '${tribe}' not found`);
@@ -989,6 +938,15 @@ class Character {
     chooseOccupation(occupation) {
         const adjustedOccupation = (this.homeland.name === "Prax" || this.homeland.name === "Grazeland") && occupation === "Farmer" ? "Herder" : occupation;
         this.occupation = adjustedOccupation;
+
+        const occupationSkills = library.occupations[adjustedOccupation];
+        if (occupationSkills) {
+            occupationSkills.forEach(skill => {
+                this.updateSkill(skill.name, skill.baseValue, skill.skillMod);
+            });
+        } else {
+            console.error(`Occupation '${adjustedOccupation}' not found in library`);
+        }
     }
 
     setLanguage(name, value) {
@@ -1139,6 +1097,7 @@ class Character {
 
 let char = new Character("Adventurer");
 let library = new Library();
+
 (async () => {
     await library.loadCults(['wiki-en-rqg.cults']);
     await library.loadSkills(['wiki-en-rqg.skills', 'wiki-en-rqg.skills-weapons']);
@@ -1156,21 +1115,17 @@ let library = new Library();
 
     char.updateRune("air", 75, 'replace');
     char.updateRune('truth', 75, 'replace');
-    char.updateSkill('sword', 5, 2);
-    char.updateSkill('sword', 2, -1);
+    char.updateSkill('sword', 5, 2); // Example of updating skill with skillMod
+    char.updateSkill('sword', 2, -1); // Example of updating skill with skillMod
     char.chooseCult('Orlanth');
     char.setLanguage('Heortling', 50);
 
     char.addPassion('Loyalty', 'Family', 50);
-    char.updatePassion('Loyalty', 'Family', 10, 'add');
-    char.updatePassion('Loyalty', 'Family', 5, 'subtract');
-    char.updatePassion('Loyalty', 'Family', 70, 'replace');
-    char.updatePassion('Devotion', 'Orlanth', 10, 'add');
-    char.updatePassion('Devotion', 'Orlanth', 5, 'subtract');
-
-    // Filter and choose occupation
-    const validOccupations = char.filterOccupationsByCult();
-    console.log('Valid Occupations:', validOccupations);
+    char.updatePassion('Loyalty', 'Family', 10, 'add');  // Increase loyalty to Family by 10
+    char.updatePassion('Loyalty', 'Family', 5, 'subtract');  // Decrease loyalty to Family by 5
+    char.updatePassion('Loyalty', 'Family', 70, 'replace');  // Set loyalty to Family to 70
+    char.updatePassion('Devotion', 'Orlanth', 10, 'add');  // Create passion Devotion to Orlanth with initial value 70
+    char.updatePassion('Devotion', 'Orlanth', 5, 'subtract');  // Decrease Devotion to Orlanth by 5
 
     char.chooseOccupation('Farmer');
 
@@ -1189,4 +1144,3 @@ let library = new Library();
     console.log('Character:', char);
     console.log('Library:', library);
 })();
-
