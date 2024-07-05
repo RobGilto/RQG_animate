@@ -164,29 +164,47 @@ class Library {
             { range: [21, 24], SIZ: +3, POW: +2 },
             { range: [25, 28], SIZ: +4, POW: +3 },
             { range: [29, Infinity], SIZ: +5, POW: +4 }
+        ];// Hit point modifiers
+        this.hitPointModifiers = [
+            { range: [1, 4], SIZ: -2, POW: -1 },
+            { range: [5, 8], SIZ: -1, POW: 0 },
+            { range: [9, 12], SIZ: 0, POW: 0 },
+            { range: [13, 16], SIZ: +1, POW: 0 },
+            { range: [17, 20], SIZ: +2, POW: +1 },
+            { range: [21, 24], SIZ: +3, POW: +2 },
+            { range: [25, 28], SIZ: +4, POW: +3 },
+            { range: [29, Infinity], SIZ: function (value) { return Math.floor((value - 24) / 4) + 4; }, POW: function (value) { return Math.floor((value - 24) / 4) + 2; } }
         ];
+
+        // Healing rate modifiers
         this.healingRate = [
             { range: [1, 6], rate: 1 },
             { range: [7, 12], rate: 2 },
             { range: [13, 18], rate: 3 },
-            { range: [19, Infinity], rate: (val) => 3 + Math.floor((val - 18) / 6) }
+            { range: [19, Infinity], rate: function (value) { return Math.floor((value - 13) / 6) + 3; } }
         ];
+
+        // Spirit combat damage modifiers
         this.spiritCombatDamage = [
             { range: [2, 12], damage: '1D3' },
             { range: [13, 24], damage: '1D6' },
             { range: [25, 32], damage: '1D6+1' },
             { range: [33, 40], damage: '1D6+3' },
             { range: [41, 56], damage: '2D6+3' },
-            { range: [57, Infinity], damage: (val) => `2D6+${3 + Math.floor((val - 56) / 16)}` }
+            { range: [57, Infinity], damage: function (value) { return '1D6+' + (Math.floor((value - 41) / 16) * 6 + 3); } }
         ];
+
+        // Damage bonus modifiers
         this.damageBonus = [
             { range: [1, 12], bonus: '-1D4' },
             { range: [13, 24], bonus: '0' },
             { range: [25, 32], bonus: '+1D4' },
             { range: [33, 40], bonus: '+1D6' },
             { range: [41, 56], bonus: '+2D6' },
-            { range: [57, Infinity], bonus: (val) => `+${2 + Math.floor((val - 56) / 16)}D6` }
+            { range: [57, Infinity], bonus: function (value) { return '+' + Math.floor((value - 41) / 16) + 'D6+' + (value % 16) * 2; } }
         ];
+
+        // Dexterity strike rank modifiers
         this.dexStrikeRank = [
             { range: [1, 5], rank: 5 },
             { range: [6, 8], rank: 4 },
@@ -195,12 +213,16 @@ class Library {
             { range: [16, 18], rank: 1 },
             { range: [19, Infinity], rank: 0 }
         ];
+
+        // Size strike rank modifiers
         this.sizStrikeRank = [
             { range: [1, 6], rank: 3 },
             { range: [7, 14], rank: 2 },
             { range: [15, 21], rank: 1 },
             { range: [22, Infinity], rank: 0 }
         ];
+
+        // Skill category modifiers
         this.skillCategoryModifiers = {
             Agility: [
                 { range: [1, 4], strength: -5, size: +5, dexterity: -10, power: -5 },
@@ -759,6 +781,12 @@ class Character {
                 if (size >= range[0] && size <= range[1]) totalModifier += charModifiers.size || 0;
             }
             this.skillCategoryModifiers[category] = totalModifier;
+
+            // Copy Manipulation modifiers to MeleeWeapons and MissileWeapons
+            if (category === 'Manipulation') {
+                this.skillCategoryModifiers.MeleeWeapons = totalModifier;
+                this.skillCategoryModifiers.MissileWeapons = totalModifier;
+            }
         }
     }
 }
