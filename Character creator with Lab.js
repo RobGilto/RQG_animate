@@ -49,11 +49,14 @@ class Library {
             ]
         };
         this.occupations = {
-            "human": [
+            human: [
                 "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer",
                 "Farmer", "Fisher", "Healer", "Herder", "Hunter", "Merchant",
                 "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior"
-            ]
+            ],
+            filteredByRace: [],
+            filteredByCult: []
+            
         };
         this.primaryRunes = {
             "Orlanth": "Air",
@@ -735,9 +738,7 @@ class Character {
             Stealth: 0,
             Shields: 0
         };
-        this.culturalMeleeWeapons = [];
-        this.culturalMissileWeapons = [];
-        this.culturalWeapons = [];
+        this.culturalWeapons = { MeleeWeapons: [], MissileWeapons: [] };
     }
 
     initializeRunes() {
@@ -870,6 +871,40 @@ class Character {
         } else {
             console.error(`Cult '${cultName}' not found in library`);
         }
+        this.filterOccupationsByCult(cultName);
+    }
+
+    filterOccupationsByCult(cultName) {
+        const cultOccupationMapping = {
+            "Assistant Shaman": ["Daka Fal", "Waha", "Yelm"],
+            "Bandit": ["Babeester Gor", "Black Fang", "Eurmal", "Maran Gor", "Odayla", "Orlanth", "Seven Mothers", "Storm Bull"],
+            "Chariot Driver": ["Orlanth Adventurous", "The Seven Mothers"],
+            "Crafter": ["Ernalda", "Issaries", "Gustbran"],
+            "Entertainer": ["Ernalda", "Eurmal", "Orlanth", "The Seven Mothers"],
+            "Farmer": ["The Seven Mothers", "Ernalda", "Orlanth", "Yelmalio"],
+            "Fisher": ["Engizi", "Orlanth"],
+            "Healer": ["Chalana Arroy", "Eiritha", "Ernalda", "The Seven Mothers"],
+            "Herder": ["Eiritha", "Orlanth", "Waha", "Yelm", "Yinkin"],
+            "Hunter": ["Foundchild", "Odayla", "Orlanth", "Waha", "Yelm", "Yinkin"],
+            "Merchant": ["Issaries", "Argan Argar", "Etyries", "The Seven Mothers"],
+            "Noble": ["Ernalda", "Orlanth", "The Seven Mothers", "Waha", "Yelm"],
+            "Philosopher": ["Lhankor Mhy", "The Seven Mothers"],
+            "Priest": ["All (except Daka Fal, Eurmal, and Waha)"],
+            "Scribe": ["Lhankor Mhy", "The Seven Mothers"],
+            "Thief": ["Eurmal", "Orlanth", "Lanbril"],
+            "Warrior: Heavy Infantry": ["Argan Argar", "Babeester Gor", "Humakt", "The Seven Mothers", "Yelmalio"],
+            "Warrior: Light Infantry": ["Babeester Gor", "Humakt", "Maran Gor", "Orlanth Adventurous", "Orlanth Thunderous", "Storm Bull"],
+            "Warrior: Heavy Cavalry": ["Humakt", "Orlanth Adventurous", "Orlanth Thunderous", "The Seven Mothers", "Storm Bull", "Waha", "Yelm"],
+            "Warrior: Light Cavalry": ["Humakt", "Orlanth Adventurous", "Orlanth Thunderous", "The Seven Mothers", "Storm Bull", "Waha", "Yelm"]
+            // Add the rest of the mappings here...
+        };
+
+        library.occupations.filteredByCult = [];
+        for (const [occupation, cults] of Object.entries(cultOccupationMapping)) {
+            if (cults.includes(cultName)) {
+                library.occupations.filteredByCult.push(occupation);
+            }
+        }
     }
 
     addPrimaryRuneToCategory(runeName) {
@@ -897,13 +932,8 @@ class Character {
                 this.updateSkill(skill.name, 0, skill.value);
             });
             culturalSkills.weapons.forEach(weapon => {
-                if (library.skills.MeleeWeapons.some(w => w.name === weapon.name)) {
-                    this.culturalMeleeWeapons.push(weapon);
-                } else if (library.skills.MissileWeapons.some(w => w.name === weapon.name)) {
-                    this.culturalMissileWeapons.push(weapon);
-                } else {
-                    this.culturalWeapons.push(weapon);
-                }
+                const category = weapon.name.toLowerCase().includes('bow') || weapon.name.toLowerCase().includes('sling') ? 'MissileWeapons' : 'MeleeWeapons';
+                this.culturalWeapons[category].push({ name: weapon.name, baseValue: weapon.value });
             });
         } else {
             console.error(`Cultural skills for homeland '${name}' or tribe '${tribe}' not found`);
@@ -936,17 +966,272 @@ class Character {
     }
 
     chooseOccupation(occupation) {
-        const adjustedOccupation = (this.homeland.name === "Prax" || this.homeland.name === "Grazeland") && occupation === "Farmer" ? "Herder" : occupation;
-        this.occupation = adjustedOccupation;
+        const validOccupations = library.occupations.filteredByCult.concat(library.occupations.filteredByRace);
+        if (validOccupations.includes(occupation)) {
+            this.occupation = occupation;
+            this.applyOccupationSkills(occupation);
+        } else {
+            console.error(`Occupation '${occupation}' is not valid for the selected cult or race`);
+        }
+    }
 
-        const occupationSkills = library.occupations[adjustedOccupation];
-        if (occupationSkills) {
-            occupationSkills.forEach(skill => {
+    applyOccupationSkills(occupation) {
+        const occupationSkills = {
+            "Assistant Shaman": [
+                    { name: "Speak Spiritspeech", value: 20 },
+                    { name: "Sing", value: 10 },
+                    { name: "Spirit Combat", value: 30 },
+                    { name: "Animal Lore", value: 15 },
+                    { name: "Spirit Dance", value: 10 },
+                    { name: "First Aid", value: 15 },
+                    { name: "Spirit Lore", value: 20 },
+                    { name: "Plant Lore", value: 20 },
+                    { name: "Spirit Travel", value: 20 },
+                    { name: "Meditate", value: 20 }
+                ],
+            "Bandit": [
+                    { name: "Intimidate", value: 10 },
+                    { name: "Hide", value: 30 },
+                    { name: "First Aid", value: 10 },
+                    { name: "Primary Weapon", value: 30 },
+                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Secondary Weapon", value: 10 },
+                    { name: "Survival", value: 30 },
+                    { name: "Shield", value: 10 },
+                    { name: "Track", value: 10 }
+                ]
+            ,
+            "Chariot Driver": [
+                    { name: "Intimidate", value: 10 },
+                    { name: "Hide", value: 30 },
+                    { name: "First Aid", value: 10 },
+                    { name: "Primary Weapon", value: 30 },
+                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Secondary Weapon", value: 10 },
+                    { name: "Survival", value: 30 },
+                    { name: "Shield", value: 10 },
+                    { name: "Track", value: 10 }
+                ]
+            ,
+            "Crafter": [
+                    { name: "Intimidate", value: 10 },
+                    { name: "Hide", value: 30 },
+                    { name: "First Aid", value: 10 },
+                    { name: "Primary Weapon", value: 30 },
+                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Secondary Weapon", value: 10 },
+                    { name: "Survival", value: 30 },
+                    { name: "Shield", value: 10 },
+                    { name: "Track", value: 10 }
+                ]
+            ,
+            "Entertainer": [
+                    { name: "Intimidate", value: 10 },
+                    { name: "Hide", value: 30 },
+                    { name: "First Aid", value: 10 },
+                    { name: "Primary Weapon", value: 30 },
+                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Secondary Weapon", value: 10 },
+                    { name: "Survival", value: 30 },
+                    { name: "Shield", value: 10 },
+                    { name: "Track", value: 10 }
+                ]
+            ,
+            "Farmer": [
+                    { name: "Intimidate", value: 10 },
+                    { name: "Hide", value: 30 },
+                    { name: "First Aid", value: 10 },
+                    { name: "Primary Weapon", value: 30 },
+                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Secondary Weapon", value: 10 },
+                    { name: "Survival", value: 30 },
+                    { name: "Shield", value: 10 },
+                    { name: "Track", value: 10 }
+                ]
+            ,
+            "Fisher": [
+                    { name: "Intimidate", value: 10 },
+                    { name: "Hide", value: 30 },
+                    { name: "First Aid", value: 10 },
+                    { name: "Primary Weapon", value: 30 },
+                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Secondary Weapon", value: 10 },
+                    { name: "Survival", value: 30 },
+                    { name: "Shield", value: 10 },
+                    { name: "Track", value: 10 }
+                ]
+            ,
+            "Healer": [
+                    { name: "Intimidate", value: 10 },
+                    { name: "Hide", value: 30 },
+                    { name: "First Aid", value: 10 },
+                    { name: "Primary Weapon", value: 30 },
+                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Secondary Weapon", value: 10 },
+                    { name: "Survival", value: 30 },
+                    { name: "Shield", value: 10 },
+                    { name: "Track", value: 10 }
+                ]
+            ,
+            "Herder": [
+                    { name: "Intimidate", value: 10 },
+                    { name: "Hide", value: 30 },
+                    { name: "First Aid", value: 10 },
+                    { name: "Primary Weapon", value: 30 },
+                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Secondary Weapon", value: 10 },
+                    { name: "Survival", value: 30 },
+                    { name: "Shield", value: 10 },
+                    { name: "Track", value: 10 }
+                ]
+            ,
+            "Hunter": [
+                    { name: "Intimidate", value: 10 },
+                    { name: "Hide", value: 30 },
+                    { name: "First Aid", value: 10 },
+                    { name: "Primary Weapon", value: 30 },
+                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Secondary Weapon", value: 10 },
+                    { name: "Survival", value: 30 },
+                    { name: "Shield", value: 10 },
+                    { name: "Track", value: 10 }
+                ]
+            ,
+            "Merchant": [
+                    { name: "Intimidate", value: 10 },
+                    { name: "Hide", value: 30 },
+                    { name: "First Aid", value: 10 },
+                    { name: "Primary Weapon", value: 30 },
+                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Secondary Weapon", value: 10 },
+                    { name: "Survival", value: 30 },
+                    { name: "Shield", value: 10 },
+                    { name: "Track", value: 10 }
+                ]
+            ,
+            "Noble": [
+                    { name: "Intimidate", value: 10 },
+                    { name: "Hide", value: 30 },
+                    { name: "First Aid", value: 10 },
+                    { name: "Primary Weapon", value: 30 },
+                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Secondary Weapon", value: 10 },
+                    { name: "Survival", value: 30 },
+                    { name: "Shield", value: 10 },
+                    { name: "Track", value: 10 }
+                ]
+            ,
+            "Philosopher": [
+                    { name: "Intimidate", value: 10 },
+                    { name: "Hide", value: 30 },
+                    { name: "First Aid", value: 10 },
+                    { name: "Primary Weapon", value: 30 },
+                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Secondary Weapon", value: 10 },
+                    { name: "Survival", value: 30 },
+                    { name: "Shield", value: 10 },
+                    { name: "Track", value: 10 }
+                ]
+            ,
+            "Priest": [
+                    { name: "Intimidate", value: 10 },
+                    { name: "Hide", value: 30 },
+                    { name: "First Aid", value: 10 },
+                    { name: "Primary Weapon", value: 30 },
+                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Secondary Weapon", value: 10 },
+                    { name: "Survival", value: 30 },
+                    { name: "Shield", value: 10 },
+                    { name: "Track", value: 10 }
+                ]
+            ,
+            "Scribe": [
+                    { name: "Intimidate", value: 10 },
+                    { name: "Hide", value: 30 },
+                    { name: "First Aid", value: 10 },
+                    { name: "Primary Weapon", value: 30 },
+                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Secondary Weapon", value: 10 },
+                    { name: "Survival", value: 30 },
+                    { name: "Shield", value: 10 },
+                    { name: "Track", value: 10 }
+                ]
+            ,
+            "Thief": [
+                    { name: "Intimidate", value: 10 },
+                    { name: "Hide", value: 30 },
+                    { name: "First Aid", value: 10 },
+                    { name: "Primary Weapon", value: 30 },
+                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Secondary Weapon", value: 10 },
+                    { name: "Survival", value: 30 },
+                    { name: "Shield", value: 10 },
+                    { name: "Track", value: 10 }
+                ]
+            ,
+            "Warrior-Heavy Infantry": [
+                    { name: "Intimidate", value: 10 },
+                    { name: "Hide", value: 30 },
+                    { name: "First Aid", value: 10 },
+                    { name: "Primary Weapon", value: 30 },
+                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Secondary Weapon", value: 10 },
+                    { name: "Survival", value: 30 },
+                    { name: "Shield", value: 10 },
+                    { name: "Track", value: 10 }
+                ]
+            ,
+            "Warrior-Light Infantry": [
+                    { name: "Intimidate", value: 10 },
+                    { name: "Hide", value: 30 },
+                    { name: "First Aid", value: 10 },
+                    { name: "Primary Weapon", value: 30 },
+                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Secondary Weapon", value: 10 },
+                    { name: "Survival", value: 30 },
+                    { name: "Shield", value: 10 },
+                    { name: "Track", value: 10 }
+                ]
+            ,
+            "Warrior-Heavy Cavalry": [
+                    { name: "Intimidate", value: 10 },
+                    { name: "Hide", value: 30 },
+                    { name: "First Aid", value: 10 },
+                    { name: "Primary Weapon", value: 30 },
+                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Secondary Weapon", value: 10 },
+                    { name: "Survival", value: 30 },
+                    { name: "Shield", value: 10 },
+                    { name: "Track", value: 10 }
+                ]
+            ,
+            "Warrior-Light Cavalry": [
+                    { name: "Intimidate", value: 10 },
+                    { name: "Hide", value: 30 },
+                    { name: "First Aid", value: 10 },
+                    { name: "Primary Weapon", value: 30 },
+                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Secondary Weapon", value: 10 },
+                    { name: "Survival", value: 30 },
+                    { name: "Shield", value: 10 },
+                    { name: "Track", value: 10 }
+                ]
+                      
+
+            // Add more occupations and their skills
+        };
+
+        const culturalWeapons = { MeleeWeapons: [], MissileWeapons: [] };
+
+        if (occupationSkills[occupation]) {
+            occupationSkills[occupation].forEach(skill => {
                 this.updateSkill(skill.name, skill.baseValue, skill.skillMod);
             });
         } else {
-            console.error(`Occupation '${adjustedOccupation}' not found in library`);
+            console.error(`Skills for occupation '${occupation}' not found`);
         }
+
+        this.culturalWeapons = culturalWeapons;
     }
 
     setLanguage(name, value) {
@@ -1015,7 +1300,22 @@ class Character {
         this.race = race;
         this.subrace = subrace;
         this.rollCharacteristics();
+        this.filterOccupationsByRace(race);
     }
+
+    filterOccupationsByRace() {
+        const validOccupations = [];
+        const raceSpecificOccupations = ["human"]; // You can add more race-specific occupations here
+
+        raceSpecificOccupations.forEach(occupation => {
+            if (this.race.toLowerCase() === occupation) {
+                validOccupations.push(...library.occupations[occupation]);
+            }
+        });
+
+        library.occupations.filteredByRace = validOccupations;
+    }
+
 
     calculateAttributes() {
         const { strength, dexterity, constitution, intelligence, power, charisma, size } = this.characteristics;
@@ -1109,24 +1409,20 @@ let library = new Library();
     await library.loadPassions();
 
     char.initializeRunes();
-
     char.chooseRace('Human');
     char.chooseHomeland('Old Tarsh');
-
     char.updateRune("air", 75, 'replace');
     char.updateRune('truth', 75, 'replace');
     char.updateSkill('sword', 5, 2); // Example of updating skill with skillMod
     char.updateSkill('sword', 2, -1); // Example of updating skill with skillMod
     char.chooseCult('Orlanth');
     char.setLanguage('Heortling', 50);
-
     char.addPassion('Loyalty', 'Family', 50);
     char.updatePassion('Loyalty', 'Family', 10, 'add');  // Increase loyalty to Family by 10
     char.updatePassion('Loyalty', 'Family', 5, 'subtract');  // Decrease loyalty to Family by 5
     char.updatePassion('Loyalty', 'Family', 70, 'replace');  // Set loyalty to Family to 70
     char.updatePassion('Devotion', 'Orlanth', 10, 'add');  // Create passion Devotion to Orlanth with initial value 70
     char.updatePassion('Devotion', 'Orlanth', 5, 'subtract');  // Decrease Devotion to Orlanth by 5
-
     char.chooseOccupation('Farmer');
 
     // Calculate attributes after all updates
@@ -1136,10 +1432,6 @@ let library = new Library();
     // Apply skill category modifiers
     char.applySkillCategoryModifiers();
     console.log('Updated Character Skill Category Modifiers:', char.skillCategoryModifiers);
-
-    // Apply cultural skills if not already applied
-    char.chooseHomeland(char.homeland.name, char.homeland.tribe);
-    //console.log('Updated Character Skills:', char.skills);
 
     console.log('Character:', char);
     console.log('Library:', library);
