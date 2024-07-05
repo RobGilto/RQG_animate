@@ -226,9 +226,9 @@ class Library {
         this.skillCategoryModifiers = {
             Agility: [
                 { range: [1, 4], strength: -5, size: +5, dexterity: -10, power: -5 },
-                { range: [5, 8], strength: 0, size: +5, dexterity: -5, power: 0 },
+                { range: [5, 8], strength: 0, size: 0, dexterity: -5, power: 0 },
                 { range: [9, 12], strength: 0, size: 0, dexterity: 0, power: 0 },
-                { range: [13, 16], strength: +5, size: -5, dexterity: +5, power: 0 },
+                { range: [13, 16], strength: 0, size: 0, dexterity: +5, power: 0 },
                 { range: [17, 20], strength: +5, size: -5, dexterity: +10, power: +5 },
                 { range: [21, Infinity], strength: +5, size: -5, dexterity: +5, power: +5 }
             ],
@@ -236,7 +236,7 @@ class Library {
                 { range: [1, 4], intelligence: -5, power: -5, charisma: -10 },
                 { range: [5, 8], intelligence: 0, power: 0, charisma: -5 },
                 { range: [9, 12], intelligence: 0, power: 0, charisma: 0 },
-                { range: [13, 16], intelligence: +5, power: +5, charisma: +5 },
+                { range: [13, 16], intelligence: 0, power: 0, charisma: +5 },
                 { range: [17, 20], intelligence: +5, power: +5, charisma: +10 },
                 { range: [21, Infinity], intelligence: +5, power: +5, charisma: +5 }
             ],
@@ -244,7 +244,7 @@ class Library {
                 { range: [1, 4], intelligence: -10, power: -5 },
                 { range: [5, 8], intelligence: -5, power: 0 },
                 { range: [9, 12], intelligence: 0, power: 0 },
-                { range: [13, 16], intelligence: +5, power: +5 },
+                { range: [13, 16], intelligence: +5, power: 0 },
                 { range: [17, 20], intelligence: +10, power: +5 },
                 { range: [21, Infinity], intelligence: +5, power: +5 }
             ],
@@ -252,15 +252,15 @@ class Library {
                 { range: [1, 4], power: -10, charisma: -5 },
                 { range: [5, 8], power: -5, charisma: 0 },
                 { range: [9, 12], power: 0, charisma: 0 },
-                { range: [13, 16], power: +5, charisma: +5 },
-                { range: [17, 20], power: +10, charisma: +5 },
+                { range: [13, 16], power: +5, charisma: 0 },
+                { range: [17, 20], power: +10, charisma: +15 },
                 { range: [21, Infinity], power: +5, charisma: +5 }
             ],
             Manipulation: [
                 { range: [1, 4], strength: -5, dexterity: -10, intelligence: -10, power: -5 },
                 { range: [5, 8], strength: 0, dexterity: -5, intelligence: -5, power: 0 },
                 { range: [9, 12], strength: 0, dexterity: 0, intelligence: 0, power: 0 },
-                { range: [13, 16], strength: +5, dexterity: +5, intelligence: +5, power: +5 },
+                { range: [13, 16], strength: 0, dexterity: +5, intelligence: +5, power: 0 },
                 { range: [17, 20], strength: +5, dexterity: +10, intelligence: +10, power: +5 },
                 { range: [21, Infinity], strength: +5, dexterity: +5, intelligence: +5, power: +5 }
             ],
@@ -268,7 +268,7 @@ class Library {
                 { range: [1, 4], intelligence: -10, power: -5 },
                 { range: [5, 8], intelligence: -5, power: 0 },
                 { range: [9, 12], intelligence: 0, power: 0 },
-                { range: [13, 16], intelligence: +5, power: +5 },
+                { range: [13, 16], intelligence: +5, power: 0 },
                 { range: [17, 20], intelligence: +10, power: +5 },
                 { range: [21, Infinity], intelligence: +5, power: +5 }
             ],
