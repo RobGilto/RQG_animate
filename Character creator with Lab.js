@@ -120,16 +120,12 @@ class Library {
         this.skillAliases = {
             "Dagger": "1H Daggers (Dagger)",
             "Lance": "2H Spears (Longspear)",
-            "Broadsword": "1H Broadsword (Broadsword)",
-            "Javelin": "1H Javelins (Javelin)",
-            "Medium Shield": "Shields (Medium Shield)",
             "Large Shield": "Shields (Large Shield)",
             "1H Spear": "1H Spears (1H Spear)",
             "2H Spear": "2H Spears (2H Spear)",
             "Shortsword": "1H Shortsword (Shortsword)",
             "Self Bow": "Bows (Self Bow)",
             "Composite Bow": "Bows (Composite Bow)",
-            "Thrown Axe": "Thrown Weapons (Thrown Axe)",
             "Sling": "Thrown Weapons (Sling)",
             "Kopis": "1H Kopis (Kopis)",
             "1H Axe": "1H Axes (1H Axe)",
@@ -138,12 +134,18 @@ class Library {
             "Short Spear": "1H Spears (Short Spear)",
             "1H Lance": "1H Lances (1H Lance)",
             "Thrown Weapons (Thrown Axe)": "Thrown Axe",
-            "1H Broadsword (Broadsword)": "1H Broadsword (Broadsword)",
             "sword": "1H Swords (Broadsword)",
+            "Broadsword": "1H Swords (Broadsword)",
+            "Javelin": "1H Spears (Javelin)",
+            "Medium Shield": "Shields (Medium)",
+            "Shields (Medium Shield)": "Shields (Medium)",
             "1H Broadsword (Broadsword)": "1H Swords (Broadsword)",
             "1H Javelins (Javelin)": "1H Spears (Javelin)",
-            "Thrown Weapons (Thrown Axe)": "Thrown Axe",
-            "Shields (Medium Shield)": "Shields (Medium Shield)", // Ensure this line is present to categorize Shields properly
+            "Shields (Medium Shield)": "Shields (Medium)",
+            "Shields (Large Shield)": "Shields (Large Shield)",
+            "Shields (Large Small)": "Shields (Small)",
+            
+            // Ensure this line is present to categorize Shields properly
             // Add more skill aliases as needed
         };
         this.complementaryRunes = {
