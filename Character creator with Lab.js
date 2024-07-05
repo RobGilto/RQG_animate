@@ -155,162 +155,109 @@ class Library {
             "spirit": "Spirit (form)",
             "dragonewt": "Dragonewt (form)"
         };
-        
         this.hitPointModifiers = [
             { range: [1, 4], SIZ: -2, POW: -1 },
             { range: [5, 8], SIZ: -1, POW: 0 },
             { range: [9, 12], SIZ: 0, POW: 0 },
-            { range: [13, 16], SIZ: 1, POW: 0 },
-            { range: [17, 20], SIZ: 2, POW: 1 },
-            { range: [21, 24], SIZ: 3, POW: 2 },
-            { range: [25, 28], SIZ: 4, POW: 3 },
+            { range: [13, 16], SIZ: +1, POW: 0 },
+            { range: [17, 20], SIZ: +2, POW: +1 },
+            { range: [21, 24], SIZ: +3, POW: +2 },
+            { range: [25, 28], SIZ: +4, POW: +3 },
+            { range: [29, Infinity], SIZ: +5, POW: +4 }
         ];
-
         this.healingRate = [
             { range: [1, 6], rate: 1 },
             { range: [7, 12], rate: 2 },
             { range: [13, 18], rate: 3 },
+            { range: [19, Infinity], rate: (val) => 3 + Math.floor((val - 18) / 6) }
         ];
-
         this.spiritCombatDamage = [
-            { range: [2, 12], damage: "1D3" },
-            { range: [13, 24], damage: "1D6" },
-            { range: [25, 32], damage: "1D6+1" },
-            { range: [33, 40], damage: "1D6+3" },
-            { range: [41, 56], damage: "2D6+3" },
+            { range: [2, 12], damage: '1D3' },
+            { range: [13, 24], damage: '1D6' },
+            { range: [25, 32], damage: '1D6+1' },
+            { range: [33, 40], damage: '1D6+3' },
+            { range: [41, 56], damage: '2D6+3' },
+            { range: [57, Infinity], damage: (val) => `2D6+${3 + Math.floor((val - 56) / 16)}` }
         ];
-
         this.damageBonus = [
-            { range: [1, 12], bonus: "-1D4" },
-            { range: [13, 24], bonus: "0" },
-            { range: [25, 32], bonus: "+1D4" },
-            { range: [33, 40], bonus: "+1D6" },
-            { range: [41, 56], bonus: "+2D6" },
+            { range: [1, 12], bonus: '-1D4' },
+            { range: [13, 24], bonus: '0' },
+            { range: [25, 32], bonus: '+1D4' },
+            { range: [33, 40], bonus: '+1D6' },
+            { range: [41, 56], bonus: '+2D6' },
+            { range: [57, Infinity], bonus: (val) => `+${2 + Math.floor((val - 56) / 16)}D6` }
         ];
-
         this.dexStrikeRank = [
             { range: [1, 5], rank: 5 },
             { range: [6, 8], rank: 4 },
             { range: [9, 12], rank: 3 },
             { range: [13, 15], rank: 2 },
             { range: [16, 18], rank: 1 },
-            { range: [19, Infinity], rank: 0 },
+            { range: [19, Infinity], rank: 0 }
         ];
-
         this.sizStrikeRank = [
             { range: [1, 6], rank: 3 },
             { range: [7, 14], rank: 2 },
             { range: [15, 21], rank: 1 },
-            { range: [22, Infinity], rank: 0 },
+            { range: [22, Infinity], rank: 0 }
         ];
-
         this.skillCategoryModifiers = {
             Agility: [
-                { characteristic: "STR", range: [1, 4], modifier: -5 },
-                { characteristic: "STR", range: [17, 20], modifier: 5 },
-                { characteristic: "STR", range: [21, Infinity], modifier: 5 },
-                { characteristic: "SIZ", range: [1, 4], modifier: 5 },
-                { characteristic: "SIZ", range: [17, 20], modifier: -5 },
-                { characteristic: "SIZ", range: [21, Infinity], modifier: -5 },
-                { characteristic: "DEX", range: [1, 4], modifier: -10 },
-                { characteristic: "DEX", range: [5, 8], modifier: -5 },
-                { characteristic: "DEX", range: [13, 16], modifier: 5 },
-                { characteristic: "DEX", range: [17, 20], modifier: 10 },
-                { characteristic: "DEX", range: [21, Infinity], modifier: 5 },
-                { characteristic: "POW", range: [1, 4], modifier: -5 },
-                { characteristic: "POW", range: [13, 16], modifier: 5 },
-                { characteristic: "POW", range: [17, 20], modifier: 5 },
-                { characteristic: "POW", range: [21, Infinity], modifier: 5 },
+                { range: [1, 4], strength: -5, size: +5, dexterity: -10, power: -5 },
+                { range: [5, 8], strength: 0, size: +5, dexterity: -5, power: 0 },
+                { range: [9, 12], strength: 0, size: 0, dexterity: 0, power: 0 },
+                { range: [13, 16], strength: +5, size: -5, dexterity: +5, power: 0 },
+                { range: [17, 20], strength: +5, size: -5, dexterity: +10, power: +5 },
+                { range: [21, Infinity], strength: +5, size: -5, dexterity: +5, power: +5 }
             ],
             Communication: [
-                { characteristic: "INT", range: [1, 4], modifier: -5 },
-                { characteristic: "INT", range: [13, 16], modifier: 5 },
-                { characteristic: "INT", range: [17, 20], modifier: 5 },
-                { characteristic: "INT", range: [21, Infinity], modifier: 5 },
-                { characteristic: "POW", range: [1, 4], modifier: -5 },
-                { characteristic: "POW", range: [13, 16], modifier: 5 },
-                { characteristic: "POW", range: [17, 20], modifier: 5 },
-                { characteristic: "POW", range: [21, Infinity], modifier: 5 },
-                { characteristic: "CHA", range: [1, 4], modifier: -10 },
-                { characteristic: "CHA", range: [5, 8], modifier: -5 },
-                { characteristic: "CHA", range: [13, 16], modifier: 5 },
-                { characteristic: "CHA", range: [17, 20], modifier: 10 },
-                { characteristic: "CHA", range: [21, Infinity], modifier: 5 },
+                { range: [1, 4], intelligence: -5, power: -5, charisma: -10 },
+                { range: [5, 8], intelligence: 0, power: 0, charisma: -5 },
+                { range: [9, 12], intelligence: 0, power: 0, charisma: 0 },
+                { range: [13, 16], intelligence: +5, power: +5, charisma: +5 },
+                { range: [17, 20], intelligence: +5, power: +5, charisma: +10 },
+                { range: [21, Infinity], intelligence: +5, power: +5, charisma: +5 }
             ],
             Knowledge: [
-                { characteristic: "INT", range: [1, 4], modifier: -10 },
-                { characteristic: "INT", range: [5, 8], modifier: -5 },
-                { characteristic: "INT", range: [13, 16], modifier: 5 },
-                { characteristic: "INT", range: [17, 20], modifier: 10 },
-                { characteristic: "INT", range: [21, Infinity], modifier: 5 },
-                { characteristic: "POW", range: [1, 4], modifier: -5 },
-                { characteristic: "POW", range: [13, 16], modifier: 5 },
-                { characteristic: "POW", range: [17, 20], modifier: 5 },
-                { characteristic: "POW", range: [21, Infinity], modifier: 5 },
+                { range: [1, 4], intelligence: -10, power: -5 },
+                { range: [5, 8], intelligence: -5, power: 0 },
+                { range: [9, 12], intelligence: 0, power: 0 },
+                { range: [13, 16], intelligence: +5, power: +5 },
+                { range: [17, 20], intelligence: +10, power: +5 },
+                { range: [21, Infinity], intelligence: +5, power: +5 }
             ],
             Magic: [
-                { characteristic: "POW", range: [1, 4], modifier: -10 },
-                { characteristic: "POW", range: [5, 8], modifier: -5 },
-                { characteristic: "POW", range: [13, 16], modifier: 5 },
-                { characteristic: "POW", range: [17, 20], modifier: 10 },
-                { characteristic: "POW", range: [21, Infinity], modifier: 5 },
-                { characteristic: "CHA", range: [1, 4], modifier: -5 },
-                { characteristic: "CHA", range: [13, 16], modifier: 5 },
-                { characteristic: "CHA", range: [17, 20], modifier: 5 },
-                { characteristic: "CHA", range: [21, Infinity], modifier: 5 },
+                { range: [1, 4], power: -10, charisma: -5 },
+                { range: [5, 8], power: -5, charisma: 0 },
+                { range: [9, 12], power: 0, charisma: 0 },
+                { range: [13, 16], power: +5, charisma: +5 },
+                { range: [17, 20], power: +10, charisma: +5 },
+                { range: [21, Infinity], power: +5, charisma: +5 }
             ],
             Manipulation: [
-                { characteristic: "STR", range: [1, 4], modifier: -5 },
-                { characteristic: "STR", range: [13, 16], modifier: 5 },
-                { characteristic: "STR", range: [17, 20], modifier: 5 },
-                { characteristic: "STR", range: [21, Infinity], modifier: 5 },
-                { characteristic: "DEX", range: [1, 4], modifier: -10 },
-                { characteristic: "DEX", range: [5, 8], modifier: -5 },
-                { characteristic: "DEX", range: [13, 16], modifier: 5 },
-                { characteristic: "DEX", range: [17, 20], modifier: 10 },
-                { characteristic: "DEX", range: [21, Infinity], modifier: 5 },
-                { characteristic: "INT", range: [1, 4], modifier: -10 },
-                { characteristic: "INT", range: [5, 8], modifier: -5 },
-                { characteristic: "INT", range: [13, 16], modifier: 5 },
-                { characteristic: "INT", range: [17, 20], modifier: 10 },
-                { characteristic: "INT", range: [21, Infinity], modifier: 5 },
-                { characteristic: "POW", range: [1, 4], modifier: -5 },
-                { characteristic: "POW", range: [13, 16], modifier: 5 },
-                { characteristic: "POW", range: [17, 20], modifier: 5 },
-                { characteristic: "POW", range: [21, Infinity], modifier: 5 },
+                { range: [1, 4], strength: -5, dexterity: -10, intelligence: -10, power: -5 },
+                { range: [5, 8], strength: 0, dexterity: -5, intelligence: -5, power: 0 },
+                { range: [9, 12], strength: 0, dexterity: 0, intelligence: 0, power: 0 },
+                { range: [13, 16], strength: +5, dexterity: +5, intelligence: +5, power: +5 },
+                { range: [17, 20], strength: +5, dexterity: +10, intelligence: +10, power: +5 },
+                { range: [21, Infinity], strength: +5, dexterity: +5, intelligence: +5, power: +5 }
             ],
             Perception: [
-                { characteristic: "INT", range: [1, 4], modifier: -10 },
-                { characteristic: "INT", range: [5, 8], modifier: -5 },
-                { characteristic: "INT", range: [13, 16], modifier: 5 },
-                { characteristic: "INT", range: [17, 20], modifier: 10 },
-                { characteristic: "INT", range: [21, Infinity], modifier: 5 },
-                { characteristic: "POW", range: [1, 4], modifier: -5 },
-                { characteristic: "POW", range: [13, 16], modifier: 5 },
-                { characteristic: "POW", range: [17, 20], modifier: 5 },
-                { characteristic: "POW", range: [21, Infinity], modifier: 5 },
+                { range: [1, 4], intelligence: -10, power: -5 },
+                { range: [5, 8], intelligence: -5, power: 0 },
+                { range: [9, 12], intelligence: 0, power: 0 },
+                { range: [13, 16], intelligence: +5, power: +5 },
+                { range: [17, 20], intelligence: +10, power: +5 },
+                { range: [21, Infinity], intelligence: +5, power: +5 }
             ],
             Stealth: [
-                { characteristic: "SIZ", range: [1, 4], modifier: 10 },
-                { characteristic: "SIZ", range: [5, 8], modifier: 5 },
-                { characteristic: "SIZ", range: [13, 16], modifier: -5 },
-                { characteristic: "SIZ", range: [17, 20], modifier: -10 },
-                { characteristic: "SIZ", range: [21, Infinity], modifier: -5 },
-                { characteristic: "DEX", range: [1, 4], modifier: -10 },
-                { characteristic: "DEX", range: [5, 8], modifier: -5 },
-                { characteristic: "DEX", range: [13, 16], modifier: 5 },
-                { characteristic: "DEX", range: [17, 20], modifier: 10 },
-                { characteristic: "DEX", range: [21, Infinity], modifier: 5 },
-                { characteristic: "INT", range: [1, 4], modifier: -10 },
-                { characteristic: "INT", range: [5, 8], modifier: -5 },
-                { characteristic: "INT", range: [13, 16], modifier: 5 },
-                { characteristic: "INT", range: [17, 20], modifier: 10 },
-                { characteristic: "INT", range: [21, Infinity], modifier: 5 },
-                { characteristic: "POW", range: [1, 4], modifier: 5 },
-                { characteristic: "POW", range: [13, 16], modifier: -5 },
-                { characteristic: "POW", range: [17, 20], modifier: -5 },
-                { characteristic: "POW", range: [21, Infinity], modifier: -5 },
-            ],
+                { range: [1, 4], size: +10, dexterity: -10, intelligence: -10, power: +5 },
+                { range: [5, 8], size: +5, dexterity: -5, intelligence: -5, power: 0 },
+                { range: [9, 12], size: 0, dexterity: 0, intelligence: 0, power: 0 },
+                { range: [13, 16], size: -5, dexterity: +5, intelligence: +5, power: -5 },
+                { range: [17, 20], size: -10, dexterity: +10, intelligence: +10, power: -5 },
+                { range: [21, Infinity], size: -5, dexterity: +5, intelligence: +5, power: -5 }
+            ]
         };
     }
 
@@ -492,13 +439,17 @@ class Character {
         this.occupation = null;
         this.race = null;
         this.subrace = null;
-        this.attributes = {
-            hitPoints: 0,
-            healingRate: 0,
-            spiritCombatDamage: "",
-            damageBonus: "",
-            dexStrikeRank: 0,
-            sizStrikeRank: 0,
+        this.attributes = {};
+        this.skillCategoryModifiers = {
+            Agility: 0,
+            Communication: 0,
+            Knowledge: 0,
+            Magic: 0,
+            Manipulation: 0,
+            MeleeWeapons: 0,
+            MissileWeapons: 0,
+            Perception: 0,
+            Stealth: 0
         };
     }
 
@@ -735,83 +686,80 @@ class Character {
         });
     }
 
-    calculateAttributes() {
-        this.attributes.hitPoints = this.calculateHitPoints();
-        this.attributes.healingRate = this.calculateHealingRate();
-        this.attributes.spiritCombatDamage = this.calculateSpiritCombatDamage();
-        this.attributes.damageBonus = this.calculateDamageBonus();
-        this.attributes.dexStrikeRank = this.calculateDexStrikeRank();
-        this.attributes.sizStrikeRank = this.calculateSizStrikeRank();
-    }
-
-    calculateHitPoints() {
-        const sizModifier = this.getModifier(this.characteristics.size, library.hitPointModifiers, "SIZ");
-        const powModifier = this.getModifier(this.characteristics.power, library.hitPointModifiers, "POW");
-        return sizModifier + powModifier;
-    }
-
-    calculateHealingRate() {
-        return this.getModifier(this.characteristics.constitution, library.healingRate, "rate");
-    }
-
-    calculateSpiritCombatDamage() {
-        const powChaSum = this.characteristics.power + this.characteristics.charisma;
-        return this.getModifier(powChaSum, library.spiritCombatDamage, "damage");
-    }
-
-    calculateDamageBonus() {
-        const strSizSum = this.characteristics.strength + this.characteristics.size;
-        return this.getModifier(strSizSum, library.damageBonus, "bonus");
-    }
-
-    calculateDexStrikeRank() {
-        return this.getModifier(this.characteristics.dexterity, library.dexStrikeRank, "rank");
-    }
-
-    calculateSizStrikeRank() {
-        return this.getModifier(this.characteristics.size, library.sizStrikeRank, "rank");
-    }
-
-    getModifier(value, table, attribute) {
-        for (let entry of table) {
-            if (value >= entry.range[0] && value <= entry.range[1]) {
-                return entry[attribute];
-            }
-        }
-        return 0;  // Default value if not found
-    }
-
-    applySkillCategoryModifiers() {
-        const applyModifiers = (skills, modifiers) => {
-            skills.forEach(skill => {
-                let totalModifier = 0;
-                modifiers.forEach(mod => {
-                    const charValue = this.characteristics[library.characteristicAliases[mod.characteristic.toLowerCase()]];
-                    if (charValue >= mod.range[0] && charValue <= mod.range[1]) {
-                        totalModifier += mod.modifier;
-                    } else if (charValue > mod.range[1]) {
-                        totalModifier += Math.floor((charValue - mod.range[1]) / 4) * mod.modifier;
-                    }
-                });
-                skill.value += totalModifier;
-            });
-        };
-
-        applyModifiers(this.skills.Agility, library.skillCategoryModifiers.Agility);
-        applyModifiers(this.skills.Communication, library.skillCategoryModifiers.Communication);
-        applyModifiers(this.skills.Knowledge, library.skillCategoryModifiers.Knowledge);
-        applyModifiers(this.skills.Magic, library.skillCategoryModifiers.Magic);
-        applyModifiers(this.skills.Manipulation, library.skillCategoryModifiers.Manipulation);
-        applyModifiers(this.skills.MeleeWeapons, library.skillCategoryModifiers.Manipulation);
-        applyModifiers(this.skills.MissileWeapons, library.skillCategoryModifiers.Manipulation);
-        applyModifiers(this.skills.Perception, library.skillCategoryModifiers.Perception);
-        applyModifiers(this.skills.Stealth, library.skillCategoryModifiers.Stealth);
-    }
-
     chooseRace(race, subrace = null) {
         this.race = race;
         this.subrace = subrace;
         this.rollCharacteristics();
+    }
+
+    calculateAttributes() {
+        const { strength, dexterity, constitution, intelligence, power, charisma, size } = this.characteristics;
+
+        this.attributes.hitPoints = this.calculateHitPoints(size, power);
+        this.attributes.healingRate = this.calculateHealingRate(constitution);
+        this.attributes.spiritCombatDamage = this.calculateSpiritCombatDamage(power, charisma);
+        this.attributes.damageBonus = this.calculateDamageBonus(strength, size);
+        this.attributes.dexStrikeRank = this.calculateDexStrikeRank(dexterity);
+        this.attributes.sizStrikeRank = this.calculateSizStrikeRank(size);
+    }
+
+    calculateModifiers(modifiers, value) {
+        for (const modifier of modifiers) {
+            if (value >= modifier.range[0] && value <= modifier.range[1]) {
+                return modifier;
+            }
+        }
+        return modifiers[modifiers.length - 1]; // Return the last modifier if no match found
+    }
+
+    calculateHitPoints(size, power) {
+        const sizMod = this.calculateModifiers(library.hitPointModifiers, size).SIZ;
+        const powMod = this.calculateModifiers(library.hitPointModifiers, power).POW;
+        return 8 + sizMod + powMod; // Assuming base 8 hit points
+    }
+
+    calculateHealingRate(constitution) {
+        const rateMod = this.calculateModifiers(library.healingRate, constitution).rate;
+        return typeof rateMod === 'function' ? rateMod(constitution) : rateMod;
+    }
+
+    calculateSpiritCombatDamage(power, charisma) {
+        const powChaTotal = power + charisma;
+        const damageMod = this.calculateModifiers(library.spiritCombatDamage, powChaTotal).damage;
+        return typeof damageMod === 'function' ? damageMod(powChaTotal) : damageMod;
+    }
+
+    calculateDamageBonus(strength, size) {
+        const strSizTotal = strength + size;
+        const bonusMod = this.calculateModifiers(library.damageBonus, strSizTotal).bonus;
+        return typeof bonusMod === 'function' ? bonusMod(strSizTotal) : bonusMod;
+    }
+
+    calculateDexStrikeRank(dexterity) {
+        const rankMod = this.calculateModifiers(library.dexStrikeRank, dexterity).rank;
+        return rankMod;
+    }
+
+    calculateSizStrikeRank(size) {
+        const rankMod = this.calculateModifiers(library.sizStrikeRank, size).rank;
+        return rankMod;
+    }
+
+    applySkillCategoryModifiers() {
+        const { strength, dexterity, intelligence, power, charisma, size } = this.characteristics;
+
+        for (const [category, modifiers] of Object.entries(library.skillCategoryModifiers)) {
+            let totalModifier = 0;
+            for (const { range, ...charModifiers } of modifiers) {
+                if (strength >= range[0] && strength <= range[1]) totalModifier += charModifiers.strength || 0;
+                if (dexterity >= range[0] && dexterity <= range[1]) totalModifier += charModifiers.dexterity || 0;
+                if (intelligence >= range[0] && intelligence <= range[1]) totalModifier += charModifiers.intelligence || 0;
+                if (power >= range[0] && power <= range[1]) totalModifier += charModifiers.power || 0;
+                if (charisma >= range[0] && charisma <= range[1]) totalModifier += charModifiers.charisma || 0;
+                if (size >= range[0] && size <= range[1]) totalModifier += charModifiers.size || 0;
+            }
+            this.skillCategoryModifiers[category] = totalModifier;
+        }
     }
 }
 
@@ -827,7 +775,7 @@ let library = new Library();
     await library.loadWeapon(['wiki-en-rqg.equipment-weapons']);
     await library.loadHitLocation();
     await library.loadPassions();
-    
+
     char.initializeRunes();
 
     console.log('Character:', char);
@@ -858,5 +806,5 @@ let library = new Library();
 
     // Apply skill category modifiers
     char.applySkillCategoryModifiers();
-    console.log('Updated Character Skills:', char.skills);
+    console.log('Updated Character Skill Category Modifiers:', char.skillCategoryModifiers);
 })();
