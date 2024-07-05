@@ -117,6 +117,32 @@ class Library {
             cha: 'charisma',
             siz: 'size'
         };
+        this.skillAliases = {
+            "Dagger": "1H Daggers (Dagger)",
+            "Lance": "1H Lance (Lance)",
+            "Broadsword": "1H Broadsword (Broadsword)",
+            "Javelin": "1H Javelins (Javelin)",
+            "Medium Shield": "Shields (Medium Shield)",
+            "Large Shield": "Shields (Large Shield)",
+            "1H Spear": "1H Spears (1H Spear)",
+            "2H Spear": "2H Spears (2H Spear)",
+            "Shortsword": "1H Shortsword (Shortsword)",
+            "Self Bow": "Bows (Self Bow)",
+            "Composite Bow": "Bows (Composite Bow)",
+            "Thrown Axe": "Thrown Weapons (Thrown Axe)",
+            "Sling": "Thrown Weapons (Sling)",
+            "Kopis": "1H Kopis (Kopis)",
+            "1H Axe": "1H Axes (1H Axe)",
+            "2H Dagger-Axe": "2H Axes (2H Dagger-Axe)",
+            "Pole Lasso": "Polearms (Pole Lasso)",
+            "Short Spear": "1H Spears (Short Spear)",
+            "1H Lance": "1H Lances (1H Lance)",
+            "Thrown Weapons (Thrown Axe)": "Thrown Weapons (Thrown Axe)",
+            "1H Broadsword (Broadsword)": "1H Broadsword (Broadsword)",
+
+
+            // Add more skill aliases as needed
+        };
         this.complementaryRunes = {
             power: {
                 "Truth": "Illusion",
@@ -155,8 +181,16 @@ class Library {
             "spirit": "Spirit (form)",
             "dragonewt": "Dragonewt (form)"
         };
-
-        // Hit point modifiers
+        this.hitPointModifiers = [
+            { range: [1, 4], SIZ: -2, POW: -1 },
+            { range: [5, 8], SIZ: -1, POW: 0 },
+            { range: [9, 12], SIZ: 0, POW: 0 },
+            { range: [13, 16], SIZ: +1, POW: 0 },
+            { range: [17, 20], SIZ: +2, POW: +1 },
+            { range: [21, 24], SIZ: +3, POW: +2 },
+            { range: [25, 28], SIZ: +4, POW: +3 },
+            { range: [29, Infinity], SIZ: function (value) { return Math.floor((value - 24) / 4) + 4; }, POW: function (value) { return Math.floor((value - 24) / 4) + 2; } }
+        ];// Hit point modifiers
         this.hitPointModifiers = [
             { range: [1, 4], SIZ: -2, POW: -1 },
             { range: [5, 8], SIZ: -1, POW: 0 },
@@ -274,196 +308,196 @@ class Library {
             ]
         };
 
-        // Cultural skills
+        // Cultural skills by homeland
         this.culturalSkills = {
             "Sartar": {
-                skills: {
-                    "Ride (any)": 5,
-                    "Dance": 5,
-                    "Sing": 10,
-                    "Speak Own Language (Heortling)": 50,
-                    "Speak Other Language (Tradetalk)": 10,
-                    "Customs (Heortling)": 25,
-                    "Farm": 20,
-                    "Herd": 10,
-                    "Spirit Combat": 15
-                },
-                weapons: {
-                    "Dagger": 10,
-                    "Battle Axe": 10,
-                    "1H Spear": 10,
-                    "Broadsword": 15,
-                    "Composite Bow or Sling": 10,
-                    "Javelin": 10,
-                    "Medium Shield": 15,
-                    "Large Shield": 10
-                }
+                skills: [
+                    { name: "Ride (any)", value: 5 },
+                    { name: "Dance", value: 5 },
+                    { name: "Sing", value: 10 },
+                    { name: "Speak Own Language (Heortling)", value: 50 },
+                    { name: "Speak Other Language (Tradetalk)", value: 10 },
+                    { name: "Customs (Heortling)", value: 25 },
+                    { name: "Farm", value: 20 },
+                    { name: "Herd", value: 10 },
+                    { name: "Spirit Combat", value: 15 }
+                ],
+                weapons: [
+                    { name: "Dagger", value: 10 },
+                    { name: "Battle Axe", value: 10 },
+                    { name: "1H Spear", value: 10 },
+                    { name: "Broadsword", value: 15 },
+                    { name: "Composite Bow", value: 10 },
+                    { name: "Sling", value: 10 },
+                    { name: "Javelin", value: 10 },
+                    { name: "Medium Shield", value: 15 },
+                    { name: "Large Shield", value: 10 }
+                ]
             },
             "Esrolia": {
-                skills: {
-                    "Bargain": 5,
-                    "Dance": 10,
-                    "Intrigue": 5,
-                    "Sing": 5,
-                    "Speak Own Language (Esrolian)": 50,
-                    "Speak Other Language (Tradetalk)": 20,
-                    "Customs (Esrolian)": 25,
-                    "Farm": 25,
-                    "First Aid": 5,
-                    "Spirit Combat": 15
-                },
-                weapons: {
-                    "Battle Axe": 15,
-                    "1H Spear": 10,
-                    "Rapier": 10,
-                    "Self Bow": 10,
-                    "Thrown Axe": 10,
-                    "Small Shield": 15,
-                    "Medium Shield": 15,
-                    "Large Shield": 10
-                }
+                skills: [
+                    { name: "Bargain", value: 5 },
+                    { name: "Dance", value: 10 },
+                    { name: "Intrigue", value: 5 },
+                    { name: "Sing", value: 5 },
+                    { name: "Speak Own Language (Esrolian)", value: 50 },
+                    { name: "Speak Other Language (Tradetalk)", value: 20 },
+                    { name: "Customs (Esrolian)", value: 25 },
+                    { name: "First Aid", value: 5 },
+                    { name: "Spirit Combat", value: 15 }
+                ],
+                weapons: [
+                    { name: "Battle Axe", value: 15 },
+                    { name: "1H Spear", value: 10 },
+                    { name: "Rapier", value: 10 },
+                    { name: "Self Bow", value: 10 },
+                    { name: "Thrown Axe", value: 10 },
+                    { name: "Small Shield", value: 15 },
+                    { name: "Medium Shield", value: 15 },
+                    { name: "Large Shield", value: 10 }
+                ]
             },
             "Grazeland": {
-                skills: {
-                    "Ride (Horse)": 35,
-                    "Speak Own Language (Pure Horse Tongue)": 50,
-                    "Speak Other Language (Tradetalk)": 10,
-                    "Customs (Grazeland Pony Breeders)": 25,
-                    "Herd": 35,
-                    "Spirit Combat": 15
-                },
-                weapons: {
-                    "Dagger": 10,
-                    "Lance": 15,
-                    "Broadsword": 10,
-                    "Composite Bow": 15,
-                    "Small Shield": 15,
-                    "Medium Shield": 10
-                }
+                skills: [
+                    { name: "Ride (Horse)", value: 35 },
+                    { name: "Speak Own Language (Pure Horse Tongue)", value: 50 },
+                    { name: "Speak Other Language (Tradetalk)", value: 10 },
+                    { name: "Customs (Grazeland Pony Breeders)", value: 25 },
+                    { name: "Herd", value: 35 },
+                    { name: "Spirit Combat", value: 15 }
+                ],
+                weapons: [
+                    { name: "Dagger", value: 10 },
+                    { name: "Lance", value: 15 },
+                    { name: "Broadsword", value: 10 },
+                    { name: "Composite Bow", value: 15 },
+                    { name: "Small Shield", value: 15 },
+                    { name: "Medium Shield", value: 10 }
+                ]
             },
             "Bison Rider": {
-                skills: {
-                    "Ride (Bison)": 35,
-                    "Customs (Bison Tribe)": 25,
-                    "Herd": 30,
-                    "Peaceful Cut": 15,
-                    "Spirit Combat": 20
-                },
-                weapons: {
-                    "Dagger": 10,
-                    "Lance": 15,
-                    "Broadsword": 10,
-                    "Javelin": 10,
-                    "Medium Shield": 10
-                }
+                skills: [
+                    { name: "Ride (Bison)", value: 35 },
+                    { name: "Customs (Bison Tribe)", value: 25 },
+                    { name: "Herd", value: 30 },
+                    { name: "Peaceful Cut", value: 15 },
+                    { name: "Spirit Combat", value: 20 }
+                ],
+                weapons: [
+                    { name: "Dagger", value: 10 },
+                    { name: "Lance", value: 15 },
+                    { name: "Broadsword", value: 10 },
+                    { name: "Javelin", value: 10 },
+                    { name: "Medium Shield", value: 10 }
+                ]
             },
             "High Llama Rider": {
-                skills: {
-                    "Ride (High Llama)": 35,
-                    "Customs (High Llama Tribe)": 25,
-                    "Herd": 30,
-                    "Peaceful Cut": 15,
-                    "Spirit Combat": 20
-                },
-                weapons: {
-                    "Dagger": 10,
-                    "Lance": 15,
-                    "2H Dagger-Axe": 10,
-                    "Pole Lasso": 10
-                }
+                skills: [
+                    { name: "Ride (High Llama)", value: 35 },
+                    { name: "Customs (High Llama Tribe)", value: 25 },
+                    { name: "Herd", value: 30 },
+                    { name: "Peaceful Cut", value: 15 },
+                    { name: "Spirit Combat", value: 20 }
+                ],
+                weapons: [
+                    { name: "Dagger", value: 10 },
+                    { name: "Lance", value: 15 },
+                    { name: "2H Dagger-Axe", value: 10 },
+                    { name: "Pole Lasso", value: 10 }
+                ]
             },
             "Impala Rider": {
-                skills: {
-                    "Ride (Impala)": 35,
-                    "Customs (Impala Tribe)": 25,
-                    "Herd": 30,
-                    "Peaceful Cut": 15,
-                    "Spirit Combat": 20
-                },
-                weapons: {
-                    "Dagger": 5,
-                    "Shortsword": 10,
-                    "Composite Bow": 20,
-                    "Dart": 10,
-                    "Small Shield": 10
-                }
+                skills: [
+                    { name: "Ride (Impala)", value: 35 },
+                    { name: "Customs (Impala Tribe)", value: 25 },
+                    { name: "Herd", value: 30 },
+                    { name: "Peaceful Cut", value: 15 },
+                    { name: "Spirit Combat", value: 20 }
+                ],
+                weapons: [
+                    { name: "Dagger", value: 5 },
+                    { name: "Shortsword", value: 10 },
+                    { name: "Composite Bow", value: 20 },
+                    { name: "Dart", value: 10 },
+                    { name: "Small Shield", value: 10 }
+                ]
             },
             "Pol Joni": {
-                skills: {
-                    "Ride (Horse)": 35,
-                    "Customs (Pol-Joni)": 25,
-                    "Herd": 30,
-                    "Peaceful Cut": 15,
-                    "Spirit Combat": 20
-                },
-                weapons: {
-                    "Dagger": 10,
-                    "Lance": 10,
-                    "Broadsword": 15,
-                    "Composite Bow": 10,
-                    "Medium Shield": 15
-                }
+                skills: [
+                    { name: "Ride (Horse)", value: 35 },
+                    { name: "Customs (Pol Joni)", value: 25 },
+                    { name: "Herd", value: 30 },
+                    { name: "Peaceful Cut", value: 15 },
+                    { name: "Spirit Combat", value: 20 }
+                ],
+                weapons: [
+                    { name: "Dagger", value: 10 },
+                    { name: "Lance", value: 10 },
+                    { name: "Broadsword", value: 15 },
+                    { name: "Composite Bow", value: 10 },
+                    { name: "Medium Shield", value: 15 }
+                ]
             },
             "Sable Rider": {
-                skills: {
-                    "Ride (Sable Antelope)": 35,
-                    "Customs (Sable Tribe)": 25,
-                    "Herd": 30,
-                    "Peaceful Cut": 15,
-                    "Spirit Combat": 20
-                },
-                weapons: {
-                    "Dagger": 10,
-                    "Kopis or 1H Axe": 15,
-                    "Lance or Short Spear": 10,
-                    "Composite Bow or Javelin": 10,
-                    "Medium Shield": 10
-                }
+                skills: [
+                    { name: "Ride (Sable Antelope)", value: 35 },
+                    { name: "Customs (Sable Tribe)", value: 25 },
+                    { name: "Herd", value: 30 },
+                    { name: "Peaceful Cut", value: 15 },
+                    { name: "Spirit Combat", value: 20 }
+                ],
+                weapons: [
+                    { name: "Dagger", value: 10 },
+                    { name: "Kopis or 1H Axe", value: 15 },
+                    { name: "Lance or Short Spear", value: 10 },
+                    { name: "Composite Bow or Javelin", value: 10 },
+                    { name: "Medium Shield", value: 10 }
+                ]
             },
             "Lunar Tarsh": {
-                skills: {
-                    "Dance": 5,
-                    "Intrigue": 5,
-                    "Speak Own Language (New Pelorian)": 50,
-                    "Speak Other Language (Tarshite)": 20,
-                    "Speak Other Language (Tradetalk)": 10,
-                    "Celestial Lore": 5,
-                    "Customs (Lunar Provincial)": 25,
-                    "Farm": 25,
-                    "Spirit Combat": 15
-                },
-                weapons: {
-                    "Dagger": 10,
-                    "1H or 2H Spear": 15,
-                    "Kopis": 10,
-                    "Composite Bow or Sling": 10,
-                    "Javelin": 10,
-                    "Medium Shield": 10,
-                    "Large Shield": 15
-                }
+                skills: [
+                    { name: "Dance", value: 5 },
+                    { name: "Intrigue", value: 5 },
+                    { name: "Speak Own Language (New Pelorian)", value: 50 },
+                    { name: "Speak Other Language (Tarshite)", value: 20 },
+                    { name: "Speak Other Language (Tradetalk)", value: 10 },
+                    { name: "Celestial Lore", value: 5 },
+                    { name: "Customs (Lunar Provincial)", value: 25 },
+                    { name: "Farm", value: 25 },
+                    { name: "Spirit Combat", value: 15 }
+                ],
+                weapons: [
+                    { name: "Dagger", value: 10 },
+                    { name: "1H or 2H Spear", value: 15 },
+                    { name: "Kopis", value: 10 },
+                    { name: "Composite Bow or Sling", value: 10 },
+                    { name: "Javelin", value: 10 },
+                    { name: "Medium Shield", value: 10 },
+                    { name: "Large Shield", value: 15 }
+                ]
             },
             "Old Tarsh": {
-                skills: {
-                    "Dance": 5,
-                    "Ride": 5,
-                    "Sing": 10,
-                    "Speak Own Language (Tarshite)": 50,
-                    "Speak Other Language (Tradetalk)": 10,
-                    "Customs (Tarshite)": 25,
-                    "Farm": 15,
-                    "Survival": 5,
-                    "Spirit Combat": 15
-                },
-                weapons: {
-                    "Dagger": 10,
-                    "Battle Axe": 15,
-                    "1H Spear": 10,
-                    "Broadsword": 10,
-                    "Composite Bow or Sling": 10,
-                    "Javelin": 10,
-                    "Medium Shield": 10,
-                    "Large Shield": 10
-                }
+                skills: [
+                    { name: "Dance", value: 5 },
+                    { name: "Ride", value: 5 },
+                    { name: "Sing", value: 10 },
+                    { name: "Speak Own Language (Tarshite)", value: 50 },
+                    { name: "Speak Other Language (Tradetalk)", value: 10 },
+                    { name: "Customs (Tarshite)", value: 25 },
+                    { name: "Farm", value: 15 },
+                    { name: "Survival", value: 5 },
+                    { name: "Spirit Combat", value: 15 }
+                ],
+                weapons: [
+                    { name: "Dagger", value: 10 },
+                    { name: "Battle Axe", value: 15 },
+                    { name: "1H Spear", value: 10 },
+                    { name: "Broadsword", value: 10 },
+                    { name: "Composite Bow or Sling", value: 10 },
+                    { name: "Javelin", value: 10 },
+                    { name: "Medium Shield", value: 15 },
+                    { name: "Large Shield", value: 10 }
+                ]
             }
         };
     }
@@ -723,25 +757,23 @@ class Character {
         }
     }
 
-    updateSkill(name, baseValue, skillMod, operation = 'replace') {
+    updateSkill(name, baseValue, skillMod = 0) {
+        const skillAlias = library.skillAliases[name] || name;
         for (const category in this.skills) {
-            const skill = this.skills[category].find(skill => skill.name === name);
+            const skill = this.skills[category].find(skill => skill.name === skillAlias);
             if (skill) {
-                switch (operation) {
-                    case 'add':
-                        skill.skillMod += skillMod;
-                        break;
-                    case 'subtract':
-                        skill.skillMod -= skillMod;
-                        break;
-                    case 'replace':
-                        skill.skillMod = skillMod;
-                        break;
-                }
+                skill.skillMod = skillMod; // Update skillMod to ensure it's set correctly without doubling
                 return;
             }
         }
-        this.skills.Agility.push({ name, baseValue, skillMod });
+        // If skill not found, determine the appropriate category
+        for (const category in library.skills) {
+            if (library.skills[category].some(skill => skill.name === skillAlias)) {
+                this.skills[category].push({ name: skillAlias, baseValue, skillMod });
+                return;
+            }
+        }
+        console.error(`Skill '${skillAlias}' not found in any category`);
     }
 
     addPassion(name, subject, value) {
@@ -812,7 +844,19 @@ class Character {
         this.homeland.tribe = tribe;
         this.updateHomelandPassions(name);
         this.applyHomelandModifiers();
-        this.applyCulturalSkills(name, tribe);
+
+        // Apply cultural skills
+        const culturalSkills = library.culturalSkills[name] || library.culturalSkills[tribe];
+        if (culturalSkills) {
+            culturalSkills.skills.forEach(skill => {
+                this.updateSkill(skill.name, 0, skill.value);
+            });
+            culturalSkills.weapons.forEach(weapon => {
+                this.updateSkill(weapon.name, 0, weapon.value);
+            });
+        } else {
+            console.error(`Cultural skills for homeland '${name}' or tribe '${tribe}' not found`);
+        }
     }
 
     updateHomelandPassions(homeland) {
@@ -837,21 +881,6 @@ class Character {
                     console.error(`Invalid characteristic or modifier value for ${charName}: ${currentCharacteristic} + ${value}`);
                 }
             }
-        }
-    }
-
-    applyCulturalSkills(name, tribe) {
-        const culturalSkills = library.culturalSkills[name] || library.culturalSkills[tribe];
-        if (!culturalSkills) {
-            console.error(`Cultural skills for homeland '${name}' or tribe '${tribe}' not found`);
-            return;
-        }
-
-        for (const [skillName, skillValue] of Object.entries(culturalSkills.skills)) {
-            this.updateSkill(skillName, skillValue, 0, 'replace');
-        }
-        for (const [weaponName, weaponValue] of Object.entries(culturalSkills.weapons)) {
-            this.updateSkill(weaponName, weaponValue, 0, 'replace');
         }
     }
 
@@ -908,6 +937,18 @@ class Character {
             const value = roll[key];
             this.updateCharacteristic(key, value);
         });
+
+        // Update skills with base values from the library
+        for (const category in library.skills) {
+            library.skills[category].forEach(skill => {
+                this.updateSkill(skill.name, skill.baseValue);
+            });
+        }
+
+        // Apply special values to Dodge and Jump
+        const dex = this.characteristics.dexterity;
+        this.updateSkill("Dodge", dex * 2);
+        this.updateSkill("Jump", dex * 3);
     }
 
     chooseRace(race, subrace = null) {
@@ -991,19 +1032,6 @@ class Character {
             }
         }
     }
-
-    populateSkillsFromLibrary() {
-        for (const [category, skills] of Object.entries(library.skills)) {
-            for (const skill of skills) {
-                if (skill.baseValue > 0 || skill.name === "Dodge" || skill.name === "Jump") {
-                    const baseValue = skill.name === "Dodge" ? this.characteristics.dexterity * 2 : 
-                                      skill.name === "Jump" ? this.characteristics.dexterity * 3 : 
-                                      skill.baseValue;
-                    this.skills[category].push({ name: skill.name, baseValue, skillMod: skill.skillMod });
-                }
-            }
-        }
-    }
 }
 
 let char = new Character("Adventurer");
@@ -1020,17 +1048,16 @@ let library = new Library();
     await library.loadPassions();
 
     char.initializeRunes();
-    char.populateSkillsFromLibrary();
 
-    console.log('Character:', char);
-    console.log('Library:', library);
+    
 
     char.chooseRace('Human');
     char.chooseHomeland('Prax', 'Bison Rider');
 
     char.updateRune("air", 75, 'replace');
-    char.updateRune('truth', 75, 'replace');  // Using correct case for rune name
-    char.updateSkill('sword', 2, 2, 'replace'); // Adding a skill with base value and skill mod
+    char.updateRune('truth', 75, 'replace');
+    char.updateSkill('sword', 5, 2); // Example of updating skill with skillMod
+    char.updateSkill('sword', 2, -1); // Example of updating skill with skillMod
     char.chooseCult('Orlanth');
     char.setLanguage('Heortling', 50);
 
@@ -1051,6 +1078,10 @@ let library = new Library();
     char.applySkillCategoryModifiers();
     console.log('Updated Character Skill Category Modifiers:', char.skillCategoryModifiers);
 
-    // Log final character object
-    console.log('Final Character:', char);
+    // Apply cultural skills if not already applied
+    char.chooseHomeland(char.homeland.name, char.homeland.tribe);
+    //console.log('Updated Character Skills:', char.skills);
+
+    console.log('Character:', char);
+    console.log('Library:', library);
 })();
