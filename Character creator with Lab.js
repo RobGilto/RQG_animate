@@ -119,7 +119,7 @@ class Library {
         };
         this.skillAliases = {
             "Dagger": "1H Daggers (Dagger)",
-            "Lance": "1H Lance (Lance)",
+            "Lance": "2H Spears (Longspear)",
             "Broadsword": "1H Broadsword (Broadsword)",
             "Javelin": "1H Javelins (Javelin)",
             "Medium Shield": "Shields (Medium Shield)",
@@ -137,10 +137,13 @@ class Library {
             "Pole Lasso": "Polearms (Pole Lasso)",
             "Short Spear": "1H Spears (Short Spear)",
             "1H Lance": "1H Lances (1H Lance)",
-            "Thrown Weapons (Thrown Axe)": "Thrown Weapons (Thrown Axe)",
+            "Thrown Weapons (Thrown Axe)": "Thrown Axe",
             "1H Broadsword (Broadsword)": "1H Broadsword (Broadsword)",
-
-
+            "sword": "1H Swords (Broadsword)",
+            "1H Broadsword (Broadsword)": "1H Swords (Broadsword)",
+            "1H Javelins (Javelin)": "1H Spears (Javelin)",
+            "Thrown Weapons (Thrown Axe)": "Thrown Axe",
+            "Shields (Medium Shield)": "Shields (Medium Shield)", // Ensure this line is present to categorize Shields properly
             // Add more skill aliases as needed
         };
         this.complementaryRunes = {
@@ -191,16 +194,6 @@ class Library {
             { range: [25, 28], SIZ: +4, POW: +3 },
             { range: [29, Infinity], SIZ: function (value) { return Math.floor((value - 24) / 4) + 4; }, POW: function (value) { return Math.floor((value - 24) / 4) + 2; } }
         ];// Hit point modifiers
-        this.hitPointModifiers = [
-            { range: [1, 4], SIZ: -2, POW: -1 },
-            { range: [5, 8], SIZ: -1, POW: 0 },
-            { range: [9, 12], SIZ: 0, POW: 0 },
-            { range: [13, 16], SIZ: +1, POW: 0 },
-            { range: [17, 20], SIZ: +2, POW: +1 },
-            { range: [21, 24], SIZ: +3, POW: +2 },
-            { range: [25, 28], SIZ: +4, POW: +3 },
-            { range: [29, Infinity], SIZ: function (value) { return Math.floor((value - 24) / 4) + 4; }, POW: function (value) { return Math.floor((value - 24) / 4) + 2; } }
-        ];
 
         // Healing rate modifiers
         this.healingRate = [
@@ -517,7 +510,8 @@ class Library {
                 Perception: [],
                 Stealth: [],
                 MeleeWeapons: [],
-                MissileWeapons: []
+                MissileWeapons: [],
+                Shields: [] // Ensure this category exists
             };
 
             for (const source of sources) {
@@ -534,6 +528,12 @@ class Library {
                     const category = item.system.category.charAt(0).toUpperCase() + item.system.category.slice(1);
                     if (skills[category]) {
                         skills[category].push({
+                            name: item.name,
+                            baseValue: item.system.baseChance,
+                            skillMod: 0
+                        });
+                    } else if (category === "Shield") {
+                        skills.Shields.push({
                             name: item.name,
                             baseValue: item.system.baseChance,
                             skillMod: 0
@@ -669,7 +669,7 @@ class Character {
         };
         this.skills = {
             Agility: [], Communication: [], Knowledge: [], Magic: [], Manipulation: [],
-            Perception: [], Stealth: [], MeleeWeapons: [], MissileWeapons: []
+            Perception: [], Stealth: [], MeleeWeapons: [], MissileWeapons: [], Shields: []
         };
         this.passions = [];
         this.languages = {};
@@ -691,7 +691,8 @@ class Character {
             MeleeWeapons: 0,
             MissileWeapons: 0,
             Perception: 0,
-            Stealth: 0
+            Stealth: 0,
+            Shields: 0
         };
     }
 
@@ -1029,6 +1030,7 @@ class Character {
             if (category === 'Manipulation') {
                 this.skillCategoryModifiers.MeleeWeapons = totalModifier;
                 this.skillCategoryModifiers.MissileWeapons = totalModifier;
+                this.skillCategoryModifiers.Shields = totalModifier;
             }
         }
     }
