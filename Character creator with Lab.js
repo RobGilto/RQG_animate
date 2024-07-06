@@ -1002,23 +1002,20 @@ class Character {
                 ]
             ,
             "Chariot Driver": [
-                    { name: "Intimidate", value: 10 },
-                    { name: "Hide", value: 30 },
+                    { name: "Battle", value: 20 },
                     { name: "First Aid", value: 10 },
-                    { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Survival", value: 30 },
-                    { name: "Shield", value: 10 },
-                    { name: "Track", value: 10 }
+                    { name: "Drive Chariot", value: 40 },
+                    { name: "Dance", value: 15 },
+                    { name: "Scan", value: 10 }
                 ]
             ,
             "Crafter": [
-                    { name: "Intimidate", value: 10 },
-                    { name: "Hide", value: 30 },
-                    { name: "First Aid", value: 10 },
-                    { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Survival", value: 30 },
-                    { name: "Shield", value: 10 },
-                    { name: "Track", value: 10 }
+                    { name: "Art", value: 10 },
+                    { name: "Evaluate", value: 10 },
+                    { name: "Bargain", value: 10 },
+                    { name: "Insight (Human)", value: 10 },
+                    { name: "Devise", value: 15 },
+                    { name: "Manage Household", value: 30 }
                 ]
             ,
             "Entertainer": [
@@ -1032,176 +1029,148 @@ class Character {
                 ]
             ,
             "Farmer": [
-                    { name: "Intimidate", value: 10 },
-                    { name: "Hide", value: 30 },
+                    { name: "Jump or Climb", value: 10 },
+                    { name: "Farm", value: 30 },
+                    { name: "Craft (...)", value: 15 },
                     { name: "First Aid", value: 10 },
-                    { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Survival", value: 30 },
-                    { name: "Shield", value: 10 },
-                    { name: "Track", value: 10 }
+                    { name: "Scan", value: 10 },
+                    { name: "Herd", value: 15 },
+                    { name: "Manage Household", value: 30 }
                 ]
             ,
             "Fisher": [
-                    { name: "Intimidate", value: 10 },
-                    { name: "Hide", value: 30 },
+                    { name: "Boat", value: 30 },
+                    { name: "Javelin, Self Bow, or Thrown Net", value: 20 },
+                    { name: "Swim", value: 30 },
+                    { name: "Short Spear", value: 10 },
                     { name: "First Aid", value: 10 },
-                    { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Survival", value: 30 },
-                    { name: "Shield", value: 10 },
-                    { name: "Track", value: 10 }
+                    { name: "Lore (River)", value: 30 },
+                    { name: "Scan", value: 10 }
                 ]
             ,
             "Healer": [
-                    { name: "Intimidate", value: 10 },
-                    { name: "Hide", value: 30 },
-                    { name: "First Aid", value: 10 },
-                    { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Survival", value: 30 },
-                    { name: "Shield", value: 10 },
-                    { name: "Track", value: 10 }
+                    { name: "Orate", value: 10 },
+                    { name: "Treat Disease", value: 30 },
+                    { name: "Alchemy", value: 10 },
+                    { name: "Treat Poison", value: 10 },
+                    { name: "First Aid", value: 30 },
+                    { name: "Devise", value: 10 },
+                    { name: "Lore (Plant)", value: 30 },
+                    { name: "Insight (Human)", value: 10 }
                 ]
             ,
             "Herder": [
-                    { name: "Intimidate", value: 10 },
-                    { name: "Hide", value: 30 },
+                    { name: "Jump or Climb", value: 10 },
+                    { name: "Scan", value: 10 },
+                    { name: "Lore (Animal)", value: 10 },
+                    { name: "Track", value: 10 },
+                    { name: "Lore (local)", value: 10 },
                     { name: "First Aid", value: 10 },
-                    { name: "Lore (Animal or Plant)", value: 10 },
-
-                    { name: "Survival", value: 30 },
-                    { name: "Shield", value: 10 },
-                    { name: "Track", value: 10 }
+                    { name: "Herd", value: 30 },
+                    { name: "Peaceful Cut", value: 30 }
                 ]
             ,
             "Hunter": [
-                    { name: "Intimidate", value: 10 },
-                    { name: "Hide", value: 30 },
-                    { name: "First Aid", value: 10 },
+                    { name: "Lore (Animal)", value: 30 },
+                    { name: "Scan", value: 10 },
+                    { name: "Homeland Lore (...)", value: 10 },
 
-                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Track", value: 30 },
 
-                    { name: "Survival", value: 30 },
-                    { name: "Shield", value: 10 },
-                    { name: "Track", value: 10 }
+                    { name: "Conceal", value: 10 },
+                    { name: "Hide", value: 10 },
+                    { name: "Listen", value: 10 }
+                    
                 ]
             ,
             "Merchant": [
-                    { name: "Intimidate", value: 10 },
-                    { name: "Hide", value: 30 },
-                    { name: "First Aid", value: 10 },
-
-                    { name: "Lore (Animal or Plant)", value: 10 },
-
-                    { name: "Survival", value: 30 },
-                    { name: "Shield", value: 10 },
-                    { name: "Track", value: 10 }
+                    { name: "Ride (...)", value: 10 },
+                    { name: "Customs (...)", value: 10 },
+                    { name: "Bargain", value: 30 },
+                    { name: "Insight (Human)", value: 10 },
+                    { name: "Speak Language (...)", value: 10 },
+                    { name: "Speak Language (Tradetalk)", value: 30 },
+                    { name: "Manage Household", value: 30 }, 
+                    { name: "Evaluate", value: 30 }
                 ]
             ,
             "Noble": [
-                    { name: "Intimidate", value: 10 },
-                    { name: "Hide", value: 30 },
-                    { name: "First Aid", value: 10 },
-
-                    { name: "Lore (Animal or Plant)", value: 10 },
-
-                    { name: "Survival", value: 30 },
-                    { name: "Shield", value: 10 },
-                    { name: "Track", value: 10 }
+                    { name: "Ride (any) or Drive Chariot", value: 10 },
+                    { name: "Insight (Human)", value: 10 },
+                    { name: "Intrigue", value: 10 },
+                    { name: "Read/Write (own)", value: 10 },
+                    { name: "Orate", value: 30 },
+                    { name: "Speak Own Language", value: 10 }
                 ]
             ,
             "Philosopher": [
-                    { name: "Intimidate", value: 10 },
-                    { name: "Hide", value: 30 },
-                    { name: "First Aid", value: 10 },
-
-                    { name: "Lore (Animal or Plant)", value: 10 },
-
-                    { name: "Survival", value: 30 },
-                    { name: "Shield", value: 10 },
-                    { name: "Track", value: 10 }
+                    { name: "Library Use", value: 10 },
+                    { name: "Lore (...)", value: 10 },
+                    { name: "Meditate", value: 20 }
                 ]
             ,
             "Priest": [
-                    { name: "Intimidate", value: 10 },
-                    { name: "Hide", value: 30 },
-                    { name: "First Aid", value: 10 },
+                    { name: "Lore (Cult)", value: 30 },
+                    { name: "Dance", value: 10 },
+                    { name: "Read/Write (own)", value: 10 },
 
-                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Orate", value: 10 },
 
-                    { name: "Survival", value: 30 },
-                    { name: "Shield", value: 10 },
-                    { name: "Track", value: 10 }
+                    { name: "Manage Household", value: 10 },
+                    { name: "Sing", value: 30 },
+                    { name: "Worship (deity)", value: 30 },
+                    { name: "Meditate", value: 10 }
                 ]
             ,
             "Scribe": [
-                    { name: "Intimidate", value: 10 },
-                    { name: "Hide", value: 30 },
-                    { name: "First Aid", value: 10 },
-
-                    { name: "Lore (Animal or Plant)", value: 10 },
-
-                    { name: "Survival", value: 30 },
-                    { name: "Shield", value: 10 },
-                    { name: "Track", value: 10 }
+                    { name: "Bureaucracy", value: 30 },
+                    { name: "Library Use", value: 10 },
+                    { name: "Read/Write (own language)", value: 50 },
+                    { name: "Evaluate", value: 10 }
                 ]
             ,
             "Thief": [
-                    { name: "Intimidate", value: 10 },
-                    { name: "Hide", value: 30 },
-                    { name: "First Aid", value: 10 },
+                    { name: "Climb", value: 10 },
+                    { name: "Devise", value: 10 },
+                    { name: "Disguise", value: 30 },
 
-                    { name: "Lore (Animal or Plant)", value: 10 },
+                    { name: "Sleight", value: 30 },
 
-                    { name: "Survival", value: 30 },
-                    { name: "Shield", value: 10 },
-                    { name: "Track", value: 10 }
+                    { name: "Speak Language (Tradetalk)", value: 30 },
+                    { name: "Hide", value: 10 },
+                    { name: "Move Quietly", value: 30 }
                 ]
             ,
             "Warrior-Heavy Infantry": [
-                    { name: "Intimidate", value: 10 },
-                    { name: "Hide", value: 30 },
-                    { name: "First Aid", value: 10 },
-
-                    { name: "Lore (Animal or Plant)", value: 10 },
-
-                    { name: "Survival", value: 30 },
-                    { name: "Shield", value: 10 },
-                    { name: "Track", value: 10 }
+                    { name: "Sing", value: 10 },
+                    { name: "Scan", value: 10 },
+                    { name: "Battle", value: 30 },
+                    { name: "First Aid", value: 15 }
                 ]
             ,
             "Warrior-Light Infantry": [
-                    { name: "Intimidate", value: 10 },
-                    { name: "Hide", value: 30 },
-                    { name: "First Aid", value: 10 },
-
-                    { name: "Lore (Animal or Plant)", value: 10 },
-
-                    { name: "Survival", value: 30 },
-                    { name: "Shield", value: 10 },
-                    { name: "Track", value: 10 }
+                    { name: "Battle", value: 30 },
+                    { name: "Hide", value: 10 },
+                    { name: "First Aid", value: 15 },
+                    { name: "Move Quietly", value: 10 },
+                    { name: "Listen", value: 10 },
+                    { name: "Scan", value: 10 }
                 ]
             ,
             "Warrior-Heavy Cavalry": [
-                    { name: "Intimidate", value: 10 },
-                    { name: "Hide", value: 30 },
+                    { name: "Battle", value: 30 },
                     { name: "First Aid", value: 10 },
-
-                    { name: "Lore (Animal or Plant)", value: 10 },
-
-                    { name: "Survival", value: 30 },
-                    { name: "Shield", value: 10 },
-                    { name: "Track", value: 10 }
+                    { name: "Listen", value: 10 },
+                    { name: "Scan", value: 10 },
+                    { name: "Sing", value: 10 }
                 ]
             ,
             "Warrior-Light Cavalry": [
-                    { name: "Intimidate", value: 10 },
-                    { name: "Hide", value: 30 },
-                    { name: "First Aid", value: 10 },
-
-                    { name: "Lore (Animal or Plant)", value: 10 },
-
-                    { name: "Survival", value: 30 },
-                    { name: "Shield", value: 10 },
-                    { name: "Track", value: 10 }
+                    { name: "Ride", value: 35 },
+                    { name: "Listen", value: 10 },
+                    { name: "Sing", value: 10 },
+                    { name: "Battle", value: 30 },
+                    { name: "First Aid", value: 10 }
                 ]
                       
 
