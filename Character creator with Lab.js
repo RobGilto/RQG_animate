@@ -170,6 +170,8 @@ class Library {
             "2H Spears (2H Spear)": "2H Spears (Longspear)",
             "Thrown Weapons (Sling)": "Slings (Sling)",
             "Battle Axe": "1H Axes (Battle Axe)",
+            "Lore (Animal or Plant)": Math.random() < 0.5 ? "Plant Lore" : "Animal Lore",
+            "Shield": ["Shields (Small)", "Shields (Medium)", "Shields (Large)"][Math.floor(Math.random() * 3)]
             
             // Ensure this line is present to categorize Shields properly
             // Add more skill aliases as needed
@@ -993,9 +995,7 @@ class Character {
                     { name: "Intimidate", value: 10 },
                     { name: "Hide", value: 30 },
                     { name: "First Aid", value: 10 },
-                    { name: "Primary Weapon", value: 30 },
                     { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Secondary Weapon", value: 10 },
                     { name: "Survival", value: 30 },
                     { name: "Shield", value: 10 },
                     { name: "Track", value: 10 }
@@ -1005,9 +1005,7 @@ class Character {
                     { name: "Intimidate", value: 10 },
                     { name: "Hide", value: 30 },
                     { name: "First Aid", value: 10 },
-                    { name: "Primary Weapon", value: 30 },
                     { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Secondary Weapon", value: 10 },
                     { name: "Survival", value: 30 },
                     { name: "Shield", value: 10 },
                     { name: "Track", value: 10 }
@@ -1017,9 +1015,7 @@ class Character {
                     { name: "Intimidate", value: 10 },
                     { name: "Hide", value: 30 },
                     { name: "First Aid", value: 10 },
-                    { name: "Primary Weapon", value: 30 },
                     { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Secondary Weapon", value: 10 },
                     { name: "Survival", value: 30 },
                     { name: "Shield", value: 10 },
                     { name: "Track", value: 10 }
@@ -1029,9 +1025,7 @@ class Character {
                     { name: "Intimidate", value: 10 },
                     { name: "Hide", value: 30 },
                     { name: "First Aid", value: 10 },
-                    { name: "Primary Weapon", value: 30 },
                     { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Secondary Weapon", value: 10 },
                     { name: "Survival", value: 30 },
                     { name: "Shield", value: 10 },
                     { name: "Track", value: 10 }
@@ -1041,9 +1035,7 @@ class Character {
                     { name: "Intimidate", value: 10 },
                     { name: "Hide", value: 30 },
                     { name: "First Aid", value: 10 },
-                    { name: "Primary Weapon", value: 30 },
                     { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Secondary Weapon", value: 10 },
                     { name: "Survival", value: 30 },
                     { name: "Shield", value: 10 },
                     { name: "Track", value: 10 }
@@ -1053,9 +1045,7 @@ class Character {
                     { name: "Intimidate", value: 10 },
                     { name: "Hide", value: 30 },
                     { name: "First Aid", value: 10 },
-                    { name: "Primary Weapon", value: 30 },
                     { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Secondary Weapon", value: 10 },
                     { name: "Survival", value: 30 },
                     { name: "Shield", value: 10 },
                     { name: "Track", value: 10 }
@@ -1065,9 +1055,7 @@ class Character {
                     { name: "Intimidate", value: 10 },
                     { name: "Hide", value: 30 },
                     { name: "First Aid", value: 10 },
-                    { name: "Primary Weapon", value: 30 },
                     { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Secondary Weapon", value: 10 },
                     { name: "Survival", value: 30 },
                     { name: "Shield", value: 10 },
                     { name: "Track", value: 10 }
@@ -1077,9 +1065,8 @@ class Character {
                     { name: "Intimidate", value: 10 },
                     { name: "Hide", value: 30 },
                     { name: "First Aid", value: 10 },
-                    { name: "Primary Weapon", value: 30 },
                     { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Secondary Weapon", value: 10 },
+
                     { name: "Survival", value: 30 },
                     { name: "Shield", value: 10 },
                     { name: "Track", value: 10 }
@@ -1089,9 +1076,9 @@ class Character {
                     { name: "Intimidate", value: 10 },
                     { name: "Hide", value: 30 },
                     { name: "First Aid", value: 10 },
-                    { name: "Primary Weapon", value: 30 },
+
                     { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Secondary Weapon", value: 10 },
+
                     { name: "Survival", value: 30 },
                     { name: "Shield", value: 10 },
                     { name: "Track", value: 10 }
@@ -1101,9 +1088,9 @@ class Character {
                     { name: "Intimidate", value: 10 },
                     { name: "Hide", value: 30 },
                     { name: "First Aid", value: 10 },
-                    { name: "Primary Weapon", value: 30 },
+
                     { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Secondary Weapon", value: 10 },
+
                     { name: "Survival", value: 30 },
                     { name: "Shield", value: 10 },
                     { name: "Track", value: 10 }
@@ -1113,9 +1100,9 @@ class Character {
                     { name: "Intimidate", value: 10 },
                     { name: "Hide", value: 30 },
                     { name: "First Aid", value: 10 },
-                    { name: "Primary Weapon", value: 30 },
+
                     { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Secondary Weapon", value: 10 },
+
                     { name: "Survival", value: 30 },
                     { name: "Shield", value: 10 },
                     { name: "Track", value: 10 }
@@ -1125,9 +1112,9 @@ class Character {
                     { name: "Intimidate", value: 10 },
                     { name: "Hide", value: 30 },
                     { name: "First Aid", value: 10 },
-                    { name: "Primary Weapon", value: 30 },
+
                     { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Secondary Weapon", value: 10 },
+
                     { name: "Survival", value: 30 },
                     { name: "Shield", value: 10 },
                     { name: "Track", value: 10 }
@@ -1137,9 +1124,9 @@ class Character {
                     { name: "Intimidate", value: 10 },
                     { name: "Hide", value: 30 },
                     { name: "First Aid", value: 10 },
-                    { name: "Primary Weapon", value: 30 },
+
                     { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Secondary Weapon", value: 10 },
+
                     { name: "Survival", value: 30 },
                     { name: "Shield", value: 10 },
                     { name: "Track", value: 10 }
@@ -1149,9 +1136,9 @@ class Character {
                     { name: "Intimidate", value: 10 },
                     { name: "Hide", value: 30 },
                     { name: "First Aid", value: 10 },
-                    { name: "Primary Weapon", value: 30 },
+
                     { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Secondary Weapon", value: 10 },
+
                     { name: "Survival", value: 30 },
                     { name: "Shield", value: 10 },
                     { name: "Track", value: 10 }
@@ -1161,9 +1148,9 @@ class Character {
                     { name: "Intimidate", value: 10 },
                     { name: "Hide", value: 30 },
                     { name: "First Aid", value: 10 },
-                    { name: "Primary Weapon", value: 30 },
+
                     { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Secondary Weapon", value: 10 },
+
                     { name: "Survival", value: 30 },
                     { name: "Shield", value: 10 },
                     { name: "Track", value: 10 }
@@ -1173,9 +1160,9 @@ class Character {
                     { name: "Intimidate", value: 10 },
                     { name: "Hide", value: 30 },
                     { name: "First Aid", value: 10 },
-                    { name: "Primary Weapon", value: 30 },
+
                     { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Secondary Weapon", value: 10 },
+
                     { name: "Survival", value: 30 },
                     { name: "Shield", value: 10 },
                     { name: "Track", value: 10 }
@@ -1185,9 +1172,9 @@ class Character {
                     { name: "Intimidate", value: 10 },
                     { name: "Hide", value: 30 },
                     { name: "First Aid", value: 10 },
-                    { name: "Primary Weapon", value: 30 },
+
                     { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Secondary Weapon", value: 10 },
+
                     { name: "Survival", value: 30 },
                     { name: "Shield", value: 10 },
                     { name: "Track", value: 10 }
@@ -1197,9 +1184,9 @@ class Character {
                     { name: "Intimidate", value: 10 },
                     { name: "Hide", value: 30 },
                     { name: "First Aid", value: 10 },
-                    { name: "Primary Weapon", value: 30 },
+
                     { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Secondary Weapon", value: 10 },
+
                     { name: "Survival", value: 30 },
                     { name: "Shield", value: 10 },
                     { name: "Track", value: 10 }
@@ -1209,9 +1196,9 @@ class Character {
                     { name: "Intimidate", value: 10 },
                     { name: "Hide", value: 30 },
                     { name: "First Aid", value: 10 },
-                    { name: "Primary Weapon", value: 30 },
+
                     { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Secondary Weapon", value: 10 },
+
                     { name: "Survival", value: 30 },
                     { name: "Shield", value: 10 },
                     { name: "Track", value: 10 }
