@@ -52,7 +52,7 @@ class Library {
             human: [
                 "Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer",
                 "Farmer", "Fisher", "Healer", "Herder", "Hunter", "Merchant",
-                "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior"
+                "Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry", "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"
             ],
             filteredByRace: [],
             filteredByCult: []
@@ -133,7 +133,7 @@ class Library {
             "Sling": "Thrown Weapons (Sling)",
             "Kopis": "1H Swords (Kopis)",
             "1H Axe": "1H Axes (1H Axe)",
-            "Short Spear": "1H Spears (Short Spear)",
+            "Short Spear": "1H Spears (ShortSpear)",
             "1H Lance": "1H Lances (1H Lance)",
             "Thrown Weapons (Thrown Axe)": "Thrown Axe",
             "sword": "1H Swords (Broadsword)",
@@ -171,7 +171,22 @@ class Library {
             "Thrown Weapons (Sling)": "Slings (Sling)",
             "Battle Axe": "1H Axes (Battle Axe)",
             "Lore (Animal or Plant)": Math.random() < 0.5 ? "Plant Lore" : "Animal Lore",
-            "Shield": ["Shields (Small)", "Shields (Medium)", "Shields (Large)"][Math.floor(Math.random() * 3)]
+            "Shield": ["Shields (Small)", "Shields (Medium)", "Shields (Large)"][Math.floor(Math.random() * 3)],
+            "Jump or Climb": Math.random() < 0.5 ? "Jump" : "Climb",
+            "Speak Spiritspeech": "Speak Language (...)",
+            "Javelin, Self Bow, or Thrown Net": ["1H Spears (Javelin)", "Bows (Self Bow)", "Thrown Rock"][Math.floor(Math.random() * 3)],
+            "Lore (River)" : "Lore (...)",
+            "Lore (Plant)": "Lore (...)",
+            "Lore (Animal)": "Lore (...)",
+            "Lore (local)": "Lore (...)",
+            "Ride (any) or Drive Chariot": Math.random() < 0.5 ? "Ride (...)" : "Drive Chariot",
+            "Read/Write (own)": "Read/Write (...)",
+            "Speak Own Language (own)": "Speak Language (...)",
+            "Lore (Cult)": "Lore (...)",
+            "Worship (deity)": "Worship (...)",
+            "Read/Write (own language)": "Read/Write (...)",
+            "Ride": "Ride (...)",
+
             
             // Ensure this line is present to categorize Shields properly
             // Add more skill aliases as needed
@@ -1042,7 +1057,7 @@ class Character {
                     { name: "Boat", value: 30 },
                     { name: "Javelin, Self Bow, or Thrown Net", value: 20 },
                     { name: "Swim", value: 30 },
-                    { name: "Short Spear", value: 10 },
+                    { name: "1H Spears (Shortspear)", value: 10 },
                     { name: "First Aid", value: 10 },
                     { name: "Lore (River)", value: 30 },
                     { name: "Scan", value: 10 }
@@ -1141,14 +1156,14 @@ class Character {
                     { name: "Move Quietly", value: 30 }
                 ]
             ,
-            "Warrior-Heavy Infantry": [
+            "Warrior: Heavy Infantry": [
                     { name: "Sing", value: 10 },
                     { name: "Scan", value: 10 },
                     { name: "Battle", value: 30 },
                     { name: "First Aid", value: 15 }
                 ]
             ,
-            "Warrior-Light Infantry": [
+            "Warrior: Light Infantry": [
                     { name: "Battle", value: 30 },
                     { name: "Hide", value: 10 },
                     { name: "First Aid", value: 15 },
@@ -1157,7 +1172,7 @@ class Character {
                     { name: "Scan", value: 10 }
                 ]
             ,
-            "Warrior-Heavy Cavalry": [
+            "Warrior: Heavy Cavalry": [
                     { name: "Battle", value: 30 },
                     { name: "First Aid", value: 10 },
                     { name: "Listen", value: 10 },
@@ -1165,7 +1180,7 @@ class Character {
                     { name: "Sing", value: 10 }
                 ]
             ,
-            "Warrior-Light Cavalry": [
+            "Warrior: Light Cavalry": [
                     { name: "Ride", value: 35 },
                     { name: "Listen", value: 10 },
                     { name: "Sing", value: 10 },
@@ -1354,6 +1369,8 @@ class Character {
 let char = new Character("Adventurer");
 let library = new Library();
 
+
+
 (async () => {
     await library.loadCults(['wiki-en-rqg.cults']);
     await library.loadSkills(['wiki-en-rqg.skills', 'wiki-en-rqg.skills-weapons']);
@@ -1379,7 +1396,8 @@ let library = new Library();
     char.updatePassion('Loyalty', 'Family', 70, 'replace');  // Set loyalty to Family to 70
     char.updatePassion('Devotion', 'Orlanth', 10, 'add');  // Create passion Devotion to Orlanth with initial value 70
     char.updatePassion('Devotion', 'Orlanth', 5, 'subtract');  // Decrease Devotion to Orlanth by 5
-    char.chooseOccupation('Farmer');
+    let jobs = ["Assistant Shaman", "Bandit", "Chariot Driver", "Crafter", "Entertainer","Farmer", "Fisher", "Healer", "Herder", "Hunter", "Merchant","Noble", "Philosopher", "Priest", "Scribe", "Thief", "Warrior: Heavy Infantry", "Warrior: Light Infantry", "Warrior: Heavy Cavalry", "Warrior: Light Cavalry"]
+    char.chooseOccupation(jobs[19]);
 
     // Calculate attributes after all updates
     char.calculateAttributes();
