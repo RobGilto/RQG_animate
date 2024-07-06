@@ -56,7 +56,6 @@ class Library {
             ],
             filteredByRace: [],
             filteredByCult: []
-            
         };
         this.primaryRunes = {
             "Orlanth": "Air",
@@ -121,75 +120,7 @@ class Library {
             siz: 'size'
         };
         this.skillAliases = {
-            "Dagger": "1H Daggers (Dagger)",
-            "Lance": "2H Spears (Longspear)",
-            "Large Shield": "Shields (Large)",
-            "1H Spear": "1H Spears (Shortspear)",
-            "2H Spear": "2H Spears (2H Spear)",
-            "Shortsword": "1H Swords (Shortsword)",
-            "Dart": "Javelins (Dart)",
-            "Self Bow": "Bows (Self Bow)",
-            "Composite Bow": "Bows (Composite Bow)",
-            "Sling": "Thrown Weapons (Sling)",
-            "Kopis": "1H Swords (Kopis)",
-            "1H Axe": "1H Axes (1H Axe)",
-            "Short Spear": "1H Spears (ShortSpear)",
-            "1H Lance": "1H Lances (1H Lance)",
-            "Thrown Weapons (Thrown Axe)": "Thrown Axe",
-            "sword": "1H Swords (Broadsword)",
-            "Broadsword": "1H Swords (Broadsword)",
-            "Javelin": "1H Spears (Javelin)",
-            "Medium Shield": "Shields (Medium)",
-            "Small Shield": "Shields (Small)",
-            "Large Shield": "Shields (Large)",
-            "Shields (Medium Shield)": "Shields (Medium)",
-            "1H Broadsword (Broadsword)": "1H Swords (Broadsword)",
-            "1H Javelins (Javelin)": "1H Spears (Javelin)",
-            "Shields (Medium Shield)": "Shields (Medium)",
-            "Shields (Large Shield)": "Shields (Large)",
-            "Shields (Large Small)": "Shields (Small)",
-            "Speak Own Language (Pure Horse Tongue)": "Speak Language (Pure Horse Tongue)",
-            "Speak Own Language (Heortling)": "Speak Language (Heortling)",
-            "Speak Own Language (Esrolian)": "Speak Language (Esrolian)",
-            "Speak Own Language (New Pelorian)": "Speak Language (New Pelorian)",
-            "Speak Own Language (Tarshite)": "Speak Language (Tarshite)",
-            "Speak Other Language (Tradetalk)": "Speak Language (Tradetalk)",
-            "Ride (High Llama)": "Ride (...)",
-            "2H Dagger-Axe": "2H Axes (Dagger Axe)",
-            "Pole Lasso": "Lassos (Pole Lasso)",
-            "Ride (Impala)": "Ride (...)",
-            "Customs (Pol Joni)": "Customs (Pol-Joni)",
-            "Ride (Sable Antelope)": "Ride (...)", 
-            "Kopis or 1H Axe": Math.random() < 0.5 ? "1H Swords (Kopis)" : "1H Axes (Battle Axe)",
-            "Lance or Short Spear": Math.random() < 0.5 ? "2H Spears (Longspear)" : "1H Spears (Shortspear)",
-            "Composite Bow or Javelin": Math.random() < 0.5 ? "Bows (Composite Bow)" : "Thrown Weapons (Javelin)",
-            "Speak Other Language (Tarshite)": "Speak Language (Tarshite)",
-            "1H or 2H Spear": Math.random() < 0.5 ? "1H Spears (Shortspear)" : "2H Spears (Longspear)",
-            "1H Kopis (Kopis)": "1H Swords (Kopis)",
-            "Composite Bow or Sling": Math.random() < 0.5 ? "Bows (Composite Bow)" : "Slings (Sling)",
-            "2H Spears (2H Spear)": "2H Spears (Longspear)",
-            "Thrown Weapons (Sling)": "Slings (Sling)",
-            "Battle Axe": "1H Axes (Battle Axe)",
-            "Lore (Animal or Plant)": Math.random() < 0.5 ? "Plant Lore" : "Animal Lore",
-            "Shield": ["Shields (Small)", "Shields (Medium)", "Shields (Large)"][Math.floor(Math.random() * 3)],
-            "Jump or Climb": Math.random() < 0.5 ? "Jump" : "Climb",
-            "Speak Spiritspeech": "Speak Language (...)",
-            "Javelin, Self Bow, or Thrown Net": ["1H Spears (Javelin)", "Bows (Self Bow)", "Thrown Rock"][Math.floor(Math.random() * 3)],
-            "Lore (River)" : "Lore (...)",
-            "Lore (Plant)": "Lore (...)",
-            "Lore (Animal)": "Lore (...)",
-            "Lore (local)": "Lore (...)",
-            "Ride (any) or Drive Chariot": Math.random() < 0.5 ? "Ride (...)" : "Drive Chariot",
-            "Read/Write (own)": "Read/Write (...)",
-            "Speak Own Language (own)": "Speak Language (...)",
-            "Lore (Cult)": "Lore (...)",
-            "Worship (deity)": "Worship (...)",
-            "Read/Write (own language)": "Read/Write (...)",
-            "Ride": "Ride (...)",
-
-            
-            // Ensure this line is present to categorize Shields properly
-            // Add more skill aliases as needed
+            // Add skill aliases here...
         };
         this.complementaryRunes = {
             power: {
@@ -238,7 +169,7 @@ class Library {
             { range: [21, 24], SIZ: +3, POW: +2 },
             { range: [25, 28], SIZ: +4, POW: +3 },
             { range: [29, Infinity], SIZ: function (value) { return Math.floor((value - 24) / 4) + 4; }, POW: function (value) { return Math.floor((value - 24) / 4) + 2; } }
-        ];// Hit point modifiers
+        ];
 
         // Healing rate modifiers
         this.healingRate = [
@@ -716,6 +647,23 @@ class Library {
         }
         return items;
     }
+
+    duplicateSkill(baseSkillName, specificName) {
+        const skillCategory = Object.keys(this.skills).find(category =>
+            this.skills[category].some(skill => skill.name.includes(baseSkillName))
+        );
+
+        if (skillCategory) {
+            const baseSkill = this.skills[skillCategory].find(skill => skill.name.includes(baseSkillName));
+            if (baseSkill) {
+                this.skills[skillCategory].push({ name: specificName, baseValue: baseSkill.baseValue, skillMod: 0 });
+            } else {
+                console.error(`Base skill '${baseSkillName}' not found in category '${skillCategory}'`);
+            }
+        } else {
+            console.error(`Base skill '${baseSkillName}' not found in any category`);
+        }
+    }
 }
 
 class Character {
@@ -995,200 +943,173 @@ class Character {
     applyOccupationSkills(occupation) {
         const occupationSkills = {
             "Assistant Shaman": [
-                    { name: "Speak Spiritspeech", value: 20 },
-                    { name: "Sing", value: 10 },
-                    { name: "Spirit Combat", value: 30 },
-                    { name: "Animal Lore", value: 15 },
-                    { name: "Spirit Dance", value: 10 },
-                    { name: "First Aid", value: 15 },
-                    { name: "Spirit Lore", value: 20 },
-                    { name: "Plant Lore", value: 20 },
-                    { name: "Spirit Travel", value: 20 },
-                    { name: "Meditate", value: 20 }
-                ],
+                { name: "Speak Spiritspeech", value: 20 },
+                { name: "Sing", value: 10 },
+                { name: "Spirit Combat", value: 30 },
+                { name: "Animal Lore", value: 15 },
+                { name: "Spirit Dance", value: 10 },
+                { name: "First Aid", value: 15 },
+                { name: "Spirit Lore", value: 20 },
+                { name: "Plant Lore", value: 20 },
+                { name: "Spirit Travel", value: 20 },
+                { name: "Meditate", value: 20 }
+            ],
             "Bandit": [
-                    { name: "Intimidate", value: 10 },
-                    { name: "Hide", value: 30 },
-                    { name: "First Aid", value: 10 },
-                    { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Survival", value: 30 },
-                    { name: "Shield", value: 10 },
-                    { name: "Track", value: 10 }
-                ]
-            ,
+                { name: "Intimidate", value: 10 },
+                { name: "Hide", value: 30 },
+                { name: "First Aid", value: 10 },
+                { name: "Lore (Animal or Plant)", value: 10 },
+                { name: "Survival", value: 30 },
+                { name: "Shield", value: 10 },
+                { name: "Track", value: 10 }
+            ],
             "Chariot Driver": [
-                    { name: "Battle", value: 20 },
-                    { name: "First Aid", value: 10 },
-                    { name: "Drive Chariot", value: 40 },
-                    { name: "Dance", value: 15 },
-                    { name: "Scan", value: 10 }
-                ]
-            ,
+                { name: "Battle", value: 20 },
+                { name: "First Aid", value: 10 },
+                { name: "Drive Chariot", value: 40 },
+                { name: "Dance", value: 15 },
+                { name: "Scan", value: 10 }
+            ],
             "Crafter": [
-                    { name: "Art", value: 10 },
-                    { name: "Evaluate", value: 10 },
-                    { name: "Bargain", value: 10 },
-                    { name: "Insight (Human)", value: 10 },
-                    { name: "Devise", value: 15 },
-                    { name: "Manage Household", value: 30 }
-                ]
-            ,
+                { name: "Art", value: 10 },
+                { name: "Evaluate", value: 10 },
+                { name: "Bargain", value: 10 },
+                { name: "Insight (Human)", value: 10 },
+                { name: "Devise", value: 15 },
+                { name: "Manage Household", value: 30 }
+            ],
             "Entertainer": [
-                    { name: "Intimidate", value: 10 },
-                    { name: "Hide", value: 30 },
-                    { name: "First Aid", value: 10 },
-                    { name: "Lore (Animal or Plant)", value: 10 },
-                    { name: "Survival", value: 30 },
-                    { name: "Shield", value: 10 },
-                    { name: "Track", value: 10 }
-                ]
-            ,
+                { name: "Intimidate", value: 10 },
+                { name: "Hide", value: 30 },
+                { name: "First Aid", value: 10 },
+                { name: "Lore (Animal or Plant)", value: 10 },
+                { name: "Survival", value: 30 },
+                { name: "Shield", value: 10 },
+                { name: "Track", value: 10 }
+            ],
             "Farmer": [
-                    { name: "Jump or Climb", value: 10 },
-                    { name: "Farm", value: 30 },
-                    { name: "Craft (...)", value: 15 },
-                    { name: "First Aid", value: 10 },
-                    { name: "Scan", value: 10 },
-                    { name: "Herd", value: 15 },
-                    { name: "Manage Household", value: 30 }
-                ]
-            ,
+                { name: "Jump or Climb", value: 10 },
+                { name: "Farm", value: 30 },
+                { name: "Craft (...)", value: 15 },
+                { name: "First Aid", value: 10 },
+                { name: "Scan", value: 10 },
+                { name: "Herd", value: 15 },
+                { name: "Manage Household", value: 30 }
+            ],
             "Fisher": [
-                    { name: "Boat", value: 30 },
-                    { name: "Javelin, Self Bow, or Thrown Net", value: 20 },
-                    { name: "Swim", value: 30 },
-                    { name: "1H Spears (Shortspear)", value: 10 },
-                    { name: "First Aid", value: 10 },
-                    { name: "Lore (River)", value: 30 },
-                    { name: "Scan", value: 10 }
-                ]
-            ,
+                { name: "Boat", value: 30 },
+                { name: "Javelin, Self Bow, or Thrown Net", value: 20 },
+                { name: "Swim", value: 30 },
+                { name: "1H Spears (Shortspear)", value: 10 },
+                { name: "First Aid", value: 10 },
+                { name: "Lore (River)", value: 30 },
+                { name: "Scan", value: 10 }
+            ],
             "Healer": [
-                    { name: "Orate", value: 10 },
-                    { name: "Treat Disease", value: 30 },
-                    { name: "Alchemy", value: 10 },
-                    { name: "Treat Poison", value: 10 },
-                    { name: "First Aid", value: 30 },
-                    { name: "Devise", value: 10 },
-                    { name: "Lore (Plant)", value: 30 },
-                    { name: "Insight (Human)", value: 10 }
-                ]
-            ,
+                { name: "Orate", value: 10 },
+                { name: "Treat Disease", value: 30 },
+                { name: "Alchemy", value: 10 },
+                { name: "Treat Poison", value: 10 },
+                { name: "First Aid", value: 30 },
+                { name: "Devise", value: 10 },
+                { name: "Lore (Plant)", value: 30 },
+                { name: "Insight (Human)", value: 10 }
+            ],
             "Herder": [
-                    { name: "Jump or Climb", value: 10 },
-                    { name: "Scan", value: 10 },
-                    { name: "Lore (Animal)", value: 10 },
-                    { name: "Track", value: 10 },
-                    { name: "Lore (local)", value: 10 },
-                    { name: "First Aid", value: 10 },
-                    { name: "Herd", value: 30 },
-                    { name: "Peaceful Cut", value: 30 }
-                ]
-            ,
+                { name: "Jump or Climb", value: 10 },
+                { name: "Scan", value: 10 },
+                { name: "Lore (Animal)", value: 10 },
+                { name: "Track", value: 10 },
+                { name: "Lore (local)", value: 10 },
+                { name: "First Aid", value: 10 },
+                { name: "Herd", value: 30 },
+                { name: "Peaceful Cut", value: 30 }
+            ],
             "Hunter": [
-                    { name: "Lore (Animal)", value: 30 },
-                    { name: "Scan", value: 10 },
-                    { name: "Homeland Lore (...)", value: 10 },
-
-                    { name: "Track", value: 30 },
-
-                    { name: "Conceal", value: 10 },
-                    { name: "Hide", value: 10 },
-                    { name: "Listen", value: 10 }
-                    
-                ]
-            ,
+                { name: "Lore (Animal)", value: 30 },
+                { name: "Scan", value: 10 },
+                { name: "Homeland Lore (...)", value: 10 },
+                { name: "Track", value: 30 },
+                { name: "Conceal", value: 10 },
+                { name: "Hide", value: 10 },
+                { name: "Listen", value: 10 }
+            ],
             "Merchant": [
-                    { name: "Ride (...)", value: 10 },
-                    { name: "Customs (...)", value: 10 },
-                    { name: "Bargain", value: 30 },
-                    { name: "Insight (Human)", value: 10 },
-                    { name: "Speak Language (...)", value: 10 },
-                    { name: "Speak Language (Tradetalk)", value: 30 },
-                    { name: "Manage Household", value: 30 }, 
-                    { name: "Evaluate", value: 30 }
-                ]
-            ,
+                { name: "Ride (...)", value: 10 },
+                { name: "Customs (...)", value: 10 },
+                { name: "Bargain", value: 30 },
+                { name: "Insight (Human)", value: 10 },
+                { name: "Speak Language (...)", value: 10 },
+                { name: "Speak Language (Tradetalk)", value: 30 },
+                { name: "Manage Household", value: 30 },
+                { name: "Evaluate", value: 30 }
+            ],
             "Noble": [
-                    { name: "Ride (any) or Drive Chariot", value: 10 },
-                    { name: "Insight (Human)", value: 10 },
-                    { name: "Intrigue", value: 10 },
-                    { name: "Read/Write (own)", value: 10 },
-                    { name: "Orate", value: 30 },
-                    { name: "Speak Own Language", value: 10 }
-                ]
-            ,
+                { name: "Ride (any) or Drive Chariot", value: 10 },
+                { name: "Insight (Human)", value: 10 },
+                { name: "Intrigue", value: 10 },
+                { name: "Read/Write (own)", value: 10 },
+                { name: "Orate", value: 30 },
+                { name: "Speak Own Language", value: 10 }
+            ],
             "Philosopher": [
-                    { name: "Library Use", value: 10 },
-                    { name: "Lore (...)", value: 10 },
-                    { name: "Meditate", value: 20 }
-                ]
-            ,
+                { name: "Library Use", value: 10 },
+                { name: "Lore (...)", value: 10 },
+                { name: "Meditate", value: 20 }
+            ],
             "Priest": [
-                    { name: "Lore (Cult)", value: 30 },
-                    { name: "Dance", value: 10 },
-                    { name: "Read/Write (own)", value: 10 },
-
-                    { name: "Orate", value: 10 },
-
-                    { name: "Manage Household", value: 10 },
-                    { name: "Sing", value: 30 },
-                    { name: "Worship (deity)", value: 30 },
-                    { name: "Meditate", value: 10 }
-                ]
-            ,
+                { name: "Lore (Cult)", value: 30 },
+                { name: "Dance", value: 10 },
+                { name: "Read/Write (own)", value: 10 },
+                { name: "Orate", value: 10 },
+                { name: "Manage Household", value: 10 },
+                { name: "Sing", value: 30 },
+                { name: "Worship (deity)", value: 30 },
+                { name: "Meditate", value: 10 }
+            ],
             "Scribe": [
-                    { name: "Bureaucracy", value: 30 },
-                    { name: "Library Use", value: 10 },
-                    { name: "Read/Write (own language)", value: 50 },
-                    { name: "Evaluate", value: 10 }
-                ]
-            ,
+                { name: "Bureaucracy", value: 30 },
+                { name: "Library Use", value: 10 },
+                { name: "Read/Write (own language)", value: 50 },
+                { name: "Evaluate", value: 10 }
+            ],
             "Thief": [
-                    { name: "Climb", value: 10 },
-                    { name: "Devise", value: 10 },
-                    { name: "Disguise", value: 30 },
-
-                    { name: "Sleight", value: 30 },
-
-                    { name: "Speak Language (Tradetalk)", value: 30 },
-                    { name: "Hide", value: 10 },
-                    { name: "Move Quietly", value: 30 }
-                ]
-            ,
+                { name: "Climb", value: 10 },
+                { name: "Devise", value: 10 },
+                { name: "Disguise", value: 30 },
+                { name: "Sleight", value: 30 },
+                { name: "Speak Language (Tradetalk)", value: 30 },
+                { name: "Hide", value: 10 },
+                { name: "Move Quietly", value: 30 }
+            ],
             "Warrior: Heavy Infantry": [
-                    { name: "Sing", value: 10 },
-                    { name: "Scan", value: 10 },
-                    { name: "Battle", value: 30 },
-                    { name: "First Aid", value: 15 }
-                ]
-            ,
+                { name: "Sing", value: 10 },
+                { name: "Scan", value: 10 },
+                { name: "Battle", value: 30 },
+                { name: "First Aid", value: 15 }
+            ],
             "Warrior: Light Infantry": [
-                    { name: "Battle", value: 30 },
-                    { name: "Hide", value: 10 },
-                    { name: "First Aid", value: 15 },
-                    { name: "Move Quietly", value: 10 },
-                    { name: "Listen", value: 10 },
-                    { name: "Scan", value: 10 }
-                ]
-            ,
+                { name: "Battle", value: 30 },
+                { name: "Hide", value: 10 },
+                { name: "First Aid", value: 15 },
+                { name: "Move Quietly", value: 10 },
+                { name: "Listen", value: 10 },
+                { name: "Scan", value: 10 }
+            ],
             "Warrior: Heavy Cavalry": [
-                    { name: "Battle", value: 30 },
-                    { name: "First Aid", value: 10 },
-                    { name: "Listen", value: 10 },
-                    { name: "Scan", value: 10 },
-                    { name: "Sing", value: 10 }
-                ]
-            ,
+                { name: "Battle", value: 30 },
+                { name: "First Aid", value: 10 },
+                { name: "Listen", value: 10 },
+                { name: "Scan", value: 10 },
+                { name: "Sing", value: 10 }
+            ],
             "Warrior: Light Cavalry": [
-                    { name: "Ride", value: 35 },
-                    { name: "Listen", value: 10 },
-                    { name: "Sing", value: 10 },
-                    { name: "Battle", value: 30 },
-                    { name: "First Aid", value: 10 }
-                ]
-                      
-
+                { name: "Ride", value: 35 },
+                { name: "Listen", value: 10 },
+                { name: "Sing", value: 10 },
+                { name: "Battle", value: 30 },
+                { name: "First Aid", value: 10 }
+            ]
             // Add more occupations and their skills
         };
 
@@ -1287,7 +1208,6 @@ class Character {
         library.occupations.filteredByRace = validOccupations;
     }
 
-
     calculateAttributes() {
         const { strength, dexterity, constitution, intelligence, power, charisma, size } = this.characteristics;
 
@@ -1369,8 +1289,6 @@ class Character {
 let char = new Character("Adventurer");
 let library = new Library();
 
-
-
 (async () => {
     await library.loadCults(['wiki-en-rqg.cults']);
     await library.loadSkills(['wiki-en-rqg.skills', 'wiki-en-rqg.skills-weapons']);
@@ -1380,6 +1298,14 @@ let library = new Library();
     await library.loadWeapon(['wiki-en-rqg.equipment-weapons']);
     await library.loadHitLocation();
     await library.loadPassions();
+
+    // Duplicate skills with (...) in their name
+    library.duplicateSkill('Lore (...)', 'Lore (River)');
+    library.duplicateSkill('Lore (...)', 'Lore (Plant)');
+    library.duplicateSkill('Lore (...)', 'Lore (Animal)');
+    library.duplicateSkill('Ride (...)', 'Ride (Horse)');
+    library.duplicateSkill('Speak Language (...)', 'Speak Language (Tradetalk)');
+    library.duplicateSkill('Read/Write (...)', 'Read/Write (Heortling)');
 
     char.initializeRunes();
     char.chooseRace('Human');
